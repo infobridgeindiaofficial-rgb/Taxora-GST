@@ -485,7 +485,7 @@ button{font-family:inherit}
 
   <sc-if value="{{ invOpen }}">
     <div role="dialog" aria-modal="true" aria-label="GST Invoice Generator" onclick="{{ closeInvModalOutside }}" style="position:fixed;inset:0;z-index:200;display:grid;overflow-y:auto;padding:24px;background:rgba(11,14,17,.5);backdrop-filter:blur(2px);animation:tx-fade var(--dur-base) var(--ease-out) both">
-      <div onclick="{{ stopInvPropagation }}" style="margin:auto;width:min(1120px,100%);max-height:calc(100vh - 48px);overflow-y:auto;background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.015) 48%,rgba(255,255,255,.04)),linear-gradient(0deg,rgba(14,18,23,.7),rgba(14,18,23,.7));-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);border:1px solid rgba(255,255,255,.16);border-radius:var(--r-card);box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);transform-origin:center;backface-visibility:hidden;animation:tx-expand 340ms var(--ease-out) both">
+      <div onclick="{{ stopInvPropagation }}" style="margin:auto;width:min(1360px,calc(100vw - 48px));max-height:calc(100vh - 48px);overflow-y:auto;background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.015) 48%,rgba(255,255,255,.04)),linear-gradient(0deg,rgba(14,18,23,.7),rgba(14,18,23,.7));-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);border:1px solid rgba(255,255,255,.16);border-radius:var(--r-card);box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);transform-origin:center;backface-visibility:hidden;animation:tx-expand 340ms var(--ease-out) both">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-md);padding:var(--card-pad);border-bottom:1px solid var(--hairline-on-dark)">
           <div style="display:grid;gap:4px">
             <span style="font-size:var(--fs-caption);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--primary)">GST Invoice</span>
@@ -495,7 +495,7 @@ button{font-family:inherit}
         </div>
 
         <div style="display:grid;gap:var(--sp-xl);padding:var(--card-pad)">
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:var(--sp-xl);align-items:start">
+          <div style="display:grid;grid-template-columns:minmax(420px,.90fr) minmax(680px,1.35fr);gap:var(--sp-xl);align-items:start">
 
             <!-- LEFT PANEL — INPUTS -->
             <div style="display:grid;gap:var(--sp-lg);align-content:start">
@@ -730,7 +730,7 @@ button{font-family:inherit}
             <div id="inv-preview-area" style="padding-top:0">
               <div style="display:grid;gap:var(--sp-sm)">
                 
-                <div style="padding:var(--sp-lg);background:rgba(10,14,19,.30);border:1px solid rgba(255,255,255,.10);border-radius:var(--r-md);color:var(--on-dark);font-size:13px;line-height:1.6">
+                <div style="padding:0;background:transparent;border:0;border-radius:0;color:var(--on-dark);font-size:12px;line-height:1.55">
                   <div style="text-align:center;border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:12px;margin-bottom:16px">
                     <div style="font-size:18px;font-weight:700;color:var(--primary)">TAX INVOICE</div>
                   </div>
@@ -761,41 +761,41 @@ button{font-family:inherit}
                   <table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px">
                     <thead>
                       <tr style="background:rgba(255,255,255,.10);color:var(--body)">
-                        <th style="padding:8px 6px;text-align:left;border:1px solid rgba(255,255,255,.10)">#</th>
-                        <th style="padding:8px 6px;text-align:left;border:1px solid rgba(255,255,255,.10)">Description</th>
-                        <th style="padding:8px 6px;text-align:left;border:1px solid rgba(255,255,255,.10)">HSN/SAC</th>
-                        <th style="padding:8px 6px;text-align:right;border:1px solid rgba(255,255,255,.10)">Qty</th>
-                        <th style="padding:8px 6px;text-align:right;border:1px solid rgba(255,255,255,.10)">Rate</th>
-                        <th style="padding:8px 6px;text-align:right;border:1px solid rgba(255,255,255,.10)">Discount</th>
-                        <th style="padding:8px 6px;text-align:right;border:1px solid rgba(255,255,255,.10)">Taxable</th>
+                        <th style="padding:6px 5px;text-align:left;border:1px solid rgba(255,255,255,.10)">#</th>
+                        <th style="padding:6px 5px;text-align:left;border:1px solid rgba(255,255,255,.10)">Description</th>
+                        <th style="padding:6px 5px;text-align:left;border:1px solid rgba(255,255,255,.10)">HSN/SAC</th>
+                        <th style="padding:6px 5px;text-align:right;border:1px solid rgba(255,255,255,.10)">Qty</th>
+                        <th style="padding:6px 5px;text-align:right;border:1px solid rgba(255,255,255,.10)">Rate</th>
+                        <th style="padding:6px 5px;text-align:right;border:1px solid rgba(255,255,255,.10)">Discount</th>
+                        <th style="padding:6px 5px;text-align:right;border:1px solid rgba(255,255,255,.10)">Taxable</th>
                         <sc-if value="{{ inv.isIntra }}">
-                          <th style="padding:8px 6px;text-align:right;border:1px solid rgba(255,255,255,.10)">CGST</th>
-                          <th style="padding:8px 6px;text-align:right;border:1px solid rgba(255,255,255,.10)">SGST</th>
+                          <th style="padding:6px 5px;text-align:right;border:1px solid rgba(255,255,255,.10)">CGST</th>
+                          <th style="padding:6px 5px;text-align:right;border:1px solid rgba(255,255,255,.10)">SGST</th>
                         </sc-if>
                         <sc-if value="{{ inv.isInter }}">
-                          <th style="padding:8px 6px;text-align:right;border:1px solid rgba(255,255,255,.10)">IGST</th>
+                          <th style="padding:6px 5px;text-align:right;border:1px solid rgba(255,255,255,.10)">IGST</th>
                         </sc-if>
-                        <th style="padding:8px 6px;text-align:right;border:1px solid rgba(255,255,255,.10)">Amount</th>
+                        <th style="padding:6px 5px;text-align:right;border:1px solid rgba(255,255,255,.10)">Amount</th>
                       </tr>
                     </thead>
                     <tbody>
                       <sc-for list="{{ inv.items }}" as="pi" index="piIdx">
                         <tr style="border-bottom:1px solid rgba(255,255,255,.10)">
-                          <td style="padding:6px;border:1px solid rgba(255,255,255,.10)">{{ pi.n }}</td>
-                          <td style="padding:6px;border:1px solid rgba(255,255,255,.10)">{{ pi.desc }}</td>
-                          <td style="padding:6px;border:1px solid rgba(255,255,255,.10)">{{ pi.hsn }}</td>
-                          <td style="padding:6px;border:1px solid rgba(255,255,255,.10);text-align:right">{{ pi.qty }} {{ pi.unit }}</td>
-                          <td style="padding:6px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.rate }}</td>
-                          <td style="padding:6px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.discount }}</td>
-                          <td style="padding:6px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.taxableVal }}</td>
+                          <td style="padding:5px;border:1px solid rgba(255,255,255,.10)">{{ pi.n }}</td>
+                          <td style="padding:5px;border:1px solid rgba(255,255,255,.10)">{{ pi.desc }}</td>
+                          <td style="padding:5px;border:1px solid rgba(255,255,255,.10)">{{ pi.hsn }}</td>
+                          <td style="padding:5px;border:1px solid rgba(255,255,255,.10);text-align:right">{{ pi.qty }} {{ pi.unit }}</td>
+                          <td style="padding:5px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.rate }}</td>
+                          <td style="padding:5px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.discount }}</td>
+                          <td style="padding:5px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.taxableVal }}</td>
                           <sc-if value="{{ inv.isIntra }}">
-                            <td style="padding:6px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.cgst }}</td>
-                            <td style="padding:6px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.sgst }}</td>
+                            <td style="padding:5px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.cgst }}</td>
+                            <td style="padding:5px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.sgst }}</td>
                           </sc-if>
                           <sc-if value="{{ inv.isInter }}">
-                            <td style="padding:6px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.igst }}</td>
+                            <td style="padding:5px;border:1px solid rgba(255,255,255,.10);text-align:right">₹{{ pi.igst }}</td>
                           </sc-if>
-                          <td style="padding:6px;border:1px solid rgba(255,255,255,.10);text-align:right;font-weight:600">₹{{ pi.total }}</td>
+                          <td style="padding:5px;border:1px solid rgba(255,255,255,.10);text-align:right;font-weight:600">₹{{ pi.total }}</td>
                         </tr>
                       </sc-for>
                     </tbody>
@@ -2060,21 +2060,21 @@ class Component extends DCLogic {
       "</tr>";
     }).join("");
     return "<!DOCTYPE html><html><head><meta charset=\'utf-8\'><title>" + esc(inv.invNumber || "TAX INVOICE") + "</title><style>" +
-      "@page{margin:12mm}" +
-      "body{font-family:Arial,Helvetica,sans-serif;color:#111;font-size:12px;margin:0}" +
-      ".wrap{max-width:720px;margin:0 auto;padding:8px;line-height:1.5}" +
-      "h1{text-align:center;letter-spacing:1px;margin:0 0 10px;font-size:19px;border-bottom:2px solid #333;padding-bottom:9px}" +
+      "@page{size:A4;margin:10mm}" +
+      "body{font-family:Arial,Helvetica,sans-serif;color:#1E2329;font-size:11px;margin:0;background:#fff}" +
+      ".wrap{max-width:100%;margin:0 auto;line-height:1.45;border:1px solid #D9D2BF;border-radius:10px;overflow:hidden}" +".brand{display:flex;justify-content:space-between;align-items:center;background:#11161C;color:#fff;padding:16px 18px;border-bottom:4px solid #E3B53C}"+".brandname{font-size:20px;font-weight:800;letter-spacing:1.5px;color:#E3B53C}"+".brandsub{font-size:9px;color:#C9CDD3;letter-spacing:.8px;text-transform:uppercase}"+".content{padding:16px 18px 18px}" +
+      "h1{text-align:right;letter-spacing:1px;margin:0;font-size:18px;color:#fff}" +
       "table{width:100%;border-collapse:collapse;font-size:12px}" +
-      "th,td{border:1px solid #bbb;padding:6px;text-align:left;vertical-align:top}" +
+      "th,td{border:1px solid #D9DDE3;padding:6px;text-align:left;vertical-align:top}" +
       ".two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:12px 0}" +
-      ".sep{background:#f5f5f5;padding:7px 10px;border-radius:3px;margin:12px 0;font-size:12px}" +
-      ".sum{margin:12px 0;font-size:12px}" +
-      ".foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:34px;padding-top:10px;border-top:1px solid #ccc}" +
+      ".sep{background:#F7F4EA;border-left:3px solid #E3B53C;padding:9px 11px;border-radius:4px;margin:12px 0;font-size:11px}" +
+      ".sum{margin:12px 0;font-size:11px}" +".totalbox{display:inline-block;background:#11161C;color:#E3B53C;padding:9px 12px;border-radius:5px}" +
+      ".foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:28px;padding-top:10px;border-top:1px solid #D9DDE3}" +
       ".sig{border-top:1px solid #333;width:150px;text-align:center;margin:0 auto;padding-top:3px;font-size:11px;color:#666}" +
       ".words{font-size:11px;color:#444;font-style:italic;margin-top:5px}" +
       "@media print{body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}" +
       "</style></head><body><div class=\'wrap\'>" +
-      "<h1>TAX INVOICE</h1>" +
+      "<div class='brand'><div><div class='brandname'>TAXORA GST</div><div class='brandsub'>GST invoice & compliance workspace</div></div><h1>TAX INVOICE</h1></div><div class='content'>" +
       "<div class=\'two\'>" +
       "<div><strong>Seller Details</strong><br>" +
       esc(inv.bizName) +
@@ -2092,17 +2092,17 @@ class Component extends DCLogic {
       "<div class=\'sep\'><span style=\'color:#666\'>Invoice No: </span><strong>" + esc(inv.invNumber) + "</strong> &nbsp; <span style=\'color:#666\'>Date: </span><strong>" + esc(inv.invDate) + "</strong> &nbsp; <span style=\'color:#666\'>Place of Supply: </span><strong>" + esc(c.posName) + " (" + esc(inv.posCode || inv.placeOfSupply || "") + ")</strong> &nbsp; <span style=\'color:#666\'>Reverse Charge: </span><strong>" + esc(c.reverseCharge) + "</strong></div>" +
       "<table><thead><tr>" +
       "<th style=\'background:#333;color:#fff\'>#</th><th style=\'background:#333;color:#fff\'>Description</th><th style=\'background:#333;color:#fff\'>HSN/SAC</th>" +
-      "<th style=\'background:#333;color:#fff;text-align:right\'>Qty</th><th style=\'background:#333;color:#fff;text-align:right\'>Rate</th>" +
-      "<th style=\'background:#333;color:#fff;text-align:right\'>Discount</th><th style=\'background:#333;color:#fff;text-align:right\'>Taxable</th>" +
-      (c.isIntra ? "<th style=\'background:#333;color:#fff;text-align:right\'>CGST</th><th style=\'background:#333;color:#fff;text-align:right\'>SGST</th>" : "<th style=\'background:#333;color:#fff;text-align:right\'>IGST</th>") +
-      "<th style=\'background:#333;color:#fff;text-align:right\'>Amount</th>" +
+      "<th style=\'background:#1E2329;color:#E3B53C;text-align:right\'>Qty</th><th style=\'background:#1E2329;color:#E3B53C;text-align:right\'>Rate</th>" +
+      "<th style=\'background:#1E2329;color:#E3B53C;text-align:right\'>Discount</th><th style=\'background:#1E2329;color:#E3B53C;text-align:right\'>Taxable</th>" +
+      (c.isIntra ? "<th style=\'background:#1E2329;color:#E3B53C;text-align:right\'>CGST</th><th style=\'background:#1E2329;color:#E3B53C;text-align:right\'>SGST</th>" : "<th style=\'background:#1E2329;color:#E3B53C;text-align:right\'>IGST</th>") +
+      "<th style=\'background:#1E2329;color:#E3B53C;text-align:right\'>Amount</th>" +
       "</tr></thead><tbody>" + rows + "</tbody></table>" +
       "<div class=\'two\'><div class=\'sum\'><strong>Tax Breakup</strong><br>Subtotal: " + fmt(c.subtotal) + "<br>Discount: - " + fmt(c.totalDiscount) + "<br>Taxable Amount: " + fmt(c.taxableAmount) + (c.isIntra ? "<br>CGST: " + fmt(c.cgst) + "<br>SGST: " + fmt(c.sgst) : "<br>IGST: " + fmt(c.igst)) + (c.cess > 0 ? "<br>Cess: " + fmt(c.cess) : "") + "<br>Round Off: " + fmt(c.roundOff) + "</div>" +
       "<div style=\'text-align:right\'>" +
       "<div class=\'sum\'><strong style=\'font-size:15px\'>Total: " + fmt(c.grandTotal) + "</strong><br><span class=\'words\'>" + esc(this.invAmountWords(c.grandTotal)) + "</span><br>" +
       (inv.notes ? "<span class=\'words\'>" + esc(inv.notes) + "</span>" : "") + "</div></div></div>" +
       "<div class=\'foot\'><div style=\'font-size:11px;color:#666\'>Terms: Subject to local jurisdiction</div><div class=\'sig\'>Authorized Signatory</div></div>" +
-      "</div></body></html>";
+      "</div></div></body></html>";
   }
 
   invPrint() {
@@ -2124,9 +2124,12 @@ class Component extends DCLogic {
       doc.open();
       doc.write(this.invBuildPrintHtml());
       doc.close();
+      let printed = false;
       const finish = () => {
+        if (printed) return;
+        printed = true;
         try { frame.contentWindow.focus(); frame.contentWindow.print(); } catch (e) {}
-        setTimeout(() => { document.body.removeChild(frame); }, 1000);
+        setTimeout(() => { if (frame.parentNode) document.body.removeChild(frame); }, 1500);
       };
       if (frame.contentWindow && frame.contentWindow.addEventListener) {
         frame.contentWindow.addEventListener("load", finish);
@@ -2138,7 +2141,36 @@ class Component extends DCLogic {
   }
 
   invDownloadPdf() {
-    this.invPrint();
+    this.invTouched();
+    const err = this.invValidate();
+    if (err.bizName || err.invNumber || err.invDate || err.items || err.bizState || err.custName || err.custState || err.pos) return;
+    this.invEnsurePreview();
+    const inv = (this.state && this.state.inv) || {};
+    const filename = String(inv.invNumber || "TAXORA-GST-INVOICE").replace(/[^A-Za-z0-9._-]+/g, "-") + ".pdf";
+    const frame = document.createElement("iframe");
+    frame.style.position = "fixed"; frame.style.left = "-10000px"; frame.style.top = "0";
+    frame.style.width = "900px"; frame.style.height = "1200px"; frame.style.border = "0";
+    document.body.appendChild(frame);
+    const doc = frame.contentWindow.document;
+    let html = this.invBuildPrintHtml();
+    html = html.replace("</head>", "<script src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'><\/script></head>");
+    doc.open(); doc.write(html); doc.close();
+    const clean = () => setTimeout(() => { if (frame.parentNode) document.body.removeChild(frame); }, 600);
+    const makePdf = () => {
+      const w = frame.contentWindow;
+      if (!w || !w.html2pdf) { clean(); this.invPrint(); return; }
+      const target = frame.contentDocument.querySelector('.wrap') || frame.contentDocument.body;
+      w.html2pdf().set({
+        margin: [6,6,6,6], filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['css','legacy'] }
+      }).from(target).save().then(clean).catch(() => { clean(); this.invPrint(); });
+    };
+    let tries = 0;
+    const wait = () => { tries += 1; if (frame.contentWindow && frame.contentWindow.html2pdf) makePdf(); else if (tries < 30) setTimeout(wait, 150); else { clean(); this.invPrint(); } };
+    setTimeout(wait, 250);
   }
 
   heroRef = React.createRef();
