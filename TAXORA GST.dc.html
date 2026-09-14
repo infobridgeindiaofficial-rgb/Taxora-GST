@@ -2089,7 +2089,7 @@ class Component extends DCLogic {
         "<td style=\'padding:6px;border:1px solid #bbb;text-align:right;font-weight:600\'>" + fmt(lc.total) + "</td>" +
       "</tr>";
     }).join("");
-    return "<!DOCTYPE html><html><head><meta charset=\'utf-8\'><title>" + esc(inv.invNumber || "TAX INVOICE") + "</title><style>" +
+    return "<!DOCTYPE html><html><head><meta charset=\'utf-8\'><title>" + esc((inv.bizName || "Business") + " - " + (inv.invNumber || "Tax Invoice")) + "</title><style>" +
       "@page{size:A4;margin:10mm}" +
       "body{font-family:Arial,Helvetica,sans-serif;color:#1E2329;font-size:11px;margin:0;background:#fff}" +
       ".wrap{max-width:100%;margin:0 auto;line-height:1.45;border:1px solid #D9D2BF;border-radius:10px;overflow:hidden}" +".brand{display:flex;justify-content:space-between;align-items:center;background:#11161C;color:#fff;padding:16px 18px;border-bottom:4px solid #E3B53C}"+".brandname{font-size:20px;font-weight:800;letter-spacing:1.5px;color:#E3B53C}"+".brandsub{font-size:9px;color:#C9CDD3;letter-spacing:.8px;text-transform:uppercase}"+".content{padding:16px 18px 18px}" +
@@ -2104,7 +2104,7 @@ class Component extends DCLogic {
       ".words{font-size:11px;color:#444;font-style:italic;margin-top:5px}" +
       "@media print{body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}" +
       "</style></head><body><div class=\'wrap\'>" +
-      "<div class='brand'><div><div class='brandname'>TAXORA GST</div><div class='brandsub'>GST invoice & compliance workspace</div></div><h1>TAX INVOICE</h1></div><div class='content'>" +
+      "<div class='brand'><div><div class='brandname'>" + esc(inv.bizName || "Business") + "</div><div class='brandsub'>" + (inv.bizGstin ? "GSTIN: " + esc(String(inv.bizGstin).toUpperCase()) : "GST TAX INVOICE") + "</div></div><h1>TAX INVOICE</h1></div><div class='content'>" +
       "<div class=\'two\'>" +
       "<div><strong>Seller Details</strong><br>" +
       esc(inv.bizName) +
@@ -2131,7 +2131,7 @@ class Component extends DCLogic {
       "<div style=\'text-align:right\'>" +
       "<div class=\'sum\'><strong style=\'font-size:15px\'>Total: " + fmt(c.grandTotal) + "</strong><br><span class=\'words\'>" + esc(this.invAmountWords(c.grandTotal)) + "</span><br>" +
       (inv.notes ? "<span class=\'words\'>" + esc(inv.notes) + "</span>" : "") + "</div></div></div>" +
-      "<div class=\'foot\'><div style=\'font-size:11px;color:#666\'>Terms: Subject to local jurisdiction</div><div class=\'sig\'>Authorized Signatory</div></div>" +
+      "<div class=\'foot\'><div style=\'font-size:11px;color:#666\'>" + esc(inv.terms || "Terms: Subject to local jurisdiction") + "</div><div class=\'sig\'>" + esc(inv.signatory || "Authorized Signatory") + "</div></div>" +
       "</div></div></body></html>";
   }
 
@@ -2176,14 +2176,14 @@ class Component extends DCLogic {
     if (err.bizName || err.invNumber || err.invDate || err.items || err.bizState || err.custName || err.custState || err.pos) return;
     this.invEnsurePreview();
     const inv = (this.state && this.state.inv) || {};
-    const filename = String(inv.invNumber || "TAXORA-GST-INVOICE").replace(/[^A-Za-z0-9._-]+/g, "-") + ".pdf";
+    const filename = String((inv.bizName || "Business") + "-" + (inv.invNumber || "Tax-Invoice")).replace(/[^A-Za-z0-9._-]+/g, "-") + ".pdf";
     const frame = document.createElement("iframe");
     frame.style.position = "fixed"; frame.style.left = "-10000px"; frame.style.top = "0";
     frame.style.width = "900px"; frame.style.height = "1200px"; frame.style.border = "0";
     document.body.appendChild(frame);
     const doc = frame.contentWindow.document;
     let html = this.invBuildPrintHtml();
-    html = html.replace("</head>", "<script src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'><\/script></head>");
+    html = html.replace("</head>", "<script src='./html2pdf.bundle.min.js'><\/script></head>");
     doc.open(); doc.write(html); doc.close();
     const clean = () => setTimeout(() => { if (frame.parentNode) document.body.removeChild(frame); }, 600);
     const makePdf = () => {
