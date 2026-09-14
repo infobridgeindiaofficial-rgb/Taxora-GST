@@ -1,0 +1,25 @@
+name: Run invoice patch
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply patch
+        run: python tools/fix_invoice_live_preview.py
+      - name: Commit patch
+        run: |
+          git config user.name "Taxora Workspace Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add "TAXORA GST.dc.html"
+          if ! git diff --cached --quiet; then
+            git commit -m "Fix invoice live preview data and add payment fields [skip ci]"
+            git push
+          fi
