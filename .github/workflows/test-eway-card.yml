@@ -1,0 +1,13 @@
+name: Test E-Way Bill card
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run E-Way Bill regression test
+        run: node tests/eway-card-regression.mjs
