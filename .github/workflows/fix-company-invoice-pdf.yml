@@ -1,0 +1,58 @@
+name: Fix company invoice PDF
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix invoice branding and PDF download
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('TAXORA GST.dc.html')
+          s = p.read_text(encoding='utf-8')
+
+          s = s.replace(
+            'return "<!DOCTYPE html><html><head><meta charset=\\\'utf-8\\\'><title>" + esc(inv.invNumber || "TAX INVOICE") + "</title><style>" +',
+            'return "<!DOCTYPE html><html><head><meta charset=\\\'utf-8\\\'><title>" + esc((inv.bizName || "Business") + " - " + (inv.invNumber || "Tax Invoice")) + "</title><style>" +',
+            1
+          )
+
+          old = '"<div class=\'brand\'><div><div class=\'brandname\'>TAXORA GST</div><div class=\'brandsub\'>GST invoice & compliance workspace</div></div><h1>TAX INVOICE</h1></div><div class=\'content\'>" +'
+          new = '"<div class=\'brand\'><div><div class=\'brandname\'>" + esc(inv.bizName || "Business") + "</div><div class=\'brandsub\'>" + (inv.bizGstin ? "GSTIN: " + esc(String(inv.bizGstin).toUpperCase()) : "GST TAX INVOICE") + "</div></div><h1>TAX INVOICE</h1></div><div class=\'content\'>" +'
+          if old not in s:
+              raise SystemExit('print brand block not found')
+          s = s.replace(old, new, 1)
+
+          s = s.replace(
+            '"<div class=\\\'foot\\\'><div style=\\\'font-size:11px;color:#666\\\'>Terms: Subject to local jurisdiction</div><div class=\\\'sig\\\'>Authorized Signatory</div></div>" +',
+            '"<div class=\\\'foot\\\'><div style=\\\'font-size:11px;color:#666\\\'>" + esc(inv.terms || "Terms: Subject to local jurisdiction") + "</div><div class=\\\'sig\\\'>" + esc(inv.signatory || "Authorized Signatory") + "</div></div>" +',
+            1
+          )
+
+          # Use a local bundled html2pdf file so Download PDF works from file:// as well.
+          s = s.replace(
+            "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js",
+            "./html2pdf.bundle.min.js"
+          )
+          s = s.replace('const filename = String(inv.invNumber || "TAXORA-GST-INVOICE")', 'const filename = String((inv.bizName || "Business") + "-" + (inv.invNumber || "Tax-Invoice"))', 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+          curl -L --fail --retry 3 -o html2pdf.bundle.min.js https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js
+
+          git config user.name "Taxora Workspace Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add "TAXORA GST.dc.html" html2pdf.bundle.min.js
+          git commit -m "Use company branding and reliable local PDF download [skip ci]"
+          git push
