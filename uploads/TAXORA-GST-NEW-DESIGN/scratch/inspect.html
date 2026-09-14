@@ -1,0 +1,16 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+body{margin:0;background:#fff;display:grid;place-items:center}
+#wrap{width:760px}
+svg{width:100%;height:auto;display:block}
+</style></head>
+<body><div id="wrap"></div>
+<script>
+fetch('../assets/india-states.svg').then(r=>r.text()).then(t=>{
+  document.getElementById('wrap').innerHTML = t;
+  const s = document.querySelector('svg');
+  s.setAttribute('viewBox','0 0 793.76 1122.56');
+  s.removeAttribute('width'); s.removeAttribute('height');
+});
+</script>
+</body></html>
