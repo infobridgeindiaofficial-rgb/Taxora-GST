@@ -98,6 +98,65 @@ export function checkInvoiceNumbers(input) {
   };
 }
 
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+function show(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'grid';
+}
+
+function hide(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'none';
+}
+
+function runGSTINUI() {
+  const input = document.getElementById('taxora-gstin-input');
+  const resultBox = document.getElementById('taxora-gstin-result');
+  if (!input || !resultBox) return;
+  const r = validateGSTIN(input.value);
+  resultBox.style.display = 'grid';
+  const status = document.getElementById('taxora-gstin-status');
+  if (status) {
+    status.textContent = r.structureValid ? 'GSTIN structure looks valid' : 'GSTIN needs correction';
+    status.style.color = r.structureValid ? '#74D99F' : '#F0B7B7';
+  }
+  setText('taxora-gstin-normalized', r.normalized || '—');
+  setText('taxora-gstin-state', r.stateCode ? `${r.stateCode}${r.stateName ? ` — ${r.stateName}` : ''}` : '—');
+  setText('taxora-gstin-pan', r.pan || '—');
+  setText('taxora-gstin-entity', r.entityCode || '—');
+  setText('taxora-gstin-errors', r.errors.length ? r.errors.join(' ') : 'No structural issues found.');
+}
+
+function runInvoiceUI() {
+  const input = document.getElementById('taxora-invoice-input');
+  const resultBox = document.getElementById('taxora-invoice-result');
+  if (!input || !resultBox) return;
+  const r = checkInvoiceNumbers(input.value);
+  resultBox.style.display = 'grid';
+  const clean = r.invalid.length === 0 && r.duplicates.length === 0 && r.gaps.length === 0 && r.total > 0;
+  const status = document.getElementById('taxora-invoice-status');
+  if (status) {
+    status.textContent = clean ? 'Invoice numbers look clean' : (r.total ? 'Review the issues below' : 'Enter invoice numbers to check');
+    status.style.color = clean ? '#74D99F' : '#F0B7B7';
+  }
+  setText('taxora-invoice-count', String(r.total));
+  setText('taxora-invoice-duplicates', r.duplicates.length ? r.duplicates.join(', ') : 'None');
+  setText('taxora-invoice-gaps', r.gaps.length ? r.gaps.join(', ') : 'None');
+  setText('taxora-invoice-invalid', r.invalid.length ? r.invalid.map(x => `${x.value}: ${x.reason}`).join(' | ') : 'None');
+}
+
 if (typeof window !== 'undefined') {
   window.TaxoraValidators = { validateGSTIN, checkInvoiceNumbers };
+  window.TaxoraValidatorUI = {
+    openGSTIN: () => show('taxora-gstin-modal'),
+    closeGSTIN: () => hide('taxora-gstin-modal'),
+    validateGSTIN: runGSTINUI,
+    openInvoices: () => show('taxora-invoice-modal'),
+    closeInvoices: () => hide('taxora-invoice-modal'),
+    checkInvoices: runInvoiceUI
+  };
 }
