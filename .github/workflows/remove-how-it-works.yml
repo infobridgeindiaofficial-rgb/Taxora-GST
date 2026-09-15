@@ -23,7 +23,7 @@ jobs:
           import re
           p = Path('TAXORA GST.dc.html')
           s = p.read_text(encoding='utf-8')
-          pat = r'\n?<section id="how"\b[\s\S]*?</section>\n?'
+          pat = r'\n?<section id="how"(?=\s|>)[\s\S]*?</section>\n?'
           s2, n = re.subn(pat, '\n', s, count=1)
           if n != 1:
               raise SystemExit(f'Expected exactly 1 How It Works section, found {n}')
