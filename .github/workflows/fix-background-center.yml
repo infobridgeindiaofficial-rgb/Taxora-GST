@@ -45,3 +45,5 @@ jobs:
           git add "TAXORA GST.dc.html"
           git commit -m "Center ambient India background [skip ci]"
           git push origin main
+
+# one-time workflow trigger
