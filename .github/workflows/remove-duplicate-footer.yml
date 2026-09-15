@@ -1,0 +1,48 @@
+name: Remove Duplicate Footer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/remove-duplicate-footer.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  remove:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Remove old large footer
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          p = Path('TAXORA GST.dc.html')
+          s = p.read_text(encoding='utf-8')
+          pat = r'<footer style="position:relative;z-index:1;padding:var\(--sp-xxl\)[\s\S]*?GST Made Simple\.[\s\S]*?</footer>'
+          s2, n = re.subn(pat, '', s, count=1)
+          if n != 1:
+              raise SystemExit(f'Expected one old footer, found {n}')
+          p.write_text(s2, encoding='utf-8')
+      - name: Verify single footer content
+        shell: python
+        run: |
+          from pathlib import Path
+          s = Path('TAXORA GST.dc.html').read_text(encoding='utf-8')
+          if 'GST Made Simple.' in s:
+              raise SystemExit('Old footer still present')
+          if s.count('infobridgeindia.official@gmail.com') < 1:
+              raise SystemExit('Compact footer email missing')
+          if 'wa.me/971521185821' not in s:
+              raise SystemExit('WhatsApp link missing')
+      - name: Commit change
+        run: |
+          git config user.name "Taxora Workspace Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add 'TAXORA GST.dc.html'
+          git commit -m 'Remove duplicate old footer [skip ci]'
+          git push origin main
