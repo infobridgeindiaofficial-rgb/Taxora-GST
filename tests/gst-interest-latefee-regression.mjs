@@ -2,7 +2,6 @@ import fs from 'node:fs';
 
 const html = fs.readFileSync('TAXORA GST.dc.html', 'utf8');
 const required = [
-  'GST Interest & Late Fee Calculator',
   'gstCalcOpen',
   'openGstCalcModal',
   'gstCalcReturnType',
@@ -17,6 +16,11 @@ const required = [
   'downloadGstCalcSummary'
 ];
 
+if (!html.includes('GST Interest &amp; Late Fee Calculator') && !html.includes('GST Interest & Late Fee Calculator')) {
+  console.error('Missing GST calculator title');
+  process.exit(1);
+}
+
 for (const token of required) {
   if (!html.includes(token)) {
     console.error(`Missing GST calculator token: ${token}`);
@@ -24,7 +28,6 @@ for (const token of required) {
   }
 }
 
-// Guard the intended statutory working assumptions used by the calculator.
 if (!html.includes('gstCalcLateFeePerDay')) {
   console.error('Missing late fee per-day calculation');
   process.exit(1);
