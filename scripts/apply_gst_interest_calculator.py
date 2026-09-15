@@ -84,11 +84,11 @@ if si < 0:
     raise SystemExit('GST payment state anchor missing')
 s = s[:si] + '    gstCalcOpen: false,\n    gstCalc: { returnType:"GSTR-3B", dueDate:"", filingDate:"", taxPayable:"", isNil:false },\n' + s[si:]
 
-# 4) Calculator methods before existing GST Payment summary method.
-method_anchor = '  downloadGstPaySummary() {'
+# 4) Calculator methods before a stable existing GSTR-3B helper.
+method_anchor = '  ecb3bNum(v) {'
 mm = s.find(method_anchor)
 if mm < 0:
-    raise SystemExit('GST payment method anchor missing')
+    raise SystemExit('GSTR-3B helper anchor missing')
 methods = '''  gstCalcPatch(key, value) {
     this.setState((p) => ({ gstCalc: Object.assign({}, p.gstCalc || {}, { [key]: value }) }));
   }
@@ -144,7 +144,7 @@ methods = '''  gstCalcPatch(key, value) {
       "Estimated Late Fee: Rs. " + this.gstCalcMoney(late),
       "Total Extra       : Rs. " + this.gstCalcMoney(interest + late),
       "",
-      "Working estimate only. Actual GST portal amount may differ due to caps, notifications, relief, taxpayer category, return period and portal computation. From January 2026, GSTR-3B portal interest computation may consider minimum Electronic Cash Ledger balance."
+      "Working estimate only. Actual GST portal amount may differ due to caps, notifications, relief, taxpayer category, return period and portal computation."
     ];
     const blob = new Blob([lines.join("\\n")], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -158,7 +158,7 @@ methods = '''  gstCalcPatch(key, value) {
 '''
 s = s[:mm] + methods + s[mm:]
 
-# 5) Escape closes calculator too. Support current E-Way-enhanced handler.
+# 5) Escape closes calculator too.
 escape_old = 'this.setState({ ecomOpen: false, ecbOpen: false, invOpen: false, gstPayOpen: false, ewayOpen: false })'
 if escape_old in s:
     s = s.replace(escape_old, 'this.setState({ ecomOpen: false, ecbOpen: false, invOpen: false, gstPayOpen: false, ewayOpen: false, gstCalcOpen: false })', 1)
