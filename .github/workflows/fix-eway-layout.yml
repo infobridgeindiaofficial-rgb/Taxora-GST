@@ -29,15 +29,14 @@ jobs:
              'display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;padding:var(--card-pad);align-items:start'),
             ('<div style="display:grid;gap:var(--sp-lg);align-content:start">',
              '<div style="display:grid;gap:var(--sp-lg);align-content:start;min-width:0">'),
-            ('<div class="ecb3b-3d-wrap" style="position:sticky;top:0;align-self:start"><div class="ecb3b-3d"><div class="ecb3b-3d-surface">',
+            ('<div class="ecb3b-3d-wrap" style="position:sticky;top:0;align-self:start;min-width:0"><div class="ecb3b-3d" style="transform:none"><div class="ecb3b-3d-surface">',
              '<div class="ecb3b-3d-wrap" style="position:sticky;top:0;align-self:start;min-width:0;width:100%"><div class="ecb3b-3d" style="transform:none;width:100%;max-width:100%"><div class="ecb3b-3d-surface" style="width:100%;max-width:100%;box-sizing:border-box">')
           ]
           for old, new in replacements:
               if old not in seg:
-                  raise SystemExit('Missing E-Way Bill layout anchor: ' + old[:90])
+                  raise SystemExit('Missing E-Way Bill layout anchor: ' + old[:100])
               seg = seg.replace(old, new, 1)
 
-          # Keep form controls inside their own column even on narrow tracks.
           seg = seg.replace('style="height:42px;padding:0 12px;background:var(--canvas-dark);', 'style="width:100%;min-width:0;box-sizing:border-box;height:42px;padding:0 12px;background:var(--canvas-dark);')
 
           s = s[:start] + seg + s[end:]
@@ -57,6 +56,7 @@ jobs:
           assert 'width:min(1380px,calc(100vw - 32px))' in seg
           assert 'class="ecb3b-3d" style="transform:none;width:100%;max-width:100%"' in seg
           assert 'align-content:start;min-width:0' in seg
+          assert 'width:100%;min-width:0;box-sizing:border-box;height:42px' in seg
           print('verified targeted E-Way Bill layout')
           PY
       - name: Commit fix
