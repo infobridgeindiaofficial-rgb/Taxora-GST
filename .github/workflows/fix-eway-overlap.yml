@@ -1,0 +1,45 @@
+name: Fix E-Way Bill overlap
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-eway-overlap.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix E-Way Bill preview overlap
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('TAXORA GST.dc.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<div class="ecb3b-3d-wrap" style="position:sticky;top:0;align-self:start"><div class="ecb3b-3d"><div class="ecb3b-3d-surface">'
+          new = '<div class="ecb3b-3d-wrap" style="position:sticky;top:0;align-self:start;min-width:0"><div class="ecb3b-3d" style="transform:none"><div class="ecb3b-3d-surface">'
+          if old not in s:
+              raise SystemExit('E-Way Bill preview anchor missing')
+          s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          print('E-Way Bill overlap fixed')
+          PY
+      - name: Verify fix
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s = Path('TAXORA GST.dc.html').read_text(encoding='utf-8')
+          assert 'E-Way Bill Preview' in s
+          assert 'class="ecb3b-3d" style="transform:none"' in s
+          print('verified')
+          PY
+      - name: Commit fix
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add 'TAXORA GST.dc.html'
+          git commit -m 'Fix E-Way Bill preview overlap [skip ci]'
+          git push
