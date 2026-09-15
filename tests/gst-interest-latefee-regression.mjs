@@ -24,7 +24,7 @@ for (const token of required) {
   }
 }
 
-// Guard the intended GSTR-3B statutory working assumptions used by the card.
+// Guard the intended statutory working assumptions used by the calculator.
 if (!html.includes('gstCalcLateFeePerDay')) {
   console.error('Missing late fee per-day calculation');
   process.exit(1);
