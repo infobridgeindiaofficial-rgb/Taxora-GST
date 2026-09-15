@@ -24,8 +24,19 @@ jobs:
           PY
       - name: Apply E-Way Bill feature
         run: python scripts/apply_eway.py
+      - name: Apply compact footer
+        run: python tools/compact_contact.py
       - name: Verify E-Way Bill feature
         run: node tests/eway-card-regression.mjs
+      - name: Verify footer
+        shell: python
+        run: |
+          from pathlib import Path
+          s = Path('TAXORA GST.dc.html').read_text(encoding='utf-8')
+          assert '<footer id="contact"' in s
+          assert 'mailto:infobridgeindia.official@gmail.com' in s
+          assert 'https://wa.me/971521185821' in s
+          assert '© 2026 Taxora GST' in s
       - name: Commit feature
         shell: bash
         run: |
@@ -33,5 +44,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add 'TAXORA GST.dc.html'
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'Add temporary E-Way Bill workspace [skip ci]'
+          git commit -m 'Move contact into compact footer [skip ci]'
           git push
