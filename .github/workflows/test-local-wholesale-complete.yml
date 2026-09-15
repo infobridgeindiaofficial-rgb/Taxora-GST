@@ -1,0 +1,22 @@
+name: Test Local Wholesale Complete
+
+on:
+  push:
+    branches:
+      - feature/local-wholesale-complete
+    paths:
+      - 'local-wholesale-gst.html'
+      - 'local-wholesale-gst-core.js'
+      - 'tests/local-wholesale-*.test.js'
+      - '.github/workflows/test-local-wholesale-complete.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/local-wholesale-gst-core.test.js tests/local-wholesale-page.test.js
