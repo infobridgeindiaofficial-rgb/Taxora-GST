@@ -118,13 +118,13 @@ button{font-family:inherit}
         <a href="#home" data-nav="#home" style="font-size:var(--fs-body-sm);font-weight:500;padding:8px 2px;border-bottom:1px solid transparent">Home</a>
         <a href="#services" data-nav="#services" style="font-size:var(--fs-body-sm);font-weight:500;padding:8px 2px;border-bottom:1px solid transparent">GST Services</a>
         <a href="./local-wholesale-gst.html" style="font-size:var(--fs-body-sm);font-weight:500;padding:8px 2px;border-bottom:1px solid transparent">Local / Wholesale GST</a>
-        <a href="#how" data-nav="#how" style="font-size:var(--fs-body-sm);font-weight:500;padding:8px 2px;border-bottom:1px solid transparent">How It Works</a>
+        
         <a href="#contact" data-nav="#contact" style="font-size:var(--fs-body-sm);font-weight:500;padding:8px 2px;border-bottom:1px solid transparent">Contact</a>
       </nav>
     </sc-if>
     <div style="margin-left:auto;display:flex;align-items:center;gap:var(--sp-sm)">
       <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
-        <a href="#contact" style="display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 16px;border-radius:var(--r-md);background:var(--primary);color:var(--on-primary);font-size:var(--fs-body-sm);font-weight:600;white-space:nowrap;border:1px solid var(--primary)" style-hover="background:var(--primary-active);border-color:var(--primary-active);color:var(--on-primary)">Get Started<span aria-hidden="true">→</span></a>
+        
       </sc-if>
       <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
         <button type="button" aria-label="Menu" onClick="{{ toggleNav }}" style="width:44px;height:44px;display:grid;place-items:center;background:transparent;border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);cursor:pointer">
@@ -138,9 +138,9 @@ button{font-family:inherit}
       <a href="#home" onClick="{{ closeNav }}" style="min-height:44px;display:flex;align-items:center;font-size:var(--fs-body-md)">Home</a>
       <a href="#services" onClick="{{ closeNav }}" style="min-height:44px;display:flex;align-items:center;font-size:var(--fs-body-md)">GST Services</a>
       <a href="./local-wholesale-gst.html" style="min-height:44px;display:flex;align-items:center;font-size:var(--fs-body-md)">Local / Wholesale GST</a>
-      <a href="#how" onClick="{{ closeNav }}" style="min-height:44px;display:flex;align-items:center;font-size:var(--fs-body-md)">How It Works</a>
+      
       <a href="#contact" onClick="{{ closeNav }}" style="min-height:44px;display:flex;align-items:center;font-size:var(--fs-body-md)">Contact</a>
-      <a href="#contact" onClick="{{ closeNav }}" style="margin-top:var(--sp-sm);min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--r-md);background:var(--primary);color:var(--on-primary);font-size:var(--fs-body-md);font-weight:600">Get Started<span aria-hidden="true">→</span></a>
+      
     </div>
   </sc-if>
 </header>
@@ -1225,6 +1225,29 @@ button{font-family:inherit}
 
 
 
+
+<section id="contact" data-screen-label="Contact" style="position:relative;z-index:1;padding:64px 24px;border-top:1px solid var(--hairline-on-dark);background:rgba(11,14,17,.72)">
+  <div style="max-width:var(--container-max);margin:0 auto">
+    <div class="tx-glass-card" style="border-radius:var(--r-card);padding:32px;display:grid;gap:24px;max-width:760px;margin:0 auto">
+      <div style="display:grid;gap:8px;text-align:center">
+        <span style="font-size:var(--fs-caption);font-weight:700;letter-spacing:.12em;color:var(--primary);text-transform:uppercase">Contact TAXORA GST</span>
+        <h2 style="margin:0;color:var(--on-dark);font-size:32px;line-height:1.2">Need help with GST?</h2>
+        <p style="margin:0;color:var(--muted-strong);font-size:var(--fs-body-md)">Contact us by email or WhatsApp.</p>
+      </div>
+      <div style="display:grid;gap:12px">
+        <a href="mailto:infobridgeindia.official@gmail.com" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px;border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);background:rgba(11,14,17,.45)">
+          <span style="color:var(--muted-strong);font-size:var(--fs-body-sm)">Email</span>
+          <strong style="color:var(--body);font-size:var(--fs-body-sm);word-break:break-all">infobridgeindia.official@gmail.com</strong>
+        </a>
+        <a href="https://wa.me/971521185821" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px;border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);background:rgba(11,14,17,.45)">
+          <span style="color:var(--muted-strong);font-size:var(--fs-body-sm)">WhatsApp</span>
+          <strong style="color:var(--primary);font-size:var(--fs-body-sm)">+971 52 118 5821</strong>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer style="position:relative;z-index:1;padding:var(--sp-xxl) 24px var(--sp-xl);border-top:1px solid var(--hairline-on-dark);background:rgba(11,14,17,.8)">
   <div style="max-width:var(--container-max);margin:0 auto;display:grid;gap:var(--sp-xl)">
     <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:var(--sp-lg)">
@@ -1236,7 +1259,7 @@ button{font-family:inherit}
         <a href="#home" style="font-size:var(--fs-body-sm)">Home</a>
         <a href="#services" style="font-size:var(--fs-body-sm)">GST Services</a>
         <a href="#features" style="font-size:var(--fs-body-sm)">Features</a>
-        <a href="#how" style="font-size:var(--fs-body-sm)">How It Works</a>
+        
         <a href="#contact" style="font-size:var(--fs-body-sm)">Contact</a>
       </nav>
     </div>
@@ -2503,7 +2526,7 @@ class Component extends DCLogic {
 
   /* ---- active nav link, written straight to the DOM ---- */
   initNavHighlight() {
-    const ids = ["#home", "#services", "#how", "#contact"];
+    const ids = ["#home", "#services", "#contact"];
     this.io = new IntersectionObserver((entries) => {
       entries.forEach((en) => {
         if (!en.isIntersecting) return;
