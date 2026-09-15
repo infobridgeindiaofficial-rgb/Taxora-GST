@@ -62,3 +62,5 @@ jobs:
           git add "TAXORA GST.dc.html"
           git commit -m "Compact contact card [skip ci]"
           git push origin main
+
+# trigger existing workflow
