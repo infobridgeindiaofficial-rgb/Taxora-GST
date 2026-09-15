@@ -1,5 +1,4 @@
 from pathlib import Path
-import re
 
 p = Path('TAXORA GST.dc.html')
 s = p.read_text(encoding='utf-8')
@@ -11,10 +10,15 @@ new = '''<section id="contact" data-screen-label="Contact" style="position:relat
     </a>
   </div>
 </section>'''
-s2, n = re.subn(r'<section id="contact"\b[\s\S]*?</section>', new, s, count=1)
-if n != 1:
-    raise SystemExit(f'Expected 1 contact section, found {n}')
-p.write_text(s2, encoding='utf-8')
+start = s.find('<section id="contact"')
+if start < 0:
+    raise SystemExit('Contact section start not found')
+end = s.find('</section>', start)
+if end < 0:
+    raise SystemExit('Contact section end not found')
+end += len('</section>')
+s = s[:start] + new + s[end:]
+p.write_text(s, encoding='utf-8')
 
 s = p.read_text(encoding='utf-8')
 assert 'aria-label="Chat on WhatsApp"' in s
