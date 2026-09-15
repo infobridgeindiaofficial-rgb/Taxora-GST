@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/apply-gst-interest-calculator.yml'
+      - 'tools/.gst-interest-trigger'
 
 permissions:
   contents: write
