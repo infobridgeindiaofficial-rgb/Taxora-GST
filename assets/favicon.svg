@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Taxora GST">
+  <rect width="64" height="64" rx="14" fill="#0B0E11"/>
+  <path d="M15 18h34v8H36v25h-8V26H15z" fill="#E3B53C"/>
+  <path d="M39 32h10v19H39z" fill="#EAECEF"/>
+</svg>

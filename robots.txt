@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /uploads/
+Disallow: /docs/
+Disallow: /scripts/
+Disallow: /tools/
+Disallow: /tests/
+Disallow: /*.xlsx$
+
+Sitemap: https://taxoragst.online/sitemap.xml

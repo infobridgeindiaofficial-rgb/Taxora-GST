@@ -1,8 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GST Filing &amp; Invoice Tools for India | Taxora GST</title>
+<meta name="description" content="Free GST filing preparation, GST invoice generator and calculators for Indian businesses and Amazon, Flipkart and Meesho sellers. Prepare GSTR-1 and GSTR-3B.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://taxoragst.online/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Taxora GST">
+<meta property="og:title" content="GST Filing &amp; Invoice Tools for India | Taxora GST">
+<meta property="og:description" content="Free GST filing preparation, invoice tools and GST calculators for Indian businesses and marketplace sellers.">
+<meta property="og:url" content="https://taxoragst.online/">
+<meta property="og:image" content="https://taxoragst.online/assets/hero-bg.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GST Filing &amp; Invoice Tools for India | Taxora GST">
+<meta name="twitter:description" content="Free GST filing preparation, invoice tools and GST calculators for Indian businesses and marketplace sellers.">
+<meta name="twitter:image" content="https://taxoragst.online/assets/hero-bg.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://taxoragst.online/#organization",
+      "name": "Taxora GST",
+      "url": "https://taxoragst.online/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://taxoragst.online/#website",
+      "url": "https://taxoragst.online/",
+      "name": "Taxora GST",
+      "publisher": { "@id": "https://taxoragst.online/#organization" },
+      "inLanguage": "en-IN"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://taxoragst.online/#application",
+      "name": "Taxora GST",
+      "url": "https://taxoragst.online/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "GST filing preparation, invoice generation and GST calculators for Indian businesses and marketplace sellers.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+    }
+  ]
+}
+</script>
 <script src="./support.js"></script>
 <script src="./tax-invoice-parser.js"></script>
 <script src="./master-report.js"></script>
@@ -37,6 +83,7 @@ a:hover{color:var(--primary)}
 button{font-family:inherit}
 :focus-visible{outline:2px solid #3B82F6;outline-offset:2px}
 .tx-num{font-variant-numeric:tabular-nums lining-nums}
+.tx-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 @keyframes tx-spin{from{transform:rotateY(0)}to{transform:rotateY(360deg)}}
 @keyframes tx-counter{from{transform:rotateY(0)}to{transform:rotateY(-360deg)}}
 @keyframes tx-depth{
@@ -148,6 +195,7 @@ button{font-family:inherit}
 </header>
 
 <section id="home" data-screen-label="Hero" ref="{{ heroRef }}" style="position:relative;overflow:hidden;min-height:calc(100vh - var(--header-h));background:var(--canvas-dark);display:grid;place-items:center;touch-action:pan-y">
+<h1 class="tx-sr-only">GST Filing and GST Invoice Tools for Indian Businesses</h1>
   <div aria-hidden="true" style="position:absolute;inset:0;background-image:url('assets/hero-bg.png');background-size:cover;background-position:50% 88%;background-repeat:no-repeat;background-color:var(--canvas-dark);pointer-events:none"></div>
   <div aria-hidden="true" style="position:absolute;inset:0;background:radial-gradient(ellipse 46% 42% at 50% 46%,rgba(11,14,17,.72) 0%,rgba(11,14,17,.38) 46%,transparent 72%);pointer-events:none"></div>
   <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(11,14,17,.55) 0%,transparent 16%,transparent 82%,rgba(11,14,17,.35) 100%);pointer-events:none"></div>
