@@ -1,0 +1,45 @@
+name: Fix Footer Legal Links Final
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-footer-legal-links-final.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Rebuild compact footer with legal links
+        run: python tools/compact_contact.py
+      - name: Verify footer legal links
+        shell: python
+        run: |
+          from pathlib import Path
+          s = Path('TAXORA GST.dc.html').read_text(encoding='utf-8')
+          required = [
+            'href="privacy.html"',
+            'href="terms.html"',
+            'Privacy Policy',
+            'Terms &amp; Conditions',
+            'mailto:infobridgeindia.official@gmail.com',
+            'https://wa.me/971521185821'
+          ]
+          missing = [x for x in required if x not in s]
+          if missing:
+              raise SystemExit('Missing: ' + ', '.join(missing))
+      - name: Commit footer repair
+        shell: bash
+        run: |
+          git config user.name "Taxora Workspace Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add 'TAXORA GST.dc.html'
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Fix footer privacy and terms links [skip ci]'
+          git push origin main
