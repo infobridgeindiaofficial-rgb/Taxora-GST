@@ -24,8 +24,6 @@ jobs:
           PY
       - name: Apply E-Way Bill feature
         run: python scripts/apply_eway.py
-      - name: Apply compact contact layout
-        run: python tools/compact_contact.py
       - name: Verify E-Way Bill feature
         run: node tests/eway-card-regression.mjs
       - name: Commit feature
@@ -35,5 +33,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add 'TAXORA GST.dc.html'
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'Compact contact layout [skip ci]'
+          git commit -m 'Add temporary E-Way Bill workspace [skip ci]'
           git push
