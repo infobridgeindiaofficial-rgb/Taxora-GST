@@ -1,0 +1,20 @@
+name: Test GST Validators
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/test_gst_validators.mjs'
+      - 'gst-validators.js'
+      - 'TAXORA GST.dc.html'
+      - '.github/workflows/test-gst-validators.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node tools/test_gst_validators.mjs
