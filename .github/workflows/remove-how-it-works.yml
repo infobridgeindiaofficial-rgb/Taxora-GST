@@ -1,0 +1,46 @@
+name: Remove How It Works Section
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/remove-how-it-works.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  remove:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Remove section
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          p = Path('TAXORA GST.dc.html')
+          s = p.read_text(encoding='utf-8')
+          pat = r'\n?<section id="how"\b[\s\S]*?</section>\n?'
+          s2, n = re.subn(pat, '\n', s, count=1)
+          if n != 1:
+              raise SystemExit(f'Expected exactly 1 How It Works section, found {n}')
+          p.write_text(s2, encoding='utf-8')
+      - name: Verify removed
+        shell: python
+        run: |
+          from pathlib import Path
+          s = Path('TAXORA GST.dc.html').read_text(encoding='utf-8')
+          bad = ['id="how"', 'From transaction to compliance', 'Six steps, each one derived from the step before it.']
+          found = [x for x in bad if x in s]
+          if found:
+              raise SystemExit('Still present: ' + ', '.join(found))
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "TAXORA GST.dc.html"
+          git commit -m "Remove How It Works section [skip ci]"
+          git push origin main
