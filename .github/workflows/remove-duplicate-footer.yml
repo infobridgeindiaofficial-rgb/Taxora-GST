@@ -46,3 +46,4 @@ jobs:
           git add 'TAXORA GST.dc.html'
           git commit -m 'Remove duplicate old footer [skip ci]'
           git push origin main
+# trigger
