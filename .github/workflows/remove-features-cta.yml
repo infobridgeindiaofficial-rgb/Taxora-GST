@@ -1,0 +1,54 @@
+name: Remove Features and CTA Sections
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/remove-features-cta.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  remove:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Remove homepage sections
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          p = Path('TAXORA GST.dc.html')
+          s = p.read_text(encoding='utf-8')
+          for section_id in ('features', 'contact'):
+              pat = rf'\n?<section id="{section_id}"(?=\s|>)[\s\S]*?</section>\n?'
+              s, n = re.subn(pat, '\n', s, count=1)
+              if n != 1:
+                  raise SystemExit(f'Expected exactly 1 section #{section_id}, found {n}')
+          p.write_text(s, encoding='utf-8')
+      - name: Verify removed
+        shell: python
+        run: |
+          from pathlib import Path
+          s = Path('TAXORA GST.dc.html').read_text(encoding='utf-8')
+          bad = [
+              'id="features"',
+              'Built for businesses that file every month',
+              'Why TAXORA GST',
+              'id="contact"',
+              'Ready to simplify your GST?',
+              'Add your GSTIN, import last month\'s invoices, and see your first return drafted.'
+          ]
+          found = [x for x in bad if x in s]
+          if found:
+              raise SystemExit('Still present: ' + ', '.join(found))
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "TAXORA GST.dc.html"
+          git commit -m "Remove homepage features and CTA sections [skip ci]"
+          git push origin main
