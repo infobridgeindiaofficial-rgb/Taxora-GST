@@ -1,0 +1,36 @@
+name: Fix GST Validator DC Events
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-gst-validator-dc-events.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Repair DC-compatible validator events
+        run: python tools/fix_gst_validator_dc_events.py
+      - name: Run validator logic tests
+        run: node tools/test_gst_validators.mjs
+      - name: Verify DC event bindings
+        run: |
+          grep -q 'onclick="{{ openGstinValidator }}"' 'TAXORA GST.dc.html'
+          grep -q 'onclick="{{ openInvoiceChecker }}"' 'TAXORA GST.dc.html'
+          grep -q 'onclick="{{ validateGstinNow }}"' 'TAXORA GST.dc.html'
+          grep -q 'onclick="{{ checkInvoicesNow }}"' 'TAXORA GST.dc.html'
+      - name: Commit repaired runtime
+        run: |
+          git config user.name "Taxora Workspace Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add 'TAXORA GST.dc.html'
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Fix GST validator DC event bindings [skip ci]'
+          git push origin main
