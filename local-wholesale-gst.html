@@ -4,795 +4,143 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Local / Wholesale GST — TAXORA GST</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
---font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
---canvas-dark:#0B0E11;--surface-card-dark:#1E2329;--surface-elevated-dark:#2B3139;
---primary:#E3B53C;--primary-active:#C8972A;--on-primary:#181A20;--gold-hi:#FAE7A6;--gold-deep:#8C6512;
---on-dark:#FFFFFF;--body:#EAECEF;--muted:#707A8A;--muted-strong:#929AA5;
---hairline-on-dark:#2B3139;--india-glow:rgba(227,181,60,.30);--india-edge:#E3B53C;
---r-xs:2px;--r-sm:4px;--r-md:6px;--r-lg:8px;--r-card:12px;--r-full:50%;--r-pill:999px;
---sp-xxs:4px;--sp-xs:8px;--sp-sm:12px;--sp-md:16px;--sp-lg:24px;--sp-xl:32px;--sp-xxl:48px;--sp-section:80px;
---card-pad:24px;--card-pad-lg:32px;--card-gap:24px;--container-max:1280px;--header-h:64px;
---dur-fast:120ms;--dur-base:200ms;--dur-slow:420ms;
---ease-standard:cubic-bezier(.2,0,0,1);--ease-out:cubic-bezier(.16,1,.3,1);
---fs-body-md:16px;--fs-body-sm:14px;--fs-body-xs:13px;--fs-caption:12px;
-}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--canvas-dark);color:var(--body);font-family:var(--font-sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
-*{box-sizing:border-box}
-a{color:var(--body);text-decoration:none}
-a:hover{color:var(--primary)}
-button{font-family:inherit}
-:focus-visible{outline:2px solid #3B82F6;outline-offset:2px}
-@keyframes tx-fade{from{opacity:0}to{opacity:1}}
-.tx-glass-card{position:relative;background:linear-gradient(118deg,transparent 16%,rgba(255,255,255,.05) 32%,rgba(255,255,255,.085) 41%,rgba(255,255,255,.022) 51%,transparent 64%),linear-gradient(152deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.055) 36%,rgba(255,255,255,.016) 62%,rgba(255,255,255,.07) 100%),linear-gradient(0deg,rgba(14,18,23,.24),rgba(14,18,23,.24));-webkit-backdrop-filter:blur(2px) saturate(1.25) brightness(1.06);backdrop-filter:blur(2px) saturate(1.25) brightness(1.06);border:1px solid rgba(255,255,255,.22);box-shadow:0 14px 34px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(255,255,255,.055),inset 1px 0 0 rgba(255,255,255,.05),inset -1px 0 0 rgba(255,255,255,.05)}
-.tx-glass-card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(300px 150px at 6% -12%,rgba(227,181,60,.2),transparent 62%),radial-gradient(320px 170px at 100% 110%,rgba(96,156,255,.17),transparent 60%)}
-.tx-glass-card::after{content:"";position:absolute;top:0;left:9%;right:9%;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)}
-@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms !important;animation-iteration-count:1 !important}}
-
-/* header / nav — mirrors TAXORA GST.dc.html */
-.tx-nav-desktop{display:none;gap:var(--sp-lg);margin-left:var(--sp-md)}
-.tx-nav-link{font-size:var(--fs-body-sm);font-weight:500;padding:8px 2px;border-bottom:1px solid transparent}
-.tx-nav-link.is-current{color:var(--primary);border-bottom-color:var(--primary)}
-.tx-cta-btn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 16px;border-radius:var(--r-md);background:var(--primary);color:var(--on-primary);font-size:var(--fs-body-sm);font-weight:600;white-space:nowrap;border:1px solid var(--primary)}
-.tx-cta-btn:hover{background:var(--primary-active);border-color:var(--primary-active);color:var(--on-primary)}
-.tx-menu-btn{display:grid;width:44px;height:44px;place-items:center;background:transparent;border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);cursor:pointer}
-.tx-mobile-menu{display:none;position:absolute;left:0;right:0;top:var(--header-h);background:var(--canvas-dark);border-bottom:1px solid var(--hairline-on-dark);padding:var(--sp-sm) 24px var(--sp-lg);gap:2px}
-.tx-mobile-menu.is-open{display:grid}
-.tx-mobile-link{min-height:44px;display:flex;align-items:center;font-size:var(--fs-body-md)}
-.tx-mobile-link.is-current{color:var(--primary)}
-@media (min-width:901px){
-  .tx-nav-desktop{display:flex}
-  .tx-header-actions .tx-cta-btn{display:inline-flex}
-  .tx-menu-btn{display:none}
-  .tx-mobile-menu{display:none !important}
-}
-
-/* form field styling — mirrors inputs used across the TAXORA app */
-.lw-field{display:grid;gap:6px}
-.lw-label{font-size:var(--fs-body-sm);font-weight:500;color:var(--body)}
-.lw-input,.lw-select{width:100%;height:44px;padding:0 14px;background:var(--canvas-dark);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);color:var(--body);font-family:inherit;font-size:var(--fs-body-sm);color-scheme:dark}
-.lw-input:focus-visible,.lw-select:focus-visible{outline:2px solid #3B82F6;outline-offset:1px}
-.lw-save-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:var(--r-md);background:var(--primary);border:1px solid var(--primary);color:var(--on-primary);font-size:var(--fs-body-md);font-weight:600;cursor:pointer;transition:background var(--dur-fast) var(--ease-standard)}
-.lw-save-btn:hover{background:var(--primary-active);border-color:var(--primary-active)}
-
-/* Sales Register — line items, totals, table */
-.lw-item-row{display:grid;gap:8px;padding:14px;border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);background:var(--canvas-dark)}
-.lw-item-field{display:grid;gap:4px}
-.lw-item-label{font-size:11px;color:var(--muted-strong)}
-.lw-mini-input,.lw-mini-select{width:100%;height:36px;padding:0 10px;background:var(--surface-card-dark);border:1px solid var(--hairline-on-dark);border-radius:var(--r-sm);color:var(--body);font-family:inherit;font-size:var(--fs-body-xs);color-scheme:dark}
-.lw-mini-input:focus-visible,.lw-mini-select:focus-visible{outline:2px solid #3B82F6;outline-offset:1px}
-.lw-remove-item-btn{width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--hairline-on-dark);border-radius:var(--r-sm);background:transparent;color:var(--muted-strong);font-size:14px;cursor:pointer;align-self:end}
-.lw-remove-item-btn:hover{color:#F85149;border-color:#F85149}
-.lw-add-item-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border:1px dashed var(--hairline-on-dark);border-radius:var(--r-md);background:transparent;color:var(--primary);font-size:var(--fs-body-sm);font-weight:600;cursor:pointer}
-.lw-add-item-btn:hover{border-color:rgba(227,181,60,.55)}
-.lw-secondary-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:var(--r-md);background:transparent;border:1px solid var(--hairline-on-dark);color:var(--body);font-size:var(--fs-body-md);font-weight:600;cursor:pointer}
-.lw-secondary-btn:hover{border-color:var(--muted)}
-.lw-total-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:var(--canvas-dark);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);font-size:var(--fs-caption);font-weight:600;color:var(--body)}
-.lw-total-pill b{color:var(--primary);font-weight:700}
-.lw-error-text{display:block;margin-top:4px;font-size:var(--fs-caption);color:#F85149;min-height:1em}
-.lw-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--r-pill);font-size:var(--fs-caption);font-weight:600}
-.lw-badge-b2b{background:rgba(227,181,60,.16);color:var(--primary)}
-.lw-badge-b2c{background:rgba(96,156,255,.16);color:#8FB8FF}
-.lw-table-wrap{overflow-x:auto}
-.lw-table{width:100%;border-collapse:collapse;font-size:var(--fs-body-sm)}
-.lw-table th,.lw-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--hairline-on-dark);white-space:nowrap}
-.lw-table th{font-size:var(--fs-caption);text-transform:uppercase;letter-spacing:.08em;color:var(--muted-strong);font-weight:600}
-.lw-table td.lw-num{text-align:right;font-variant-numeric:tabular-nums}
-.lw-icon-btn{width:32px;height:32px;display:inline-grid;place-items:center;border:1px solid var(--hairline-on-dark);border-radius:var(--r-sm);background:transparent;color:var(--muted-strong);cursor:pointer;margin-right:6px}
-.lw-icon-btn:hover{color:var(--body);border-color:var(--muted)}
-.lw-icon-btn.lw-delete-btn:hover{color:#F85149;border-color:#F85149}
+:root{--font:"Inter",sans-serif;--bg:#0B0E11;--card:#1E2329;--elev:#2B3139;--gold:#E3B53C;--gold2:#C8972A;--text:#EAECEF;--white:#fff;--muted:#929AA5;--line:#2B3139;--red:#F85149;--green:#4CC38A;--blue:#8FB8FF;--r:12px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--font);-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:1280px;margin:auto;padding:0 24px}.glass{position:relative;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.025) 55%,rgba(227,181,60,.05));border:1px solid rgba(255,255,255,.19);border-radius:var(--r);box-shadow:0 18px 40px rgba(0,0,0,.28);overflow:hidden}.glass:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(300px 140px at 0 0,rgba(227,181,60,.15),transparent 65%)}
+header{position:sticky;top:0;z-index:30;height:64px;background:rgba(11,14,17,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}header .wrap{height:100%;display:flex;align-items:center;gap:22px}.brand{font-weight:700;font-size:18px;color:var(--gold)}.brand span{font-size:14px;color:#fff;letter-spacing:.04em}.home{margin-left:auto;color:var(--muted)}.home:hover{color:var(--gold)}
+.hero{padding:58px 0 28px;text-align:center}.eyebrow{color:var(--gold);text-transform:uppercase;letter-spacing:.13em;font-size:12px;font-weight:700}.hero h1{margin:9px 0 10px;font-size:clamp(30px,4vw,44px);line-height:1.1}.hero p{max-width:760px;margin:auto;color:var(--muted);font-size:16px}.workflow{position:sticky;top:64px;z-index:20;background:rgba(11,14,17,.94);border-block:1px solid var(--line)}.workflow .wrap{display:flex;gap:6px;overflow:auto;padding-top:10px;padding-bottom:10px}.tab{white-space:nowrap;padding:9px 14px;border:1px solid var(--line);border-radius:8px;color:var(--muted)}.tab:hover{color:var(--gold);border-color:rgba(227,181,60,.45)}
+.periodbar{padding:24px 0}.period-inner{display:flex;flex-wrap:wrap;align-items:end;gap:14px;padding:18px}.field{display:grid;gap:6px;min-width:0}.field label,.mini-label{font-size:12px;color:var(--muted);font-weight:600}.input,.select{width:100%;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:7px;background:#101419;color:var(--text);color-scheme:dark}.input:focus,.select:focus{outline:2px solid rgba(227,181,60,.45);border-color:var(--gold)}.period-field{width:180px}.period-note{color:var(--muted);margin-left:auto}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:14px}.metric{padding:17px}.metric small{display:block;color:var(--muted);margin-bottom:6px}.metric strong{font-size:22px;color:#fff}.metric strong.gold{color:var(--gold)}
+section{padding:38px 0;border-top:1px solid var(--line)}.section-head{display:flex;gap:20px;justify-content:space-between;align-items:end;margin-bottom:18px}.section-head h2{margin:0;font-size:26px}.section-head p{margin:5px 0 0;color:var(--muted)}.panel{padding:24px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}.primary,.secondary,.danger{min-height:42px;padding:0 16px;border-radius:7px;font-weight:600}.primary{background:var(--gold);border:1px solid var(--gold);color:#181A20}.primary:hover{background:var(--gold2)}.secondary{background:transparent;border:1px solid var(--line);color:var(--text)}.secondary:hover{border-color:#5d6672}.danger{background:transparent;border:1px solid rgba(248,81,73,.45);color:var(--red)}.status{color:var(--muted)}.error{color:var(--red);font-size:12px;min-height:18px;margin-top:4px}.ok{color:var(--green)}
+.items{display:grid;gap:10px;margin-top:14px}.item{padding:14px;border:1px solid var(--line);border-radius:8px;background:#101419}.item-grid{display:grid;grid-template-columns:2fr 1fr .8fr .8fr 1fr auto;gap:8px;align-items:end}.mini{height:36px;padding:0 9px;background:var(--card);border:1px solid var(--line);border-radius:6px;color:var(--text);width:100%;color-scheme:dark}.remove{width:36px;height:36px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--muted)}.remove:hover{color:var(--red);border-color:var(--red)}.totals{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.pill{padding:8px 11px;border:1px solid var(--line);border-radius:7px;background:#101419;font-size:12px}.pill b{color:var(--gold);margin-left:5px}
+.table-wrap{overflow:auto;margin-top:18px}.table{width:100%;border-collapse:collapse;min-width:920px}.table th,.table td{padding:10px 11px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.table th{color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:.07em}.num{text-align:right!important;font-variant-numeric:tabular-nums}.badge{display:inline-flex;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}.b2b,.matched,.eligible{background:rgba(227,181,60,.15);color:var(--gold)}.b2c{background:rgba(143,184,255,.14);color:var(--blue)}.pending{background:rgba(255,184,77,.13);color:#ffba56}.missing,.blocked{background:rgba(248,81,73,.14);color:#ff7b73}.icon{width:30px;height:30px;border-radius:5px;border:1px solid var(--line);background:transparent;color:var(--muted);margin-right:5px}.icon:hover{color:#fff}.empty{color:var(--muted);padding:10px 0 0}.subhead{margin:24px 0 8px;color:#fff;font-size:15px}.summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.summary-card{padding:17px;border:1px solid var(--line);border-radius:8px;background:#101419}.summary-card small{display:block;color:var(--muted);margin-bottom:5px}.summary-card b{font-size:18px;color:#fff}.summary-card b.gold{color:var(--gold)}.return-box{padding:20px;margin-top:14px}.return-box h3{margin:0 0 14px}.return-table{width:100%;border-collapse:collapse}.return-table td{padding:9px;border-bottom:1px solid var(--line)}.return-table td:last-child{text-align:right;font-variant-numeric:tabular-nums}.notice{margin-top:16px;padding:13px 15px;border:1px solid rgba(227,181,60,.3);background:rgba(227,181,60,.07);border-radius:8px;color:#d9c98f}.exports{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+@media(max-width:900px){.metrics,.summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid,.grid.two{grid-template-columns:1fr 1fr}.item-grid{grid-template-columns:1fr 1fr 1fr}.item-grid .remove{grid-column:3}.period-note{width:100%;margin:0}}@media(max-width:600px){.wrap{padding:0 16px}.hero{padding-top:38px}.metrics,.summary-grid,.grid,.grid.two{grid-template-columns:1fr}.item-grid{grid-template-columns:1fr 1fr}.item-grid .remove{grid-column:2}.section-head{align-items:start;flex-direction:column}.period-field{width:100%}}
 </style>
 </head>
 <body>
-
-<header style="position:sticky;top:0;z-index:50;height:var(--header-h);background:rgba(11,14,17,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline-on-dark);animation:tx-fade var(--dur-slow) var(--ease-out) both">
-  <div style="max-width:var(--container-max);margin:0 auto;height:100%;padding:0 24px;display:flex;align-items:center;gap:var(--sp-xl)">
-    <a href="./TAXORA%20GST.dc.html#home" style="display:flex;align-items:baseline;gap:6px;font-weight:700;font-size:18px;letter-spacing:-.01em;color:var(--primary)">TAXORA<span style="color:var(--on-dark);font-weight:600;font-size:15px;letter-spacing:.04em">GST</span></a>
-    <nav class="tx-nav-desktop">
-      <a href="./TAXORA%20GST.dc.html#home" class="tx-nav-link">Home</a>
-      <a href="./TAXORA%20GST.dc.html#services" class="tx-nav-link">GST Services</a>
-      <a href="./local-wholesale-gst.html" class="tx-nav-link is-current" aria-current="page">Local / Wholesale GST</a>
-      <a href="./TAXORA%20GST.dc.html#how" class="tx-nav-link">How It Works</a>
-      <a href="./TAXORA%20GST.dc.html#contact" class="tx-nav-link">Contact</a>
-    </nav>
-    <div class="tx-header-actions" style="margin-left:auto;display:flex;align-items:center;gap:var(--sp-sm)">
-      <a href="./TAXORA%20GST.dc.html#contact" class="tx-cta-btn">Get Started<span aria-hidden="true">→</span></a>
-      <button type="button" class="tx-menu-btn" aria-label="Menu" aria-expanded="false" id="lw-menu-toggle">
-        <span style="display:block;width:16px;height:1.5px;background:var(--body);box-shadow:0 5px 0 var(--body),0 -5px 0 var(--body)"></span>
-      </button>
-    </div>
-  </div>
-  <div class="tx-mobile-menu" id="lw-mobile-menu">
-    <a href="./TAXORA%20GST.dc.html#home" class="tx-mobile-link">Home</a>
-    <a href="./TAXORA%20GST.dc.html#services" class="tx-mobile-link">GST Services</a>
-    <a href="./local-wholesale-gst.html" class="tx-mobile-link is-current" aria-current="page">Local / Wholesale GST</a>
-    <a href="./TAXORA%20GST.dc.html#how" class="tx-mobile-link">How It Works</a>
-    <a href="./TAXORA%20GST.dc.html#contact" class="tx-mobile-link">Contact</a>
-    <a href="./TAXORA%20GST.dc.html#contact" style="margin-top:var(--sp-sm);min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--r-md);background:var(--primary);color:var(--on-primary);font-size:var(--fs-body-md);font-weight:600">Get Started<span aria-hidden="true">→</span></a>
-  </div>
-</header>
+<header><div class="wrap"><a class="brand" href="./TAXORA%20GST.dc.html#home">TAXORA <span>GST</span></a><span>Local / Wholesale Workspace</span><a class="home" href="./TAXORA%20GST.dc.html#services">← GST Services</a></div></header>
+<div class="hero wrap"><div class="eyebrow">Local / Wholesale GST</div><h1>Monthly GST preparation in one place</h1><p>Record sales and purchases, track GSTR-2B status, calculate eligible ITC, and prepare working GSTR-1 and GSTR-3B summaries.</p></div>
+<nav class="workflow"><div class="wrap"><a class="tab" href="#lw-setup-section">Setup</a><a class="tab" href="#lw-sales-section">Sales</a><a class="tab" href="#lw-purchases-section">Purchases</a><a class="tab" href="#lw-itc-section">ITC</a><a class="tab" href="#lw-returns-section">Returns</a></div></nav>
 
 <main>
-<section style="position:relative;z-index:1;padding:var(--sp-section) 24px;background:rgba(14,18,22,.62)">
-  <div style="max-width:var(--container-max);margin:0 auto">
-    <div style="display:grid;gap:var(--sp-sm);justify-items:center;text-align:center;max-width:720px;margin:0 auto var(--sp-xxl)">
-      <span style="font-size:var(--fs-caption);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--primary)">Local / Wholesale GST</span>
-      <h1 style="margin:0;font-size:clamp(30px,3.4vw,40px);font-weight:600;line-height:1.15;letter-spacing:-.3px;color:var(--on-dark);text-wrap:pretty">GST for local &amp; wholesale businesses</h1>
-      <p style="margin:0;font-size:var(--fs-body-md);color:var(--muted-strong);text-wrap:pretty">Set up your business once, then prepare returns from your local sales, purchases and wholesale invoices.</p>
-    </div>
-
-    <form class="tx-glass-card" id="lw-setup-form" style="max-width:920px;margin:0 auto;padding:var(--card-pad-lg);border-radius:var(--r-card)">
-      <h2 style="margin:0 0 4px;font-size:var(--fs-body-md);font-weight:600;color:var(--on-dark)">Business Setup</h2>
-      <p style="margin:0 0 var(--sp-lg);font-size:var(--fs-body-sm);color:var(--muted-strong)">These details are used across your local and wholesale GST returns.</p>
-
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--sp-md)">
-        <div class="lw-field">
-          <label for="lw-biz-name" class="lw-label">Business Name</label>
-          <input id="lw-biz-name" name="businessName" type="text" class="lw-input" placeholder="Your registered business name" spellcheck="false" />
-        </div>
-
-        <div class="lw-field">
-          <label for="lw-gstin" class="lw-label">GSTIN</label>
-          <input id="lw-gstin" name="gstin" type="text" class="lw-input" placeholder="22ABCDE1234F1Z5" maxlength="15" spellcheck="false" />
-        </div>
-
-        <div class="lw-field">
-          <label for="lw-state" class="lw-label">State</label>
-          <select id="lw-state" name="state" class="lw-select">
-            <option value="">Select state</option>
-            <option>Andaman and Nicobar Islands</option>
-            <option>Andhra Pradesh</option>
-            <option>Arunachal Pradesh</option>
-            <option>Assam</option>
-            <option>Bihar</option>
-            <option>Chandigarh</option>
-            <option>Chhattisgarh</option>
-            <option>Dadra and Nagar Haveli and Daman and Diu</option>
-            <option>Delhi</option>
-            <option>Goa</option>
-            <option>Gujarat</option>
-            <option>Haryana</option>
-            <option>Himachal Pradesh</option>
-            <option>Jammu and Kashmir</option>
-            <option>Jharkhand</option>
-            <option>Karnataka</option>
-            <option>Kerala</option>
-            <option>Ladakh</option>
-            <option>Lakshadweep</option>
-            <option>Madhya Pradesh</option>
-            <option>Maharashtra</option>
-            <option>Manipur</option>
-            <option>Meghalaya</option>
-            <option>Mizoram</option>
-            <option>Nagaland</option>
-            <option>Odisha</option>
-            <option>Puducherry</option>
-            <option>Punjab</option>
-            <option>Rajasthan</option>
-            <option>Sikkim</option>
-            <option>Tamil Nadu</option>
-            <option>Telangana</option>
-            <option>Tripura</option>
-            <option>Uttar Pradesh</option>
-            <option>Uttarakhand</option>
-            <option>West Bengal</option>
-          </select>
-        </div>
-
-        <div class="lw-field">
-          <label for="lw-reg-type" class="lw-label">GST Registration Type</label>
-          <select id="lw-reg-type" name="registrationType" class="lw-select">
-            <option value="regular">Regular</option>
-            <option value="composition">Composition</option>
-          </select>
-        </div>
-
-        <div class="lw-field">
-          <label for="lw-return-freq" class="lw-label">Return Frequency</label>
-          <select id="lw-return-freq" name="returnFrequency" class="lw-select">
-            <option value="monthly">Monthly</option>
-            <option value="qrmp">QRMP (Quarterly Return, Monthly Payment)</option>
-          </select>
-        </div>
-
-        <div class="lw-field">
-          <label for="lw-turnover" class="lw-label">Annual Aggregate Turnover</label>
-          <input id="lw-turnover" name="annualTurnover" type="number" min="0" step="1" class="lw-input" placeholder="e.g. 4500000" />
-        </div>
-
-        <div class="lw-field">
-          <label for="lw-fy" class="lw-label">Financial Year</label>
-          <select id="lw-fy" name="financialYear" class="lw-select">
-            <option value="">Select FY</option>
-            <option>2026-27</option>
-            <option>2025-26</option>
-            <option>2024-25</option>
-            <option>2023-24</option>
-          </select>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:var(--sp-md);margin-top:var(--sp-xl);padding-top:var(--sp-lg);border-top:1px solid var(--hairline-on-dark)">
-        <button type="submit" class="lw-save-btn">Save Business Setup</button>
-        <span id="lw-save-status" role="status" style="font-size:var(--fs-body-sm);color:var(--muted-strong)"></span>
-      </div>
-    </form>
+<div class="periodbar wrap">
+  <div class="glass period-inner">
+    <div class="field period-field"><label for="lw-period">Working Period</label><input id="lw-period" type="month" class="input"></div>
+    <button id="lw-period-current" type="button" class="secondary">Current Month</button>
+    <span class="period-note">All dashboard, ITC and return summaries use this period.</span>
   </div>
-</section>
-
-<section style="position:relative;z-index:1;padding:var(--sp-section) 24px;border-top:1px solid var(--hairline-on-dark);background:rgba(11,14,17,.22)">
-  <div style="max-width:var(--container-max);margin:0 auto">
-    <div style="display:grid;gap:var(--sp-sm);justify-items:center;text-align:center;max-width:720px;margin:0 auto var(--sp-xxl)">
-      <span style="font-size:var(--fs-caption);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--primary)">Sales</span>
-      <h2 style="margin:0;font-size:clamp(26px,3vw,34px);font-weight:600;line-height:1.15;letter-spacing:-.3px;color:var(--on-dark);text-wrap:pretty">Sales Register</h2>
-      <p style="margin:0;font-size:var(--fs-body-md);color:var(--muted-strong);text-wrap:pretty">Record local and wholesale sales invoices. CGST/SGST or IGST is applied automatically from your Business Setup state and each invoice's Place of Supply.</p>
-      <p id="lw-seller-state-note" style="margin:0;font-size:var(--fs-caption);color:var(--muted-strong)"></p>
-    </div>
-
-    <form class="tx-glass-card" id="lw-sales-form" style="max-width:1080px;margin:0 auto var(--sp-xl);padding:var(--card-pad-lg);border-radius:var(--r-card)">
-      <input type="hidden" id="lw-sale-id" value="" />
-      <h3 id="lw-sales-form-title" style="margin:0 0 4px;font-size:var(--fs-body-md);font-weight:600;color:var(--on-dark)">New Sales Invoice</h3>
-      <p style="margin:0 0 var(--sp-lg);font-size:var(--fs-body-sm);color:var(--muted-strong)">Customer GSTIN present = B2B. Left blank = B2C.</p>
-      <span id="lw-err-general" class="lw-error-text"></span>
-
-      <div style="display:grid;gap:8px;margin-bottom:var(--sp-md)">
-        <span style="font-size:var(--fs-body-sm);font-weight:600;color:var(--on-dark)">Invoice Header</span>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--sp-md)">
-          <div class="lw-field">
-            <label for="lw-sale-invoice-number" class="lw-label">Invoice Number</label>
-            <input id="lw-sale-invoice-number" type="text" class="lw-input" placeholder="INV-0001" spellcheck="false" />
-            <span id="lw-err-invoiceNumber" class="lw-error-text"></span>
-          </div>
-          <div class="lw-field">
-            <label for="lw-sale-invoice-date" class="lw-label">Invoice Date</label>
-            <input id="lw-sale-invoice-date" type="date" class="lw-input" />
-            <span id="lw-err-invoiceDate" class="lw-error-text"></span>
-          </div>
-          <div class="lw-field">
-            <label for="lw-sale-customer-name" class="lw-label">Customer Name</label>
-            <input id="lw-sale-customer-name" type="text" class="lw-input" placeholder="Customer / buyer name" spellcheck="false" />
-          </div>
-          <div class="lw-field">
-            <label for="lw-sale-customer-gstin" class="lw-label">Customer GSTIN (optional)</label>
-            <input id="lw-sale-customer-gstin" type="text" class="lw-input" placeholder="22ABCDE1234F1Z5" maxlength="15" spellcheck="false" />
-            <span id="lw-err-customerGstin" class="lw-error-text"></span>
-          </div>
-          <div class="lw-field">
-            <label for="lw-sale-place-of-supply" class="lw-label">Place of Supply / State</label>
-            <select id="lw-sale-place-of-supply" class="lw-select">
-              <option value="">Select state</option>
-              <option>Andaman and Nicobar Islands</option>
-              <option>Andhra Pradesh</option>
-              <option>Arunachal Pradesh</option>
-              <option>Assam</option>
-              <option>Bihar</option>
-              <option>Chandigarh</option>
-              <option>Chhattisgarh</option>
-              <option>Dadra and Nagar Haveli and Daman and Diu</option>
-              <option>Delhi</option>
-              <option>Goa</option>
-              <option>Gujarat</option>
-              <option>Haryana</option>
-              <option>Himachal Pradesh</option>
-              <option>Jammu and Kashmir</option>
-              <option>Jharkhand</option>
-              <option>Karnataka</option>
-              <option>Kerala</option>
-              <option>Ladakh</option>
-              <option>Lakshadweep</option>
-              <option>Madhya Pradesh</option>
-              <option>Maharashtra</option>
-              <option>Manipur</option>
-              <option>Meghalaya</option>
-              <option>Mizoram</option>
-              <option>Nagaland</option>
-              <option>Odisha</option>
-              <option>Puducherry</option>
-              <option>Punjab</option>
-              <option>Rajasthan</option>
-              <option>Sikkim</option>
-              <option>Tamil Nadu</option>
-              <option>Telangana</option>
-              <option>Tripura</option>
-              <option>Uttar Pradesh</option>
-              <option>Uttarakhand</option>
-              <option>West Bengal</option>
-            </select>
-            <span id="lw-err-placeOfSupply" class="lw-error-text"></span>
-          </div>
-          <div class="lw-field">
-            <span class="lw-label">Supply Type</span>
-            <span id="lw-supply-type-badge" class="lw-badge lw-badge-b2c" style="width:max-content">B2C</span>
-          </div>
-        </div>
-      </div>
-
-      <div style="display:grid;gap:8px;margin-bottom:var(--sp-md)">
-        <span style="font-size:var(--fs-body-sm);font-weight:600;color:var(--on-dark)">Invoice Line Items</span>
-        <span id="lw-err-items" class="lw-error-text"></span>
-        <div id="lw-sale-items" style="display:grid;gap:10px"></div>
-        <button type="button" id="lw-add-item-btn" class="lw-add-item-btn" style="justify-self:start">+ Add Line Item</button>
-      </div>
-
-      <div style="display:flex;flex-wrap:wrap;gap:8px;padding-top:var(--sp-md);border-top:1px solid var(--hairline-on-dark)">
-        <span class="lw-total-pill">Taxable Value <b id="lw-total-taxable">₹ 0.00</b></span>
-        <span class="lw-total-pill">CGST <b id="lw-total-cgst">₹ 0.00</b></span>
-        <span class="lw-total-pill">SGST <b id="lw-total-sgst">₹ 0.00</b></span>
-        <span class="lw-total-pill">IGST <b id="lw-total-igst">₹ 0.00</b></span>
-        <span class="lw-total-pill">Grand Total <b id="lw-total-grand">₹ 0.00</b></span>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:var(--sp-md);margin-top:var(--sp-xl)">
-        <button type="submit" class="lw-save-btn">Save Invoice</button>
-        <button type="button" id="lw-sale-cancel-btn" class="lw-secondary-btn" hidden>Cancel Edit</button>
-        <span id="lw-sale-status" role="status" style="font-size:var(--fs-body-sm);color:var(--muted-strong)"></span>
-      </div>
-    </form>
-
-    <div class="tx-glass-card lw-table-wrap" style="max-width:1080px;margin:0 auto;padding:var(--card-pad);border-radius:var(--r-card)">
-      <table class="lw-table" id="lw-sales-table">
-        <thead>
-          <tr>
-            <th>Invoice No</th>
-            <th>Date</th>
-            <th>Customer</th>
-            <th>B2B/B2C</th>
-            <th>Place of Supply</th>
-            <th class="lw-num">Taxable Value</th>
-            <th class="lw-num">CGST</th>
-            <th class="lw-num">SGST</th>
-            <th class="lw-num">IGST</th>
-            <th class="lw-num">Total</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="lw-sales-tbody"></tbody>
-      </table>
-      <p id="lw-sales-empty" style="margin:var(--sp-md) 0 0;font-size:var(--fs-body-sm);color:var(--muted-strong)">No sales invoices yet.</p>
-    </div>
+  <div class="metrics">
+    <div class="glass metric"><small>Sales Taxable</small><strong id="lw-m-sales">₹ 0.00</strong></div>
+    <div class="glass metric"><small>Output GST</small><strong id="lw-m-output">₹ 0.00</strong></div>
+    <div class="glass metric"><small>Eligible ITC</small><strong id="lw-m-itc" class="gold">₹ 0.00</strong></div>
+    <div class="glass metric"><small>Estimated Net Tax</small><strong id="lw-m-net">₹ 0.00</strong></div>
   </div>
-</section>
+</div>
+
+<section id="lw-setup-section"><div class="wrap"><div class="section-head"><div><h2>Business Setup</h2><p>Saved locally and used for tax split and return preparation.</p></div></div>
+<form id="lw-setup-form" class="glass panel">
+  <div class="grid">
+    <div class="field"><label>Business Name</label><input id="lw-biz-name" class="input" required></div>
+    <div class="field"><label>GSTIN</label><input id="lw-gstin" class="input" maxlength="15" placeholder="33ABCDE1234F1Z5" required></div>
+    <div class="field"><label>State</label><select id="lw-state" class="select" required></select></div>
+    <div class="field"><label>GST Registration Type</label><select id="lw-reg-type" class="select"><option value="regular">Regular</option><option value="composition">Composition</option></select></div>
+    <div class="field"><label>Return Frequency</label><select id="lw-return-freq" class="select"><option value="monthly">Monthly</option><option value="qrmp">QRMP</option></select></div>
+    <div class="field"><label>Annual Aggregate Turnover</label><input id="lw-turnover" type="number" min="0" class="input" placeholder="4500000"></div>
+  </div>
+  <div id="lw-setup-error" class="error"></div><div class="actions"><button class="primary" type="submit">Save Business Setup</button><span id="lw-setup-status" class="status"></span></div>
+</form></div></section>
+
+<section id="lw-sales-section"><div class="wrap"><div class="section-head"><div><h2>Sales Register</h2><p>B2B/B2C sales with automatic CGST/SGST or IGST calculation.</p></div></div>
+<form id="lw-sales-form" class="glass panel"><input id="lw-sale-id" type="hidden">
+  <div class="grid">
+    <div class="field"><label>Invoice Number</label><input id="lw-sale-no" class="input" required></div>
+    <div class="field"><label>Invoice Date</label><input id="lw-sale-date" type="date" class="input" required></div>
+    <div class="field"><label>Customer Name</label><input id="lw-sale-customer" class="input"></div>
+    <div class="field"><label>Customer GSTIN (optional)</label><input id="lw-sale-gstin" maxlength="15" class="input"></div>
+    <div class="field"><label>Place of Supply / State</label><select id="lw-sale-state" class="select" required></select></div>
+    <div class="field"><label>Supply Type</label><div><span id="lw-sale-type" class="badge b2c">B2C</span></div></div>
+  </div>
+  <div class="subhead">Invoice Line Items</div><div id="lw-sale-items" class="items"></div><button id="lw-sale-add-item" type="button" class="secondary" style="margin-top:10px">+ Add Line Item</button>
+  <div class="totals"><span class="pill">Taxable <b id="lw-sale-taxable">₹ 0.00</b></span><span class="pill">CGST <b id="lw-sale-cgst">₹ 0.00</b></span><span class="pill">SGST <b id="lw-sale-sgst">₹ 0.00</b></span><span class="pill">IGST <b id="lw-sale-igst">₹ 0.00</b></span><span class="pill">Total <b id="lw-sale-total">₹ 0.00</b></span></div>
+  <div id="lw-sale-error" class="error"></div><div class="actions"><button class="primary" type="submit">Save Sales Invoice</button><button id="lw-sale-cancel" class="secondary" type="button" hidden>Cancel Edit</button><span id="lw-sale-status" class="status"></span></div>
+</form>
+<div class="glass panel table-wrap"><table class="table"><thead><tr><th>Invoice</th><th>Date</th><th>Customer</th><th>Type</th><th>State</th><th class="num">Taxable</th><th class="num">CGST</th><th class="num">SGST</th><th class="num">IGST</th><th class="num">Total</th><th>Actions</th></tr></thead><tbody id="lw-sales-tbody"></tbody></table><div id="lw-sales-empty" class="empty">No sales invoices yet.</div></div>
+</div></section>
+
+<section id="lw-purchases-section"><div class="wrap"><div class="section-head"><div><h2>Purchase Register</h2><p>Record supplier invoices and mark their GSTR-2B / IMS availability for ITC.</p></div></div>
+<form id="lw-purchase-form" class="glass panel"><input id="lw-purchase-id" type="hidden">
+  <div class="grid">
+    <div class="field"><label>Supplier Invoice Number</label><input id="lw-purchase-no" class="input" required></div>
+    <div class="field"><label>Invoice Date</label><input id="lw-purchase-date" type="date" class="input" required></div>
+    <div class="field"><label>Supplier Name</label><input id="lw-supplier-name" class="input"></div>
+    <div class="field"><label>Supplier GSTIN</label><input id="lw-supplier-gstin" maxlength="15" class="input" required></div>
+    <div class="field"><label>Supplier State</label><select id="lw-supplier-state" class="select" required></select></div>
+    <div class="field"><label>GSTR-2B / IMS Status</label><select id="lw-2b-status" class="select"><option value="matched">Available in GSTR-2B</option><option value="pending">Pending / not checked</option><option value="missing">Not available / mismatch</option></select></div>
+    <div class="field"><label>ITC Eligibility</label><select id="lw-itc-eligible" class="select"><option value="yes">ITC Eligible</option><option value="no">Blocked / Ineligible ITC</option></select></div>
+  </div>
+  <div class="subhead">Purchase Line Items</div><div id="lw-purchase-items" class="items"></div><button id="lw-purchase-add-item" type="button" class="secondary" style="margin-top:10px">+ Add Line Item</button>
+  <div class="totals"><span class="pill">Taxable <b id="lw-purchase-taxable">₹ 0.00</b></span><span class="pill">CGST <b id="lw-purchase-cgst">₹ 0.00</b></span><span class="pill">SGST <b id="lw-purchase-sgst">₹ 0.00</b></span><span class="pill">IGST <b id="lw-purchase-igst">₹ 0.00</b></span><span class="pill">Total <b id="lw-purchase-total">₹ 0.00</b></span></div>
+  <div id="lw-purchase-error" class="error"></div><div class="actions"><button class="primary" type="submit">Save Purchase Invoice</button><button id="lw-purchase-cancel" class="secondary" type="button" hidden>Cancel Edit</button><span id="lw-purchase-status" class="status"></span></div>
+</form>
+<div class="glass panel table-wrap"><table class="table"><thead><tr><th>Invoice</th><th>Date</th><th>Supplier</th><th>2B / IMS</th><th>ITC</th><th class="num">Taxable</th><th class="num">CGST</th><th class="num">SGST</th><th class="num">IGST</th><th class="num">Total</th><th>Actions</th></tr></thead><tbody id="lw-purchases-tbody"></tbody></table><div id="lw-purchases-empty" class="empty">No purchase invoices yet.</div></div>
+</div></section>
+
+<section id="lw-itc-section"><div class="wrap"><div class="section-head"><div><h2>Input Tax Credit</h2><p>Only purchases marked Available in GSTR-2B and ITC Eligible are included below.</p></div></div>
+<div class="summary-grid"><div class="glass summary-card"><small>2B Matched Purchases</small><b id="lw-itc-matched">0</b></div><div class="glass summary-card"><small>Pending / Missing</small><b id="lw-itc-pending">0</b></div><div class="glass summary-card"><small>Eligible CGST + SGST</small><b id="lw-itc-local" class="gold">₹ 0.00</b></div><div class="glass summary-card"><small>Eligible IGST</small><b id="lw-itc-igst" class="gold">₹ 0.00</b></div></div>
+<div class="glass return-box"><h3>Eligible ITC for selected period</h3><table class="return-table"><tr><td>CGST ITC</td><td id="lw-itc-cgst">₹ 0.00</td></tr><tr><td>SGST ITC</td><td id="lw-itc-sgst">₹ 0.00</td></tr><tr><td>IGST ITC</td><td id="lw-itc-igst-row">₹ 0.00</td></tr><tr><td><b>Total Eligible ITC</b></td><td><b id="lw-itc-total">₹ 0.00</b></td></tr></table></div>
+</div></section>
+
+<section id="lw-returns-section"><div class="wrap"><div class="section-head"><div><h2>Return Preparation</h2><p>Working summaries generated from the selected period's saved registers.</p></div></div>
+<div id="lw-gstr1-summary" class="glass return-box"><h3>GSTR-1 Working Summary</h3><div class="summary-grid"><div class="summary-card"><small>B2B Taxable</small><b id="lw-g1-b2b">₹ 0.00</b></div><div class="summary-card"><small>B2C Taxable</small><b id="lw-g1-b2c">₹ 0.00</b></div><div class="summary-card"><small>Total Taxable</small><b id="lw-g1-taxable" class="gold">₹ 0.00</b></div><div class="summary-card"><small>Total Output GST</small><b id="lw-g1-tax">₹ 0.00</b></div></div><h4 class="subhead">HSN Summary</h4><div class="table-wrap"><table class="table" style="min-width:600px"><thead><tr><th>HSN</th><th class="num">Qty</th><th class="num">Rate</th><th class="num">Taxable</th><th class="num">Tax</th></tr></thead><tbody id="lw-hsn-tbody"></tbody></table></div></div>
+<div id="lw-gstr3b-summary" class="glass return-box"><h3>GSTR-3B Working Summary</h3><table class="return-table"><tr><td>3.1 Outward taxable supplies</td><td id="lw-g3-taxable">₹ 0.00</td></tr><tr><td>Output CGST</td><td id="lw-g3-cgst">₹ 0.00</td></tr><tr><td>Output SGST</td><td id="lw-g3-sgst">₹ 0.00</td></tr><tr><td>Output IGST</td><td id="lw-g3-igst">₹ 0.00</td></tr><tr><td>4. Eligible ITC</td><td id="lw-g3-itc">₹ 0.00</td></tr><tr><td><b>Estimated net tax after same-head ITC</b></td><td><b id="lw-g3-net">₹ 0.00</b></td></tr></table></div>
+<div class="notice">These are preparation / review summaries only. Official filing must be completed on the GST portal. Verify eligibility, reverse-charge, exempt/nil-rated supplies, credit notes and statutory rules before filing.</div>
+<div class="exports"><button id="lw-export-json" class="primary" type="button">Download JSON</button><button id="lw-export-csv" class="secondary" type="button">Download CSV</button><button id="lw-export-xls" class="secondary" type="button">Download Excel</button></div>
+</div></section>
 </main>
 
+<script src="./local-wholesale-gst-core.js"></script>
 <script>
-(function () {
-  var menuBtn = document.getElementById("lw-menu-toggle");
-  var mobileMenu = document.getElementById("lw-mobile-menu");
-  menuBtn.addEventListener("click", function () {
-    var isOpen = mobileMenu.classList.toggle("is-open");
-    menuBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
-  });
-  mobileMenu.querySelectorAll("a").forEach(function (a) {
-    a.addEventListener("click", function () {
-      mobileMenu.classList.remove("is-open");
-      menuBtn.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  var STORAGE_KEY = "taxora.localWholesale.businessSetup";
-  var form = document.getElementById("lw-setup-form");
-  var status = document.getElementById("lw-save-status");
-
-  try {
-    var saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    if (saved) {
-      Object.keys(saved).forEach(function (key) {
-        var field = form.elements.namedItem(key);
-        if (field) field.value = saved[key];
-      });
-    }
-  } catch (e) {}
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var data = {};
-    Array.prototype.forEach.call(form.elements, function (el) {
-      if (el.name) data[el.name] = el.value;
-    });
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
-    status.textContent = "Saved.";
-    window.setTimeout(function () { status.textContent = ""; }, 3000);
-  });
-})();
-</script>
-
-<script>
-/* ---- Sales Register (local/wholesale) — independent of Business Setup script above ---- */
-(function () {
-  var BUSINESS_SETUP_KEY = "taxora.localWholesale.businessSetup";
-  var SALES_KEY = "taxora.localWholesale.salesInvoices";
-  var GSTIN_RE = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
-  var UQC_OPTIONS = ["NOS", "PCS", "KGS", "GMS", "LTR", "MTR", "SQF", "BOX", "BAG", "SET", "HRS", "DAY", "MTH", "DOZ", "PAC", "BTL", "CAN", "ROL", "BDL", "OTH"];
-  var GST_RATE_OPTIONS = ["0", "0.25", "3", "5", "12", "18", "28"];
-
-  function byId(id) { return document.getElementById(id); }
-  function round2(n) { return Math.round((Number(n) || 0) * 100) / 100; }
-  function formatCurrency(n) { return "₹ " + round2(n).toFixed(2); }
-  function nowIso() { return new Date().toISOString(); }
-  function escapeHtml(s) {
-    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
-  }
-
-  function getBusinessSetup() {
-    try { return JSON.parse(localStorage.getItem(BUSINESS_SETUP_KEY) || "null") || {}; }
-    catch (e) { return {}; }
-  }
-  function getSellerState() {
-    var setup = getBusinessSetup();
-    return (setup.state || "").trim();
-  }
-
-  function loadSalesInvoices() {
-    try {
-      var list = JSON.parse(localStorage.getItem(SALES_KEY) || "[]");
-      return Array.isArray(list) ? list : [];
-    } catch (e) { return []; }
-  }
-  function persistSalesInvoices() {
-    try { localStorage.setItem(SALES_KEY, JSON.stringify(salesInvoices)); } catch (e) {}
-  }
-
-  function financialYearFromDate(dateStr) {
-    if (!dateStr) return "";
-    var d = new Date(dateStr + "T00:00:00");
-    if (isNaN(d.getTime())) return "";
-    var y = d.getFullYear();
-    var m = d.getMonth() + 1;
-    var startYear = m >= 4 ? y : y - 1;
-    return startYear + "-" + String(startYear + 1).slice(-2);
-  }
-
-  var salesInvoices = loadSalesInvoices();
-  var editingId = null;
-
-  var salesForm = byId("lw-sales-form");
-  var itemsContainer = byId("lw-sale-items");
-  var addItemBtn = byId("lw-add-item-btn");
-  var cancelEditBtn = byId("lw-sale-cancel-btn");
-  var formTitle = byId("lw-sales-form-title");
-  var salesStatus = byId("lw-sale-status");
-  var sellerStateNote = byId("lw-seller-state-note");
-  var placeOfSupplySelect = byId("lw-sale-place-of-supply");
-  var customerGstinInput = byId("lw-sale-customer-gstin");
-  var supplyTypeBadge = byId("lw-supply-type-badge");
-
-  function uqcOptionsHtml(selected) {
-    return UQC_OPTIONS.map(function (v) {
-      return '<option value="' + v + '"' + (v === selected ? " selected" : "") + ">" + v + "</option>";
-    }).join("");
-  }
-  function gstRateOptionsHtml(selected) {
-    return GST_RATE_OPTIONS.map(function (v) {
-      return '<option value="' + v + '"' + (v === selected ? " selected" : "") + ">" + v + "%</option>";
-    }).join("");
-  }
-
-  function addItemRow(item) {
-    item = item || { description: "", hsn: "", qty: "", uqc: "NOS", taxableValue: "", gstRate: "18" };
-    var row = document.createElement("div");
-    row.className = "lw-item-row";
-    row.innerHTML =
-      '<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px">' +
-        '<div class="lw-item-field"><label class="lw-item-label">Product / Description</label><input type="text" class="lw-mini-input lw-item-desc" placeholder="Item description" value="' + escapeHtml(item.description) + '" /></div>' +
-        '<div class="lw-item-field"><label class="lw-item-label">HSN</label><input type="text" class="lw-mini-input lw-item-hsn" placeholder="HSN code" value="' + escapeHtml(item.hsn) + '" /></div>' +
-        '<div class="lw-item-field"><label class="lw-item-label">Quantity</label><input type="number" min="0" step="0.001" class="lw-mini-input lw-item-qty" placeholder="0" value="' + escapeHtml(item.qty) + '" /></div>' +
-      "</div>" +
-      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end">' +
-        '<div class="lw-item-field"><label class="lw-item-label">UQC</label><select class="lw-mini-select lw-item-uqc">' + uqcOptionsHtml(item.uqc) + "</select></div>" +
-        '<div class="lw-item-field"><label class="lw-item-label">Taxable Value (₹)</label><input type="number" min="0" step="0.01" class="lw-mini-input lw-item-taxable" placeholder="0.00" value="' + escapeHtml(item.taxableValue) + '" /></div>' +
-        '<div class="lw-item-field"><label class="lw-item-label">GST Rate (%)</label><select class="lw-mini-select lw-item-rate">' + gstRateOptionsHtml(String(item.gstRate)) + "</select></div>" +
-        '<button type="button" class="lw-remove-item-btn" aria-label="Remove line item">✕</button>' +
-      "</div>";
-    itemsContainer.appendChild(row);
-  }
-
-  function resetItemRows(items) {
-    itemsContainer.innerHTML = "";
-    if (items && items.length) {
-      items.forEach(function (it) { addItemRow(it); });
-    } else {
-      addItemRow();
-    }
-  }
-
-  function readItemsFromDom() {
-    return Array.prototype.map.call(itemsContainer.querySelectorAll(".lw-item-row"), function (row) {
-      return {
-        description: row.querySelector(".lw-item-desc").value.trim(),
-        hsn: row.querySelector(".lw-item-hsn").value.trim(),
-        qty: row.querySelector(".lw-item-qty").value,
-        uqc: row.querySelector(".lw-item-uqc").value,
-        taxableValue: row.querySelector(".lw-item-taxable").value,
-        gstRate: row.querySelector(".lw-item-rate").value
-      };
-    });
-  }
-
-  function computeTotals(items, placeOfSupply) {
-    var sellerState = getSellerState();
-    var isIntra = !!placeOfSupply && !!sellerState && placeOfSupply === sellerState;
-    var taxableTotal = 0, cgst = 0, sgst = 0, igst = 0;
-    items.forEach(function (it) {
-      var tv = parseFloat(it.taxableValue);
-      var rate = parseFloat(it.gstRate);
-      if (isNaN(tv) || tv < 0) tv = 0;
-      if (isNaN(rate) || rate < 0) rate = 0;
-      taxableTotal += tv;
-      var taxAmt = (tv * rate) / 100;
-      if (isIntra) { cgst += taxAmt / 2; sgst += taxAmt / 2; }
-      else { igst += taxAmt; }
-    });
-    return {
-      taxableTotal: taxableTotal, cgst: cgst, sgst: sgst, igst: igst,
-      grandTotal: taxableTotal + cgst + sgst + igst,
-      isIntra: isIntra, sellerState: sellerState
-    };
-  }
-
-  function updateSellerStateNote() {
-    var sellerState = getSellerState();
-    sellerStateNote.textContent = sellerState
-      ? "Seller state (from Business Setup): " + sellerState + " — invoices with the same Place of Supply are treated as intra-state (CGST + SGST); others as inter-state (IGST)."
-      : "Business Setup has no State saved yet — complete Business Setup above before adding sales invoices.";
-  }
-
-  function recalc() {
-    var items = readItemsFromDom();
-    var placeOfSupply = placeOfSupplySelect.value;
-    var totals = computeTotals(items, placeOfSupply);
-    byId("lw-total-taxable").textContent = formatCurrency(totals.taxableTotal);
-    byId("lw-total-cgst").textContent = formatCurrency(totals.cgst);
-    byId("lw-total-sgst").textContent = formatCurrency(totals.sgst);
-    byId("lw-total-igst").textContent = formatCurrency(totals.igst);
-    byId("lw-total-grand").textContent = formatCurrency(totals.grandTotal);
-
-    var isB2b = !!customerGstinInput.value.trim();
-    supplyTypeBadge.textContent = isB2b ? "B2B" : "B2C";
-    supplyTypeBadge.className = "lw-badge " + (isB2b ? "lw-badge-b2b" : "lw-badge-b2c");
-
-    updateSellerStateNote();
-    return totals;
-  }
-
-  itemsContainer.addEventListener("input", recalc);
-  itemsContainer.addEventListener("change", recalc);
-  itemsContainer.addEventListener("click", function (e) {
-    var btn = e.target.closest(".lw-remove-item-btn");
-    if (!btn) return;
-    var rows = itemsContainer.querySelectorAll(".lw-item-row");
-    if (rows.length <= 1) return;
-    btn.closest(".lw-item-row").remove();
-    recalc();
-  });
-  placeOfSupplySelect.addEventListener("change", recalc);
-  customerGstinInput.addEventListener("input", recalc);
-  addItemBtn.addEventListener("click", function () { addItemRow(); recalc(); });
-
-  function clearFormErrors() {
-    ["general", "invoiceNumber", "invoiceDate", "placeOfSupply", "customerGstin", "items"].forEach(function (key) {
-      var el = byId("lw-err-" + key);
-      if (el) el.textContent = "";
-    });
-  }
-  function renderFormErrors(errors) {
-    clearFormErrors();
-    Object.keys(errors).forEach(function (key) {
-      var el = byId("lw-err-" + key);
-      if (el) el.textContent = errors[key];
-    });
-  }
-
-  function validateInvoice(data, items, currentEditingId) {
-    var errors = {};
-    if (!data.invoiceNumber) errors.invoiceNumber = "Invoice number is required.";
-    if (!data.invoiceDate) errors.invoiceDate = "Invoice date is required.";
-    if (!data.placeOfSupply) errors.placeOfSupply = "Place of Supply is required.";
-
-    if (data.customerGstin) {
-      if (!GSTIN_RE.test(data.customerGstin.toUpperCase())) {
-        errors.customerGstin = "Enter a valid 15-character GSTIN.";
-      }
-    }
-
-    var sellerState = getSellerState();
-    if (!sellerState) {
-      errors.general = "Business Setup has no State saved yet — complete Business Setup above before saving sales invoices.";
-    }
-
-    var meaningfulItems = items.filter(function (it) { return it.description || it.hsn || it.taxableValue; });
-    if (!meaningfulItems.length) {
-      errors.items = "Add at least one line item.";
-    } else {
-      var badItem = meaningfulItems.some(function (it) {
-        var tv = parseFloat(it.taxableValue);
-        var rate = parseFloat(it.gstRate);
-        return it.taxableValue === "" || isNaN(tv) || tv < 0 || it.gstRate === "" || isNaN(rate) || rate < 0;
-      });
-      if (badItem) errors.items = "Enter a valid numeric Taxable Value and GST Rate for every line item.";
-    }
-
-    if (!errors.invoiceNumber && data.invoiceDate) {
-      var fy = financialYearFromDate(data.invoiceDate);
-      var normNumber = data.invoiceNumber.trim().toUpperCase();
-      var isDuplicate = salesInvoices.some(function (inv) {
-        if (currentEditingId && inv.id === currentEditingId) return false;
-        return (inv.invoiceNumber || "").trim().toUpperCase() === normNumber &&
-          financialYearFromDate(inv.invoiceDate) === fy;
-      });
-      if (isDuplicate) errors.invoiceNumber = "Duplicate invoice number within FY " + fy + ".";
-    }
-
-    return errors;
-  }
-
-  function findInvoiceIndex(id) {
-    for (var i = 0; i < salesInvoices.length; i++) if (salesInvoices[i].id === id) return i;
-    return -1;
-  }
-
-  function resetSalesForm() {
-    editingId = null;
-    byId("lw-sale-id").value = "";
-    byId("lw-sale-invoice-number").value = "";
-    byId("lw-sale-invoice-date").value = "";
-    byId("lw-sale-customer-name").value = "";
-    byId("lw-sale-customer-gstin").value = "";
-    placeOfSupplySelect.value = "";
-    resetItemRows();
-    clearFormErrors();
-    formTitle.textContent = "New Sales Invoice";
-    cancelEditBtn.hidden = true;
-    recalc();
-  }
-
-  salesForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var data = {
-      invoiceNumber: byId("lw-sale-invoice-number").value.trim(),
-      invoiceDate: byId("lw-sale-invoice-date").value,
-      customerName: byId("lw-sale-customer-name").value.trim(),
-      customerGstin: byId("lw-sale-customer-gstin").value.trim(),
-      placeOfSupply: placeOfSupplySelect.value
-    };
-    var items = readItemsFromDom();
-    var errors = validateInvoice(data, items, editingId);
-    renderFormErrors(errors);
-    if (Object.keys(errors).length) return;
-
-    var cleanItems = items
-      .filter(function (it) { return it.description || it.hsn || it.taxableValue; })
-      .map(function (it) {
-        return {
-          description: it.description,
-          hsn: it.hsn,
-          qty: it.qty === "" ? "" : Number(it.qty),
-          uqc: it.uqc,
-          taxableValue: round2(it.taxableValue),
-          gstRate: Number(it.gstRate) || 0
-        };
-      });
-
-    var totals = computeTotals(cleanItems, data.placeOfSupply);
-    var supplyType = data.customerGstin ? "B2B" : "B2C";
-    var existing = editingId ? salesInvoices[findInvoiceIndex(editingId)] : null;
-
-    var record = {
-      id: editingId || ("sale_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)),
-      invoiceNumber: data.invoiceNumber,
-      invoiceDate: data.invoiceDate,
-      customerName: data.customerName,
-      customerGstin: data.customerGstin ? data.customerGstin.toUpperCase() : "",
-      placeOfSupply: data.placeOfSupply,
-      financialYear: financialYearFromDate(data.invoiceDate),
-      supplyType: supplyType,
-      items: cleanItems,
-      taxableTotal: round2(totals.taxableTotal),
-      cgst: round2(totals.cgst),
-      sgst: round2(totals.sgst),
-      igst: round2(totals.igst),
-      grandTotal: round2(totals.grandTotal),
-      createdAt: existing ? existing.createdAt : nowIso(),
-      updatedAt: nowIso()
-    };
-
-    if (editingId) {
-      var idx = findInvoiceIndex(editingId);
-      if (idx > -1) salesInvoices[idx] = record;
-    } else {
-      salesInvoices.push(record);
-    }
-    persistSalesInvoices();
-    renderSalesTable();
-    resetSalesForm();
-    salesStatus.textContent = "Saved.";
-    window.setTimeout(function () { salesStatus.textContent = ""; }, 3000);
-  });
-
-  cancelEditBtn.addEventListener("click", resetSalesForm);
-
-  function editInvoice(id) {
-    var inv = salesInvoices[findInvoiceIndex(id)];
-    if (!inv) return;
-    editingId = id;
-    byId("lw-sale-id").value = id;
-    byId("lw-sale-invoice-number").value = inv.invoiceNumber || "";
-    byId("lw-sale-invoice-date").value = inv.invoiceDate || "";
-    byId("lw-sale-customer-name").value = inv.customerName || "";
-    byId("lw-sale-customer-gstin").value = inv.customerGstin || "";
-    placeOfSupplySelect.value = inv.placeOfSupply || "";
-    resetItemRows(inv.items);
-    clearFormErrors();
-    formTitle.textContent = "Edit Sales Invoice";
-    cancelEditBtn.hidden = false;
-    recalc();
-    salesForm.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function deleteInvoice(id) {
-    var inv = salesInvoices[findInvoiceIndex(id)];
-    if (!inv) return;
-    if (!window.confirm("Delete invoice " + inv.invoiceNumber + "?")) return;
-    salesInvoices = salesInvoices.filter(function (i) { return i.id !== id; });
-    persistSalesInvoices();
-    if (editingId === id) resetSalesForm();
-    renderSalesTable();
-  }
-
-  function renderSalesTable() {
-    var tbody = byId("lw-sales-tbody");
-    var empty = byId("lw-sales-empty");
-    var rows = salesInvoices.slice().sort(function (a, b) {
-      var d = (a.invoiceDate || "").localeCompare(b.invoiceDate || "");
-      if (d !== 0) return d;
-      return (a.createdAt || "").localeCompare(b.createdAt || "");
-    }).reverse();
-
-    if (!rows.length) {
-      tbody.innerHTML = "";
-      empty.hidden = false;
-      return;
-    }
-    empty.hidden = true;
-
-    tbody.innerHTML = rows.map(function (inv) {
-      var badgeClass = inv.supplyType === "B2B" ? "lw-badge-b2b" : "lw-badge-b2c";
-      return "<tr>" +
-        "<td>" + escapeHtml(inv.invoiceNumber) + "</td>" +
-        "<td>" + escapeHtml(inv.invoiceDate) + "</td>" +
-        "<td>" + escapeHtml(inv.customerName || "—") + "</td>" +
-        '<td><span class="lw-badge ' + badgeClass + '">' + inv.supplyType + "</span></td>" +
-        "<td>" + escapeHtml(inv.placeOfSupply) + "</td>" +
-        '<td class="lw-num">' + formatCurrency(inv.taxableTotal) + "</td>" +
-        '<td class="lw-num">' + formatCurrency(inv.cgst) + "</td>" +
-        '<td class="lw-num">' + formatCurrency(inv.sgst) + "</td>" +
-        '<td class="lw-num">' + formatCurrency(inv.igst) + "</td>" +
-        '<td class="lw-num">' + formatCurrency(inv.grandTotal) + "</td>" +
-        "<td>" +
-          '<button type="button" class="lw-icon-btn lw-edit-btn" data-id="' + inv.id + '" aria-label="Edit invoice ' + escapeHtml(inv.invoiceNumber) + '">✎</button>' +
-          '<button type="button" class="lw-icon-btn lw-delete-btn" data-id="' + inv.id + '" aria-label="Delete invoice ' + escapeHtml(inv.invoiceNumber) + '">✕</button>' +
-        "</td>" +
-      "</tr>";
-    }).join("");
-  }
-
-  byId("lw-sales-tbody").addEventListener("click", function (e) {
-    var editBtn = e.target.closest(".lw-edit-btn");
-    if (editBtn) { editInvoice(editBtn.getAttribute("data-id")); return; }
-    var delBtn = e.target.closest(".lw-delete-btn");
-    if (delBtn) { deleteInvoice(delBtn.getAttribute("data-id")); }
-  });
-
-  resetItemRows();
-  updateSellerStateNote();
-  recalc();
-  renderSalesTable();
+(function(){
+'use strict';
+var C=window.TaxoraLocalWholesaleCore;
+var KEYS={setup:'taxora.localWholesale.businessSetup',sales:'taxora.localWholesale.sales',purchases:'taxora.localWholesale.purchases',period:'taxora.localWholesale.period'};
+var GSTIN=/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+var STATES=['Andaman and Nicobar Islands','Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chandigarh','Chhattisgarh','Dadra and Nagar Haveli and Daman and Diu','Delhi','Goa','Gujarat','Haryana','Himachal Pradesh','Jammu and Kashmir','Jharkhand','Karnataka','Kerala','Ladakh','Lakshadweep','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Puducherry','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal'];
+var UQC=['NOS','PCS','KGS','GMS','LTR','MLT','MTR','BOX','SET'];var RATES=[0,0.1,0.25,1.5,3,5,12,18,28];
+function $(id){return document.getElementById(id)}function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}function money(v){return '₹ '+Number(v||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}function load(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}function save(k,v){localStorage.setItem(k,JSON.stringify(v))}function id(prefix){return prefix+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}function stateOptions(value){return '<option value="">Select state</option>'+STATES.map(function(s){return '<option'+(s===value?' selected':'')+'>'+s+'</option>'}).join('')}function validGstin(v){return GSTIN.test(String(v||'').trim().toUpperCase())}function todayMonth(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}function flash(el,msg){el.textContent=msg;setTimeout(function(){if(el.textContent===msg)el.textContent=''},2500)}
+var setup=load(KEYS.setup,{}),sales=load(KEYS.sales,[]),purchases=load(KEYS.purchases,[]),saleEdit=null,purchaseEdit=null;
+['lw-state','lw-sale-state','lw-supplier-state'].forEach(function(x){$(x).innerHTML=stateOptions('')});
+var period=load(KEYS.period,'')||todayMonth();$('lw-period').value=period;
+function sellerState(){return setup.state||''}
+function itemHtml(it){it=it||{description:'',hsn:'',qty:1,uqc:'NOS',taxableValue:'',gstRate:18};return '<div class="item"><div class="item-grid"><div><div class="mini-label">Description</div><input class="mini i-desc" value="'+esc(it.description||'')+'"></div><div><div class="mini-label">HSN/SAC</div><input class="mini i-hsn" value="'+esc(it.hsn||'')+'"></div><div><div class="mini-label">Qty</div><input type="number" min="0" step="0.001" class="mini i-qty" value="'+esc(it.qty==null?1:it.qty)+'"></div><div><div class="mini-label">UQC</div><select class="mini i-uqc">'+UQC.map(function(x){return '<option'+(x===(it.uqc||'NOS')?' selected':'')+'>'+x+'</option>'}).join('')+'</select></div><div><div class="mini-label">Taxable Value</div><input type="number" min="0" step="0.01" class="mini i-taxable" value="'+esc(it.taxableValue==null?'':it.taxableValue)+'"></div><div><div class="mini-label">GST %</div><select class="mini i-rate">'+RATES.map(function(x){return '<option value="'+x+'"'+(Number(x)===Number(it.gstRate==null?18:it.gstRate)?' selected':'')+'>'+x+'%</option>'}).join('')+'</select></div><button class="remove" type="button" aria-label="Remove item">✕</button></div></div>'}
+function resetItems(container,items){container.innerHTML=(items&&items.length?items:[{}]).map(itemHtml).join('')}
+function readItems(container){return Array.from(container.querySelectorAll('.item')).map(function(row){return{description:row.querySelector('.i-desc').value.trim(),hsn:row.querySelector('.i-hsn').value.trim(),qty:Number(row.querySelector('.i-qty').value||0),uqc:row.querySelector('.i-uqc').value,taxableValue:Number(row.querySelector('.i-taxable').value||0),gstRate:Number(row.querySelector('.i-rate').value||0)}})}
+function aggregate(items,otherState){return items.reduce(function(a,it){var x=C.computeTaxSplit(it.taxableValue,it.gstRate,sellerState(),otherState);a.taxable=C.round2(a.taxable+x.taxable);a.cgst=C.round2(a.cgst+x.cgst);a.sgst=C.round2(a.sgst+x.sgst);a.igst=C.round2(a.igst+x.igst);a.total=C.round2(a.total+x.grandTotal);return a},{taxable:0,cgst:0,sgst:0,igst:0,total:0})}
+function wireItems(containerId,addId,recalc){var box=$(containerId);$(addId).onclick=function(){box.insertAdjacentHTML('beforeend',itemHtml({}));recalc()};box.addEventListener('input',recalc);box.addEventListener('change',recalc);box.addEventListener('click',function(e){if(e.target.classList.contains('remove')){if(box.querySelectorAll('.item').length>1)e.target.closest('.item').remove();recalc()}})}
+function recalcSale(){var t=aggregate(readItems($('lw-sale-items')),$('lw-sale-state').value);$('lw-sale-taxable').textContent=money(t.taxable);$('lw-sale-cgst').textContent=money(t.cgst);$('lw-sale-sgst').textContent=money(t.sgst);$('lw-sale-igst').textContent=money(t.igst);$('lw-sale-total').textContent=money(t.total);var b=validGstin($('lw-sale-gstin').value);$('lw-sale-type').textContent=b?'B2B':'B2C';$('lw-sale-type').className='badge '+(b?'b2b':'b2c');return t}
+function recalcPurchase(){var t=aggregate(readItems($('lw-purchase-items')),$('lw-supplier-state').value);$('lw-purchase-taxable').textContent=money(t.taxable);$('lw-purchase-cgst').textContent=money(t.cgst);$('lw-purchase-sgst').textContent=money(t.sgst);$('lw-purchase-igst').textContent=money(t.igst);$('lw-purchase-total').textContent=money(t.total);return t}
+wireItems('lw-sale-items','lw-sale-add-item',recalcSale);wireItems('lw-purchase-items','lw-purchase-add-item',recalcPurchase);$('lw-sale-state').onchange=recalcSale;$('lw-sale-gstin').oninput=recalcSale;$('lw-supplier-state').onchange=recalcPurchase;
+function setupFormLoad(){ $('lw-biz-name').value=setup.businessName||'';$('lw-gstin').value=setup.gstin||'';$('lw-state').value=setup.state||'';$('lw-reg-type').value=setup.registrationType||'regular';$('lw-return-freq').value=setup.returnFrequency||'monthly';$('lw-turnover').value=setup.annualTurnover||'' }
+$('lw-setup-form').onsubmit=function(e){e.preventDefault();var g=$('lw-gstin').value.trim().toUpperCase();if(!validGstin(g)){$('lw-setup-error').textContent='Enter a valid 15-character GSTIN.';return}if(!$('lw-state').value){$('lw-setup-error').textContent='Select business state.';return}$('lw-setup-error').textContent='';setup={businessName:$('lw-biz-name').value.trim(),gstin:g,state:$('lw-state').value,registrationType:$('lw-reg-type').value,returnFrequency:$('lw-return-freq').value,annualTurnover:Number($('lw-turnover').value||0)};save(KEYS.setup,setup);recalcSale();recalcPurchase();refresh();flash($('lw-setup-status'),'Saved locally.')};
+function dup(list,no,date,ignore){var fy=C.financialYearFromDate(date),x=no.trim().toUpperCase();return list.some(function(r){return r.id!==ignore&&String(r.invoiceNumber).trim().toUpperCase()===x&&C.financialYearFromDate(r.invoiceDate)===fy})}
+function cleanItems(items){return items.filter(function(i){return i.description||i.hsn||i.taxableValue>0}).map(function(i){return{description:i.description,hsn:i.hsn,qty:C.round2(i.qty),uqc:i.uqc,taxableValue:C.round2(i.taxableValue),gstRate:Number(i.gstRate)}})}
+function resetSale(){saleEdit=null;$('lw-sale-id').value='';$('lw-sale-no').value='';$('lw-sale-date').value='';$('lw-sale-customer').value='';$('lw-sale-gstin').value='';$('lw-sale-state').value='';$('lw-sale-cancel').hidden=true;$('lw-sale-error').textContent='';resetItems($('lw-sale-items'));recalcSale()}
+$('lw-sales-form').onsubmit=function(e){e.preventDefault();if(!sellerState()){$('lw-sale-error').textContent='Save Business Setup with your State first.';return}var no=$('lw-sale-no').value.trim(),date=$('lw-sale-date').value,g=$('lw-sale-gstin').value.trim().toUpperCase(),pos=$('lw-sale-state').value,items=cleanItems(readItems($('lw-sale-items')));if(!no||!date||!pos||!items.length){$('lw-sale-error').textContent='Invoice number, date, place of supply and at least one line item are required.';return}if(g&&!validGstin(g)){$('lw-sale-error').textContent='Customer GSTIN is invalid.';return}if(dup(sales,no,date,saleEdit)){$('lw-sale-error').textContent='Duplicate sales invoice number in the same financial year.';return}var t=aggregate(items,pos),existing=sales.find(function(x){return x.id===saleEdit});var r={id:saleEdit||id('sale'),invoiceNumber:no,invoiceDate:date,customerName:$('lw-sale-customer').value.trim(),customerGstin:g,placeOfSupply:pos,supplyType:g?'B2B':'B2C',financialYear:C.financialYearFromDate(date),items:items,taxableTotal:t.taxable,cgst:t.cgst,sgst:t.sgst,igst:t.igst,grandTotal:t.total,createdAt:existing?existing.createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};if(saleEdit)sales=sales.map(function(x){return x.id===saleEdit?r:x});else sales.push(r);save(KEYS.sales,sales);resetSale();refresh();flash($('lw-sale-status'),'Sales invoice saved.')};$('lw-sale-cancel').onclick=resetSale;
+function resetPurchase(){purchaseEdit=null;$('lw-purchase-id').value='';$('lw-purchase-no').value='';$('lw-purchase-date').value='';$('lw-supplier-name').value='';$('lw-supplier-gstin').value='';$('lw-supplier-state').value='';$('lw-2b-status').value='matched';$('lw-itc-eligible').value='yes';$('lw-purchase-cancel').hidden=true;$('lw-purchase-error').textContent='';resetItems($('lw-purchase-items'));recalcPurchase()}
+$('lw-purchase-form').onsubmit=function(e){e.preventDefault();if(!sellerState()){$('lw-purchase-error').textContent='Save Business Setup with your State first.';return}var no=$('lw-purchase-no').value.trim(),date=$('lw-purchase-date').value,g=$('lw-supplier-gstin').value.trim().toUpperCase(),st=$('lw-supplier-state').value,items=cleanItems(readItems($('lw-purchase-items')));if(!no||!date||!st||!items.length){$('lw-purchase-error').textContent='Invoice number, date, supplier state and at least one line item are required.';return}if(!validGstin(g)){$('lw-purchase-error').textContent='Supplier GSTIN is invalid.';return}if(dup(purchases,no,date,purchaseEdit)){$('lw-purchase-error').textContent='Duplicate purchase invoice number in the same financial year.';return}var t=aggregate(items,st),existing=purchases.find(function(x){return x.id===purchaseEdit});var r={id:purchaseEdit||id('purchase'),invoiceNumber:no,invoiceDate:date,supplierName:$('lw-supplier-name').value.trim(),supplierGstin:g,supplierState:st,twoBStatus:$('lw-2b-status').value,itcEligible:$('lw-itc-eligible').value==='yes',financialYear:C.financialYearFromDate(date),items:items,taxableTotal:t.taxable,cgst:t.cgst,sgst:t.sgst,igst:t.igst,grandTotal:t.total,createdAt:existing?existing.createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};if(purchaseEdit)purchases=purchases.map(function(x){return x.id===purchaseEdit?r:x});else purchases.push(r);save(KEYS.purchases,purchases);resetPurchase();refresh();flash($('lw-purchase-status'),'Purchase invoice saved.')};$('lw-purchase-cancel').onclick=resetPurchase;
+function editSale(x){saleEdit=x.id;$('lw-sale-no').value=x.invoiceNumber;$('lw-sale-date').value=x.invoiceDate;$('lw-sale-customer').value=x.customerName||'';$('lw-sale-gstin').value=x.customerGstin||'';$('lw-sale-state').value=x.placeOfSupply||'';resetItems($('lw-sale-items'),x.items);$('lw-sale-cancel').hidden=false;recalcSale();$('lw-sales-form').scrollIntoView({behavior:'smooth'})}
+function editPurchase(x){purchaseEdit=x.id;$('lw-purchase-no').value=x.invoiceNumber;$('lw-purchase-date').value=x.invoiceDate;$('lw-supplier-name').value=x.supplierName||'';$('lw-supplier-gstin').value=x.supplierGstin||'';$('lw-supplier-state').value=x.supplierState||'';$('lw-2b-status').value=x.twoBStatus||'pending';$('lw-itc-eligible').value=x.itcEligible?'yes':'no';resetItems($('lw-purchase-items'),x.items);$('lw-purchase-cancel').hidden=false;recalcPurchase();$('lw-purchase-form').scrollIntoView({behavior:'smooth'})}
+function renderSales(){var b=$('lw-sales-tbody');b.innerHTML=sales.slice().sort(function(a,z){return String(z.invoiceDate).localeCompare(String(a.invoiceDate))}).map(function(x){return '<tr><td>'+esc(x.invoiceNumber)+'</td><td>'+esc(x.invoiceDate)+'</td><td>'+esc(x.customerName||'—')+'</td><td><span class="badge '+(x.supplyType==='B2B'?'b2b':'b2c')+'">'+esc(x.supplyType)+'</span></td><td>'+esc(x.placeOfSupply)+'</td><td class="num">'+money(x.taxableTotal)+'</td><td class="num">'+money(x.cgst)+'</td><td class="num">'+money(x.sgst)+'</td><td class="num">'+money(x.igst)+'</td><td class="num">'+money(x.grandTotal)+'</td><td><button class="icon" data-edit-sale="'+x.id+'">✎</button><button class="icon" data-del-sale="'+x.id+'">✕</button></td></tr>'}).join('');$('lw-sales-empty').hidden=sales.length>0}
+function renderPurchases(){var b=$('lw-purchases-tbody');b.innerHTML=purchases.slice().sort(function(a,z){return String(z.invoiceDate).localeCompare(String(a.invoiceDate))}).map(function(x){var sc=x.twoBStatus==='matched'?'matched':x.twoBStatus==='pending'?'pending':'missing';return '<tr><td>'+esc(x.invoiceNumber)+'</td><td>'+esc(x.invoiceDate)+'</td><td>'+esc(x.supplierName||'—')+'</td><td><span class="badge '+sc+'">'+esc(x.twoBStatus)+'</span></td><td><span class="badge '+(x.itcEligible?'eligible':'blocked')+'">'+(x.itcEligible?'Eligible':'Blocked')+'</span></td><td class="num">'+money(x.taxableTotal)+'</td><td class="num">'+money(x.cgst)+'</td><td class="num">'+money(x.sgst)+'</td><td class="num">'+money(x.igst)+'</td><td class="num">'+money(x.grandTotal)+'</td><td><button class="icon" data-edit-purchase="'+x.id+'">✎</button><button class="icon" data-del-purchase="'+x.id+'">✕</button></td></tr>'}).join('');$('lw-purchases-empty').hidden=purchases.length>0}
+$('lw-sales-tbody').onclick=function(e){var i=e.target.dataset.editSale,d=e.target.dataset.delSale;if(i){var x=sales.find(function(r){return r.id===i});if(x)editSale(x)}if(d&&confirm('Delete this sales invoice?')){sales=sales.filter(function(r){return r.id!==d});save(KEYS.sales,sales);refresh()}};$('lw-purchases-tbody').onclick=function(e){var i=e.target.dataset.editPurchase,d=e.target.dataset.delPurchase;if(i){var x=purchases.find(function(r){return r.id===i});if(x)editPurchase(x)}if(d&&confirm('Delete this purchase invoice?')){purchases=purchases.filter(function(r){return r.id!==d});save(KEYS.purchases,purchases);refresh()}};
+function refresh(){var p=$('lw-period').value,g1=C.buildGstr1Summary(sales,p),g3=C.buildGstr3bSummary(sales,purchases,p),ps=C.summarizePurchases(purchases,p);$('lw-m-sales').textContent=money(g1.totalTaxable);$('lw-m-output').textContent=money(g1.totalTax);$('lw-m-itc').textContent=money(g3.eligibleItc.total);$('lw-m-net').textContent=money(g3.netPayable.total);$('lw-itc-matched').textContent=ps.matchedCount;$('lw-itc-pending').textContent=ps.pendingCount+ps.missingCount;$('lw-itc-local').textContent=money(ps.eligibleItc.cgst+ps.eligibleItc.sgst);$('lw-itc-igst').textContent=money(ps.eligibleItc.igst);$('lw-itc-cgst').textContent=money(ps.eligibleItc.cgst);$('lw-itc-sgst').textContent=money(ps.eligibleItc.sgst);$('lw-itc-igst-row').textContent=money(ps.eligibleItc.igst);$('lw-itc-total').textContent=money(ps.eligibleItc.total);$('lw-g1-b2b').textContent=money(g1.b2b.taxable);$('lw-g1-b2c').textContent=money(g1.b2c.taxable);$('lw-g1-taxable').textContent=money(g1.totalTaxable);$('lw-g1-tax').textContent=money(g1.totalTax);$('lw-hsn-tbody').innerHTML=g1.hsn.length?g1.hsn.map(function(h){return '<tr><td>'+esc(h.hsn)+'</td><td class="num">'+h.qty+'</td><td class="num">'+h.gstRate+'%</td><td class="num">'+money(h.taxable)+'</td><td class="num">'+money(h.tax)+'</td></tr>'}).join(''):'<tr><td colspan="5">No HSN data for this period.</td></tr>';$('lw-g3-taxable').textContent=money(g3.outward.taxable);$('lw-g3-cgst').textContent=money(g3.outward.cgst);$('lw-g3-sgst').textContent=money(g3.outward.sgst);$('lw-g3-igst').textContent=money(g3.outward.igst);$('lw-g3-itc').textContent=money(g3.eligibleItc.total);$('lw-g3-net').textContent=money(g3.netPayable.total);renderSales();renderPurchases()}
+$('lw-period').onchange=function(){save(KEYS.period,this.value);refresh()};$('lw-period-current').onclick=function(){$('lw-period').value=todayMonth();save(KEYS.period,$('lw-period').value);refresh()};
+function exportRows(){var p=$('lw-period').value,rows=[];sales.filter(function(x){return C.periodFromDate(x.invoiceDate)===p}).forEach(function(x){rows.push({type:'SALE',invoice:x.invoiceNumber,date:x.invoiceDate,party:x.customerName||'',gstin:x.customerGstin||'',status:x.supplyType,taxable:x.taxableTotal,cgst:x.cgst,sgst:x.sgst,igst:x.igst,total:x.grandTotal})});purchases.filter(function(x){return C.periodFromDate(x.invoiceDate)===p}).forEach(function(x){rows.push({type:'PURCHASE',invoice:x.invoiceNumber,date:x.invoiceDate,party:x.supplierName||'',gstin:x.supplierGstin||'',status:x.twoBStatus+(x.itcEligible?' / ITC Eligible':' / ITC Blocked'),taxable:x.taxableTotal,cgst:x.cgst,sgst:x.sgst,igst:x.igst,total:x.grandTotal})});return rows}
+function download(name,type,text){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},100)}
+$('lw-export-json').onclick=function(){var p=$('lw-period').value,obj={business:setup,period:p,sales:sales.filter(function(x){return C.periodFromDate(x.invoiceDate)===p}),purchases:purchases.filter(function(x){return C.periodFromDate(x.invoiceDate)===p}),gstr1:C.buildGstr1Summary(sales,p),gstr3b:C.buildGstr3bSummary(sales,purchases,p)};download('TAXORA_Local_Wholesale_'+p+'.json','application/json',JSON.stringify(obj,null,2))};$('lw-export-csv').onclick=function(){download('TAXORA_Local_Wholesale_'+$('lw-period').value+'.csv','text/csv;charset=utf-8','\ufeff'+C.toCsv(exportRows()))};$('lw-export-xls').onclick=function(){download('TAXORA_Local_Wholesale_'+$('lw-period').value+'.xls','application/vnd.ms-excel',C.toSpreadsheetXml('GST '+$('lw-period').value,exportRows()))};
+setupFormLoad();resetItems($('lw-sale-items'));resetItems($('lw-purchase-items'));recalcSale();recalcPurchase();refresh();
 })();
 </script>
 </body>
