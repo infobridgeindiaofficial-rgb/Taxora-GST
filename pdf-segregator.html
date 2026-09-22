@@ -249,6 +249,21 @@ section{padding:38px 0;border-top:1px solid var(--line)}
   var MAX_PAGES_SCANNED = 5; // shipping-label PDFs are almost always 1 page; cap for safety on odd files
 
   var entries = [];
+  // Every Date/Marketplace card registers its action-bar refresh callback here.
+  // This keeps the Create 4-in-1 count global while each card's Select All
+  // toolbar still reports its own local selection.
+  var actionBarRefreshers = [];
+
+  function globalSelectedEntries() {
+    return entries.filter(function (e) {
+      return e.status === 'ok' && !e.isDuplicate && e.selected;
+    });
+  }
+
+  function refreshAllActionBars() {
+    actionBarRefreshers.forEach(function (refresh) { refresh(); });
+  }
+
   var pdfjsReady = null;
   var nextEntryId = 1;
   // Object URLs created either so a filename click can open the ORIGINAL PDF in
@@ -563,6 +578,7 @@ section{padding:38px 0;border-top:1px solid var(--line)}
     checkbox.addEventListener('change', function () {
       entry.selected = checkbox.checked;
       onSelectionChange();
+      refreshAllActionBars();
     });
     row.appendChild(checkbox);
 
@@ -636,15 +652,16 @@ section{padding:38px 0;border-top:1px solid var(--line)}
       var selectedCount = items.filter(function (e) { return e.selected; }).length;
       status.textContent = 'Selected: ' + selectedCount + ' of ' + items.length;
       selectAllBtn.textContent = (selectedCount === items.length && items.length > 0) ? 'Deselect All' : 'Select All';
-      actionStatus.textContent = 'Selected: ' + selectedCount + ' PDF' + (selectedCount === 1 ? '' : 's');
-      createBtn.disabled = selectedCount === 0;
+      var globalCount = globalSelectedEntries().length;
+      actionStatus.textContent = 'Selected: ' + globalCount + ' PDF' + (globalCount === 1 ? '' : 's');
+      createBtn.disabled = globalCount === 0;
     }
 
     selectAllBtn.addEventListener('click', function () {
       var shouldSelect = !(items.filter(function (e) { return e.selected; }).length === items.length);
       items.forEach(function (e) { e.selected = shouldSelect; });
       checkboxes.forEach(function (cb) { cb.checked = shouldSelect; });
-      refreshToolbar();
+      refreshAllActionBars();
     });
 
     items.forEach(function (entry) {
@@ -667,9 +684,7 @@ section{padding:38px 0;border-top:1px solid var(--line)}
       // entire segregated result, even when the PDFs are in different dates
       // or marketplaces. The result controls stay beside the button the user
       // clicked (normally the last group they selected from).
-      var selected = entries.filter(function (e) {
-        return e.status === 'ok' && !e.isDuplicate && e.selected;
-      });
+      var selected = globalSelectedEntries();
       if (!selected.length) return;
 
       createBtn.disabled = true;
@@ -741,15 +756,17 @@ section{padding:38px 0;border-top:1px solid var(--line)}
         showResultMessage('Something went wrong while generating the 4-in-1 PDF. No file was created.', true);
       } finally {
         selectAllBtn.disabled = false;
-        refreshToolbar();
+        refreshAllActionBars();
       }
     });
 
+    actionBarRefreshers.push(refreshToolbar);
     refreshToolbar();
     return wrap;
   }
 
   function renderGroups() {
+    actionBarRefreshers = [];
     groupsEl.innerHTML = '';
     // Duplicates are deliberately excluded here — they never enter a
     // Date/Marketplace group, so they can never be selected and Create
