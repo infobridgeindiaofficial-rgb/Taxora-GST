@@ -663,7 +663,13 @@ section{padding:38px 0;border-top:1px solid var(--line)}
     }
 
     createBtn.addEventListener('click', async function () {
-      var selected = items.filter(function (e) { return e.selected; });
+      // Create one combined 4-in-1 from every selected unique PDF in the
+      // entire segregated result, even when the PDFs are in different dates
+      // or marketplaces. The result controls stay beside the button the user
+      // clicked (normally the last group they selected from).
+      var selected = entries.filter(function (e) {
+        return e.status === 'ok' && !e.isDuplicate && e.selected;
+      });
       if (!selected.length) return;
 
       createBtn.disabled = true;
@@ -701,8 +707,7 @@ section{padding:38px 0;border-top:1px solid var(--line)}
         currentResultUrl = URL.createObjectURL(blob);
         openObjectUrls.push(currentResultUrl);
 
-        var dateLabel = sanitizeFilenamePart(D.formatDisplayDate(dateIso));
-        var filename = 'Taxora_4in1_' + sanitizeFilenamePart(marketplace) + '_' + dateLabel + '.pdf';
+        var filename = 'Taxora_4in1_Selected_' + selected.length + '_PDFs.pdf';
 
         resultRow.innerHTML = '';
         var doneMsg = document.createElement('span');
