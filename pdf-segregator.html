@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF Segregator — TAXORA GST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--font:"Inter",sans-serif;--bg:#0B0E11;--card:#1E2329;--elev:#2B3139;--gold:#E3B53C;--gold2:#C8972A;--text:#EAECEF;--white:#fff;--muted:#929AA5;--line:#2B3139;--red:#F85149;--green:#4CC38A;--blue:#8FB8FF;--r:12px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--font);-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}button,input,select{font:inherit}button{cursor:pointer}
+.wrap{max-width:1280px;margin:auto;padding:0 24px}
+.glass{position:relative;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.025) 55%,rgba(227,181,60,.05));border:1px solid rgba(255,255,255,.19);border-radius:var(--r);box-shadow:0 18px 40px rgba(0,0,0,.28);overflow:hidden}
+.glass:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(300px 140px at 0 0,rgba(227,181,60,.15),transparent 65%)}
+header{position:sticky;top:0;z-index:30;height:64px;background:rgba(11,14,17,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{height:100%;display:flex;align-items:center;gap:22px}
+.brand{font-weight:700;font-size:18px;color:var(--gold)}.brand span{font-size:14px;color:#fff;letter-spacing:.04em}
+.home{margin-left:auto;color:var(--muted)}.home:hover{color:var(--gold)}
+.hero{padding:58px 0 28px;text-align:center}.eyebrow{color:var(--gold);text-transform:uppercase;letter-spacing:.13em;font-size:12px;font-weight:700}
+.hero h1{margin:9px 0 10px;font-size:clamp(30px,4vw,44px);line-height:1.1}
+.hero p{max-width:760px;margin:auto;color:var(--muted);font-size:16px}
+section{padding:38px 0;border-top:1px solid var(--line)}
+.section-head{display:flex;gap:20px;justify-content:space-between;align-items:end;margin-bottom:18px}
+.section-head h2{margin:0;font-size:26px}.section-head p{margin:5px 0 0;color:var(--muted)}
+.panel{padding:24px}
+.primary,.secondary{min-height:42px;padding:0 16px;border-radius:7px;font-weight:600;border:1px solid transparent}
+.primary{background:var(--gold);border-color:var(--gold);color:#181A20}.primary:hover{background:var(--gold2)}
+.primary:disabled,.secondary:disabled{opacity:.5;cursor:not-allowed}
+.secondary{background:transparent;border-color:var(--line);color:var(--text)}.secondary:hover{border-color:#5d6672}
+.status{color:var(--muted);font-size:13px}
+.error{color:var(--red);font-size:12px;min-height:18px;margin-top:8px}
+.gold{color:var(--gold)}
+
+.dropzone{padding:48px 24px;text-align:center;cursor:pointer;border-style:dashed;border-color:rgba(227,181,60,.35);transition:border-color .15s ease,background .15s ease}
+.dropzone.dz-active{border-color:var(--gold);background:rgba(227,181,60,.06)}
+.dropzone:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.dz-icon{color:var(--gold);margin-bottom:14px;display:flex;justify-content:center}
+.dz-title{font-size:16px;font-weight:600;color:#fff}
+.dz-sub{margin-top:6px;color:var(--muted);font-size:13px}
+
+.selected-bar{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:16px}
+.selected-actions{display:flex;gap:10px;margin-left:auto}
+
+.progress-wrap{margin-top:18px}
+.progress-track{height:8px;border-radius:999px;background:#101419;border:1px solid var(--line);overflow:hidden}
+.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .2s ease}
+.progress-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:8px;font-size:12px;color:var(--muted)}
+
+.summary-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.summary-card{padding:17px}
+.summary-card small{display:block;color:var(--muted);margin-bottom:5px}
+.summary-card b{font-size:22px;color:#fff}
+
+.groups{display:grid;gap:12px;margin-top:4px}
+.date-group{padding:0}
+.date-group>summary{list-style:none;cursor:pointer;padding:18px 20px;display:flex;align-items:center;gap:12px;font-weight:700;font-size:17px}
+.date-group>summary::-webkit-details-marker{display:none}
+.date-group>summary::before{content:"▾";display:inline-block;margin-right:10px;color:var(--gold);transition:transform .15s ease}
+.date-group:not([open])>summary::before{transform:rotate(-90deg)}
+.date-group[open]>summary{border-bottom:1px solid var(--line)}
+.date-group-body{padding:16px 20px 20px 20px;display:grid;gap:8px}
+.mp-group{border:1px solid var(--line);border-radius:8px;background:#101419;overflow:hidden;margin-left:14px}
+.mp-group>summary{list-style:none;cursor:pointer;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.mp-group>summary::-webkit-details-marker{display:none}
+.mp-group>summary::before{content:"▸";display:inline-block;color:var(--muted);transition:transform .15s ease}
+.mp-group[open]>summary::before{transform:rotate(90deg)}
+.mp-group[open]>summary{border-bottom:1px solid var(--line)}
+.count-pill{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+.mp-badge{display:inline-flex;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.mp-amazon{background:rgba(227,181,60,.15);color:var(--gold)}
+.mp-flipkart{background:rgba(143,184,255,.14);color:var(--blue)}
+.mp-meesho{background:rgba(76,195,138,.15);color:var(--green)}
+
+.file-list{display:grid;gap:1px;background:var(--line)}
+.file-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;padding:10px 16px;background:#0d1116;font-size:13px;align-items:center}
+.file-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff}
+.file-meta{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-status{font-weight:600;text-align:right}
+.file-status.ok{color:var(--green)}
+.file-status.review{color:#ffba56}
+
+.empty-state{padding:34px 20px;text-align:center;color:var(--muted)}
+
+.mp-group-body{padding:14px 16px 16px}
+.mp-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:8px}
+.mp-toolbar .secondary{min-height:34px;padding:0 12px;font-size:12px}
+.selection-status{font-size:12px;color:var(--muted)}
+
+.pdf-list{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#0d1116}
+.pdf-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:13px}
+.pdf-row:last-child{border-bottom:0}
+.pdf-row-checkbox{width:16px;height:16px;flex-shrink:0;accent-color:var(--gold);cursor:pointer}
+.pdf-row-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);background:none;border:0;padding:0;text-align:left;cursor:pointer;font:inherit}
+.pdf-row-name:hover{color:var(--gold);text-decoration:underline}
+.pdf-row-pages{color:var(--muted);font-size:11px;flex-shrink:0;white-space:nowrap}
+
+.group-action-bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.group-action-bar .selection-status{font-size:12px}
+.group-action-bar .primary{margin-left:auto;min-height:34px;padding:0 14px;font-size:12px}
+.group-result-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+.group-result-row .secondary{min-height:32px;padding:0 12px;font-size:12px}
+.group-result-error{color:var(--red);font-size:12px;font-weight:600}
+.group-result-error-line{color:var(--red);font-size:12px;opacity:.85}
+
+.review-block{margin-top:28px}
+.review-block h3{margin:0 0 4px}
+.review-block>p{margin:0 0 14px;color:var(--muted)}
+.review-reasons{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.reason-pill{padding:8px 12px;border-radius:7px;border:1px solid var(--line);background:#101419;font-size:12px;color:var(--muted)}
+.reason-pill b{color:var(--red);margin-left:6px}
+.review-list{border:1px solid var(--line);border-radius:8px;overflow:hidden}
+
+@media(max-width:900px){
+  .summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .wrap{padding:0 16px}
+  .hero{padding-top:38px}
+  .summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .selected-bar{flex-direction:column;align-items:stretch}
+  .selected-actions{margin-left:0}
+  .section-head{align-items:start;flex-direction:column}
+  .file-row{grid-template-columns:1fr 1fr;row-gap:4px}
+  .file-row .file-name{grid-column:1/-1}
+  .file-row .file-status{text-align:left}
+  .mp-group{margin-left:0}
+  .mp-toolbar{flex-direction:column;align-items:stretch;gap:8px}
+  .group-action-bar{flex-direction:column;align-items:stretch}
+  .group-action-bar .primary{margin-left:0}
+  .group-result-row{flex-direction:column;align-items:stretch}
+}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="./TAXORA%20GST.dc.html#home">TAXORA <span>GST</span></a><span>PDF Segregator</span><a class="home" href="./TAXORA%20GST.dc.html#services">← GST Services</a></div></header>
+<div class="hero wrap"><div class="eyebrow">PDF Segregator</div><h1>PDF Segregator</h1><p>Upload shipping-label PDFs and automatically organize them by date and marketplace.</p></div>
+
+<main>
+<section id="pdfseg-upload-section"><div class="wrap">
+  <div class="section-head"><div><h2>Upload Shipping Labels</h2><p>Select or drag in PDF files — nothing is uploaded to a server, everything is read in your browser and your original files are never modified.</p></div></div>
+
+  <div id="pdfseg-drop" class="glass panel dropzone" tabindex="0" role="button" aria-label="Upload PDF files">
+    <div class="dz-icon" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/><path d="M9 12.5h6M9 16h6M9 9h1.5"/></svg></div>
+    <div class="dz-title">Drag &amp; drop PDF files here</div>
+    <div class="dz-sub">or click to browse — you can select 100+ files in one batch</div>
+    <input id="pdfseg-file-input" type="file" accept="application/pdf,.pdf" multiple hidden>
+  </div>
+
+  <div id="pdfseg-selected-bar" class="selected-bar" hidden>
+    <span id="pdfseg-selected-count" class="status"></span>
+    <div class="selected-actions">
+      <button id="pdfseg-start" class="primary" type="button">Segregate PDFs</button>
+      <button id="pdfseg-clear" class="secondary" type="button">Clear</button>
+    </div>
+  </div>
+
+  <div id="pdfseg-progress-wrap" class="progress-wrap" hidden>
+    <div class="progress-track"><div id="pdfseg-progress-bar" class="progress-bar"></div></div>
+    <div class="progress-meta">
+      <span id="pdfseg-progress-text">Processing 0 / 0</span>
+      <span id="pdfseg-progress-counts" class="status"></span>
+    </div>
+  </div>
+
+  <div id="pdfseg-upload-error" class="error"></div>
+</div></section>
+
+<section id="pdfseg-summary-section"><div class="wrap">
+  <div class="section-head"><div><h2>Summary</h2><p>Counts reflect the files actually processed in this batch.</p></div></div>
+  <div id="pdfseg-summary-grid" class="summary-grid" hidden>
+    <div class="glass summary-card"><small>Total PDFs</small><b id="pdfseg-sum-total">0</b></div>
+    <div class="glass summary-card"><small>Amazon</small><b id="pdfseg-sum-amazon" class="gold">0</b></div>
+    <div class="glass summary-card"><small>Flipkart</small><b id="pdfseg-sum-flipkart" class="gold">0</b></div>
+    <div class="glass summary-card"><small>Meesho</small><b id="pdfseg-sum-meesho" class="gold">0</b></div>
+    <div class="glass summary-card"><small>Needs Review</small><b id="pdfseg-sum-review">0</b></div>
+  </div>
+</div></section>
+
+<section id="pdfseg-results-section"><div class="wrap">
+  <div class="section-head"><div><h2>Segregated Results</h2><p id="pdfseg-results-sub">Upload PDFs above to see them grouped by date and marketplace.</p></div></div>
+  <div id="pdfseg-groups" class="groups"></div>
+
+  <div id="pdfseg-review" class="review-block" hidden>
+    <h3>Needs Review</h3>
+    <p>These files could not be confidently classified. Nothing is discarded — review the reason and re-check the source file.</p>
+    <div id="pdfseg-review-reasons" class="review-reasons"></div>
+    <div id="pdfseg-review-list" class="file-list review-list"></div>
+  </div>
+</div></section>
+</main>
+
+<script src="./pdf-segregator-detectors.js"></script>
+<script src="./pdf-segregator-4in1.js"></script>
+<script>
+(function () {
+  'use strict';
+  var D = window.TaxoraPdfDetectors;
+
+  var dropzone = document.getElementById('pdfseg-drop');
+  var fileInput = document.getElementById('pdfseg-file-input');
+  var selectedBar = document.getElementById('pdfseg-selected-bar');
+  var selectedCount = document.getElementById('pdfseg-selected-count');
+  var startBtn = document.getElementById('pdfseg-start');
+  var clearBtn = document.getElementById('pdfseg-clear');
+  var progressWrap = document.getElementById('pdfseg-progress-wrap');
+  var progressBar = document.getElementById('pdfseg-progress-bar');
+  var progressText = document.getElementById('pdfseg-progress-text');
+  var progressCounts = document.getElementById('pdfseg-progress-counts');
+  var uploadError = document.getElementById('pdfseg-upload-error');
+  var resultsSub = document.getElementById('pdfseg-results-sub');
+  var summaryGrid = document.getElementById('pdfseg-summary-grid');
+  var groupsEl = document.getElementById('pdfseg-groups');
+  var reviewBlock = document.getElementById('pdfseg-review');
+  var reviewReasonsEl = document.getElementById('pdfseg-review-reasons');
+  var reviewListEl = document.getElementById('pdfseg-review-list');
+
+  var PDFJS_VERSION = '3.11.174';
+  var PDFJS_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/' + PDFJS_VERSION + '/';
+  var MAX_PAGES_SCANNED = 5; // shipping-label PDFs are almost always 1 page; cap for safety on odd files
+
+  var entries = [];
+  var pdfjsReady = null;
+  var nextEntryId = 1;
+  // Object URLs created either so a filename click can open the ORIGINAL PDF in
+  // a new tab, or so a generated 4-in-1 PDF can be opened/downloaded. Tracked so
+  // they can be revoked when the batch is cleared/replaced — never revoked right
+  // after opening, since the new tab needs time to load the blob.
+  var openObjectUrls = [];
+
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function isPdfCandidate(file) {
+    return file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+  }
+
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = function () { resolve(); };
+      s.onerror = function () { reject(new Error('Failed to load ' + src)); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function ensurePdfJs() {
+    if (!pdfjsReady) {
+      pdfjsReady = loadScript(PDFJS_BASE + 'pdf.min.js').then(function () {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_BASE + 'pdf.worker.min.js';
+        return window.pdfjsLib;
+      });
+    }
+    return pdfjsReady;
+  }
+
+  function revokeOpenUrls() {
+    openObjectUrls.forEach(function (url) { try { URL.revokeObjectURL(url); } catch (e) { /* already revoked */ } });
+    openObjectUrls = [];
+  }
+
+  function resetResultsUI() {
+    summaryGrid.hidden = true;
+    groupsEl.innerHTML = '';
+    reviewBlock.hidden = true;
+    resultsSub.textContent = 'Upload PDFs above to see them grouped by date and marketplace.';
+  }
+
+  function addFiles(fileList) {
+    var files = Array.prototype.slice.call(fileList || []);
+    if (!files.length) return;
+    revokeOpenUrls();
+    // The original File/Blob for every uploaded PDF is kept on the entry for the
+    // lifetime of this batch — needed to open the real PDF in a new tab and, in
+    // the next phase, to build the 4-in-1 PDF from the actual original pages.
+    entries = files.map(function (file) {
+      return {
+        id: 'pdf-' + (nextEntryId++),
+        file: file,
+        status: 'pending',
+        marketplace: null,
+        dateIso: null,
+        reasons: [],
+        pageCount: null,
+        openUrl: null,
+        selected: false
+      };
+    });
+    selectedBar.hidden = false;
+    selectedCount.textContent = entries.length + ' file' + (entries.length === 1 ? '' : 's') + ' selected';
+    progressWrap.hidden = true;
+    progressBar.style.width = '0%';
+    uploadError.textContent = '';
+    resetResultsUI();
+  }
+
+  dropzone.addEventListener('click', function () { fileInput.click(); });
+  dropzone.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); fileInput.click(); }
+  });
+  ['dragenter', 'dragover'].forEach(function (evt) {
+    dropzone.addEventListener(evt, function (ev) { ev.preventDefault(); dropzone.classList.add('dz-active'); });
+  });
+  ['dragleave', 'drop'].forEach(function (evt) {
+    dropzone.addEventListener(evt, function (ev) { ev.preventDefault(); dropzone.classList.remove('dz-active'); });
+  });
+  dropzone.addEventListener('drop', function (ev) {
+    if (ev.dataTransfer && ev.dataTransfer.files) addFiles(ev.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', function () { addFiles(fileInput.files); fileInput.value = ''; });
+  clearBtn.addEventListener('click', function () {
+    revokeOpenUrls();
+    entries = [];
+    selectedBar.hidden = true;
+    progressWrap.hidden = true;
+    uploadError.textContent = '';
+    resetResultsUI();
+  });
+  startBtn.addEventListener('click', function () { runSegregation(); });
+
+  async function extractTextFromDoc(pdf) {
+    var pagesToScan = Math.min(pdf.numPages, MAX_PAGES_SCANNED);
+    var text = '';
+    for (var p = 1; p <= pagesToScan; p++) {
+      var page = await pdf.getPage(p);
+      var content = await page.getTextContent();
+      text += ' ' + content.items.map(function (it) { return it.str; }).join(' ');
+    }
+    return text;
+  }
+
+  async function processOne(entry) {
+    if (!isPdfCandidate(entry.file)) {
+      entry.status = 'review';
+      entry.reasons = ['Not a PDF file'];
+      return;
+    }
+
+    var pdf;
+    try {
+      var buf = await entry.file.arrayBuffer();
+      pdf = await window.pdfjsLib.getDocument({ data: buf }).promise;
+    } catch (err) {
+      entry.status = 'review';
+      entry.reasons = ['Processing failed'];
+      return;
+    }
+
+    try {
+      entry.pageCount = pdf.numPages;
+      var text = await extractTextFromDoc(pdf);
+      if (!text || !text.trim()) {
+        entry.status = 'review';
+        entry.reasons = ['PDF text unavailable'];
+        return;
+      }
+      var mp = D.detectMarketplace(text);
+      var dt = D.detectDate(text);
+      entry.marketplace = mp.marketplace;
+      entry.dateIso = dt.date;
+      var reasons = [];
+      if (!mp.marketplace) reasons.push('Marketplace not detected');
+      if (!dt.date) reasons.push('Date not detected');
+      if (reasons.length) {
+        entry.status = 'review';
+        entry.reasons = reasons;
+        return;
+      }
+      entry.status = 'ok';
+    } finally {
+      try { pdf.destroy(); } catch (e) { /* best-effort cleanup */ }
+    }
+  }
+
+  function updateLiveCounts() {
+    var ok = 0, review = 0;
+    for (var i = 0; i < entries.length; i++) {
+      if (entries[i].status === 'ok') ok++;
+      else if (entries[i].status === 'review') review++;
+    }
+    progressCounts.textContent = 'Successful: ' + ok + '  ·  Needs Review: ' + review;
+  }
+
+  async function runSegregation() {
+    if (!entries.length) return;
+    startBtn.disabled = true;
+    clearBtn.disabled = true;
+    uploadError.textContent = '';
+    progressWrap.hidden = false;
+    progressBar.style.width = '0%';
+    progressText.textContent = 'Loading PDF engine…';
+    progressCounts.textContent = '';
+
+    try {
+      await ensurePdfJs();
+    } catch (err) {
+      uploadError.textContent = 'Could not load the PDF reading engine. Check your internet connection and try again.';
+      startBtn.disabled = false;
+      clearBtn.disabled = false;
+      progressWrap.hidden = true;
+      return;
+    }
+
+    var total = entries.length;
+    var done = 0;
+    progressText.textContent = 'Processing 0 / ' + total;
+
+    var CONCURRENCY = 4;
+    await new Promise(function (resolve) {
+      var idx = 0, active = 0;
+      function kick() {
+        if (idx >= entries.length && active === 0) { resolve(); return; }
+        while (active < CONCURRENCY && idx < entries.length) {
+          var entry = entries[idx++];
+          active++;
+          processOne(entry).catch(function () {
+            entry.status = 'review';
+            entry.reasons = ['Processing failed'];
+          }).then(function () {
+            active--;
+            done++;
+            progressBar.style.width = Math.round((done / total) * 100) + '%';
+            progressText.textContent = 'Processing ' + done + ' / ' + total;
+            updateLiveCounts();
+            kick();
+          });
+        }
+      }
+      kick();
+    });
+
+    startBtn.disabled = false;
+    clearBtn.disabled = false;
+    progressText.textContent = 'Done — processed ' + total + ' file' + (total === 1 ? '' : 's');
+    renderAll();
+  }
+
+  function renderSummary() {
+    summaryGrid.hidden = false;
+    document.getElementById('pdfseg-sum-total').textContent = entries.length;
+    ['Amazon', 'Flipkart', 'Meesho'].forEach(function (mp) {
+      var n = entries.filter(function (e) { return e.status === 'ok' && e.marketplace === mp; }).length;
+      document.getElementById('pdfseg-sum-' + mp.toLowerCase()).textContent = n;
+    });
+    var review = entries.filter(function (e) { return e.status === 'review'; }).length;
+    document.getElementById('pdfseg-sum-review').textContent = review;
+  }
+
+  function buildFileRows(items) {
+    var frag = document.createDocumentFragment();
+    items.forEach(function (e) {
+      var row = document.createElement('div');
+      row.className = 'file-row';
+      row.innerHTML =
+        '<span class="file-name" title="' + esc(e.file.name) + '">' + esc(e.file.name) + '</span>' +
+        '<span class="file-meta">' + esc(D.formatDisplayDate(e.dateIso) || '—') + '</span>' +
+        '<span class="file-meta">' + esc(e.marketplace || '—') + '</span>' +
+        '<span class="file-status ' + (e.status === 'ok' ? 'ok' : 'review') + '">' +
+          (e.status === 'ok' ? 'Detected' : esc((e.reasons || []).join(', ') || 'Needs Review')) +
+        '</span>';
+      frag.appendChild(row);
+    });
+    return frag;
+  }
+
+  // Lazily creates (and caches) an object URL for the entry's ORIGINAL File, then
+  // opens it in a new browser tab using the browser's own native PDF viewer.
+  // Nothing is rendered, converted, or recreated — this is the exact uploaded
+  // Blob. The URL is intentionally NOT revoked here: revoking immediately would
+  // race the new tab's load. It is revoked later, in bulk, when the batch is
+  // cleared or replaced (see revokeOpenUrls).
+  function openOriginalPdf(entry) {
+    if (!entry.openUrl) {
+      entry.openUrl = URL.createObjectURL(entry.file);
+      openObjectUrls.push(entry.openUrl);
+    }
+    window.open(entry.openUrl, '_blank', 'noopener');
+  }
+
+  // Builds one compact PDF row: checkbox, clickable filename, optional page count.
+  // Both the checkbox and the filename click operate on the actual entry object
+  // reference (not the filename string), so duplicate filenames are handled
+  // correctly and selection/opening is unambiguous.
+  function buildPdfRow(entry, onSelectionChange) {
+    var row = document.createElement('div');
+    row.className = 'pdf-row';
+    row.dataset.id = entry.id;
+
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'pdf-row-checkbox';
+    checkbox.checked = !!entry.selected;
+    checkbox.setAttribute('aria-label', 'Select ' + entry.file.name);
+    checkbox.addEventListener('change', function () {
+      entry.selected = checkbox.checked;
+      onSelectionChange();
+    });
+    row.appendChild(checkbox);
+
+    var nameBtn = document.createElement('button');
+    nameBtn.type = 'button';
+    nameBtn.className = 'pdf-row-name';
+    nameBtn.title = entry.file.name;
+    nameBtn.textContent = entry.file.name;
+    nameBtn.addEventListener('click', function () { openOriginalPdf(entry); });
+    row.appendChild(nameBtn);
+
+    if (entry.pageCount) {
+      var pages = document.createElement('span');
+      pages.className = 'pdf-row-pages';
+      pages.textContent = entry.pageCount + ' page' + (entry.pageCount === 1 ? '' : 's');
+      row.appendChild(pages);
+    }
+
+    return { row: row, checkbox: checkbox };
+  }
+
+  function sanitizeFilenamePart(s) {
+    return String(s || '').replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '') || 'file';
+  }
+
+  // Builds the "Select All" toolbar, the compact PDF list, and the bottom
+  // 4-in-1 action bar for one Date + Marketplace group. Selection state lives
+  // on the entry objects themselves so it survives independently per group and
+  // per duplicate filename.
+  function buildGroupBody(items, marketplace, dateIso) {
+    var wrap = document.createElement('div');
+    wrap.className = 'mp-group-body';
+
+    var toolbar = document.createElement('div');
+    toolbar.className = 'mp-toolbar';
+    var selectAllBtn = document.createElement('button');
+    selectAllBtn.type = 'button';
+    selectAllBtn.className = 'secondary';
+    var status = document.createElement('span');
+    status.className = 'selection-status';
+    toolbar.appendChild(selectAllBtn);
+    toolbar.appendChild(status);
+    wrap.appendChild(toolbar);
+
+    var list = document.createElement('div');
+    list.className = 'pdf-list';
+    wrap.appendChild(list);
+
+    var actionBar = document.createElement('div');
+    actionBar.className = 'group-action-bar';
+    var actionStatus = document.createElement('span');
+    actionStatus.className = 'selection-status';
+    var createBtn = document.createElement('button');
+    createBtn.type = 'button';
+    createBtn.className = 'primary';
+    createBtn.textContent = 'Create 4-in-1';
+    createBtn.disabled = true;
+    actionBar.appendChild(actionStatus);
+    actionBar.appendChild(createBtn);
+    wrap.appendChild(actionBar);
+
+    var resultRow = document.createElement('div');
+    resultRow.className = 'group-result-row';
+    resultRow.hidden = true;
+    wrap.appendChild(resultRow);
+
+    var checkboxes = [];
+    var currentResultUrl = null;
+
+    function refreshToolbar() {
+      var selectedCount = items.filter(function (e) { return e.selected; }).length;
+      status.textContent = 'Selected: ' + selectedCount + ' of ' + items.length;
+      selectAllBtn.textContent = (selectedCount === items.length && items.length > 0) ? 'Deselect All' : 'Select All';
+      actionStatus.textContent = 'Selected: ' + selectedCount + ' PDF' + (selectedCount === 1 ? '' : 's');
+      createBtn.disabled = selectedCount === 0;
+    }
+
+    selectAllBtn.addEventListener('click', function () {
+      var shouldSelect = !(items.filter(function (e) { return e.selected; }).length === items.length);
+      items.forEach(function (e) { e.selected = shouldSelect; });
+      checkboxes.forEach(function (cb) { cb.checked = shouldSelect; });
+      refreshToolbar();
+    });
+
+    items.forEach(function (entry) {
+      var built = buildPdfRow(entry, refreshToolbar);
+      checkboxes.push(built.checkbox);
+      list.appendChild(built.row);
+    });
+
+    function showResultMessage(text, isError) {
+      resultRow.hidden = false;
+      resultRow.innerHTML = '';
+      var msg = document.createElement('span');
+      msg.className = isError ? 'group-result-error' : 'selection-status';
+      msg.textContent = text;
+      resultRow.appendChild(msg);
+    }
+
+    createBtn.addEventListener('click', async function () {
+      var selected = items.filter(function (e) { return e.selected; });
+      if (!selected.length) return;
+
+      createBtn.disabled = true;
+      selectAllBtn.disabled = true;
+      resultRow.hidden = false;
+      resultRow.innerHTML = '';
+      var progressMsg = document.createElement('span');
+      progressMsg.className = 'selection-status';
+      progressMsg.textContent = 'Creating 4-in-1 PDF…';
+      resultRow.appendChild(progressMsg);
+
+      try {
+        var result = await window.TaxoraPdf4in1.create4in1(selected);
+
+        if (!result.success) {
+          var lines = result.failures.map(function (f) { return f.name + ' — ' + f.reason; });
+          resultRow.innerHTML = '';
+          var errHead = document.createElement('div');
+          errHead.className = 'group-result-error';
+          errHead.textContent = 'Could not generate the 4-in-1 PDF. Deselect and review:';
+          resultRow.appendChild(errHead);
+          lines.forEach(function (line) {
+            var li = document.createElement('div');
+            li.className = 'group-result-error-line';
+            li.textContent = line;
+            resultRow.appendChild(li);
+          });
+          return;
+        }
+
+        if (currentResultUrl) {
+          try { URL.revokeObjectURL(currentResultUrl); } catch (e) { /* already revoked */ }
+        }
+        var blob = new Blob([result.bytes], { type: 'application/pdf' });
+        currentResultUrl = URL.createObjectURL(blob);
+        openObjectUrls.push(currentResultUrl);
+
+        var dateLabel = sanitizeFilenamePart(D.formatDisplayDate(dateIso));
+        var filename = 'Taxora_4in1_' + sanitizeFilenamePart(marketplace) + '_' + dateLabel + '.pdf';
+
+        resultRow.innerHTML = '';
+        var doneMsg = document.createElement('span');
+        doneMsg.className = 'selection-status';
+        doneMsg.textContent = 'Ready — ' + result.pageCount + ' A4 page' + (result.pageCount === 1 ? '' : 's') + '.';
+        resultRow.appendChild(doneMsg);
+
+        var openBtn = document.createElement('button');
+        openBtn.type = 'button';
+        openBtn.className = 'secondary';
+        openBtn.textContent = 'Open PDF';
+        openBtn.addEventListener('click', function () {
+          window.open(currentResultUrl, '_blank', 'noopener');
+        });
+        resultRow.appendChild(openBtn);
+
+        var downloadBtn = document.createElement('button');
+        downloadBtn.type = 'button';
+        downloadBtn.className = 'secondary';
+        downloadBtn.textContent = 'Download PDF';
+        downloadBtn.addEventListener('click', function () {
+          var a = document.createElement('a');
+          a.href = currentResultUrl;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+        resultRow.appendChild(downloadBtn);
+      } catch (err) {
+        showResultMessage('Something went wrong while generating the 4-in-1 PDF. No file was created.', true);
+      } finally {
+        selectAllBtn.disabled = false;
+        refreshToolbar();
+      }
+    });
+
+    refreshToolbar();
+    return wrap;
+  }
+
+  function renderGroups() {
+    groupsEl.innerHTML = '';
+    var ok = entries.filter(function (e) { return e.status === 'ok'; });
+    if (!ok.length) {
+      var empty = document.createElement('div');
+      empty.className = 'glass empty-state';
+      empty.textContent = 'No files were confidently classified in this batch yet.';
+      groupsEl.appendChild(empty);
+      return;
+    }
+
+    var byDate = new Map();
+    ok.forEach(function (e) {
+      if (!byDate.has(e.dateIso)) byDate.set(e.dateIso, new Map());
+      var byMp = byDate.get(e.dateIso);
+      if (!byMp.has(e.marketplace)) byMp.set(e.marketplace, []);
+      byMp.get(e.marketplace).push(e);
+    });
+
+    var dates = Array.from(byDate.keys()).sort(function (a, b) { return b.localeCompare(a); });
+    var frag = document.createDocumentFragment();
+
+    dates.forEach(function (dateIso) {
+      var byMp = byDate.get(dateIso);
+      var total = 0;
+      byMp.forEach(function (arr) { total += arr.length; });
+
+      var dateDetails = document.createElement('details');
+      dateDetails.className = 'date-group glass';
+      dateDetails.open = true; // marketplace breakdown must be visible without an extra click
+      var dateSummary = document.createElement('summary');
+      dateSummary.innerHTML =
+        '<span>' + esc(D.formatDisplayDate(dateIso)) + '</span>' +
+        '<span class="count-pill">' + total + ' PDF' + (total === 1 ? '' : 's') + '</span>';
+      dateDetails.appendChild(dateSummary);
+
+      var body = document.createElement('div');
+      body.className = 'date-group-body';
+
+      ['Amazon', 'Flipkart', 'Meesho'].forEach(function (mp) {
+        if (!byMp.has(mp)) return;
+        var items = byMp.get(mp);
+        var mpDetails = document.createElement('details');
+        mpDetails.className = 'mp-group';
+        var mpSummary = document.createElement('summary');
+        mpSummary.innerHTML =
+          '<span class="mp-badge mp-' + mp.toLowerCase() + '">' + mp + '</span>' +
+          '<span class="count-pill">' + items.length + ' PDF' + (items.length === 1 ? '' : 's') + '</span>';
+        mpDetails.appendChild(mpSummary);
+        mpDetails.appendChild(buildGroupBody(items, mp, dateIso));
+        body.appendChild(mpDetails);
+      });
+
+      dateDetails.appendChild(body);
+      frag.appendChild(dateDetails);
+    });
+
+    groupsEl.appendChild(frag);
+  }
+
+  function renderReview() {
+    var review = entries.filter(function (e) { return e.status === 'review'; });
+    if (!review.length) { reviewBlock.hidden = true; return; }
+    reviewBlock.hidden = false;
+
+    var counts = new Map();
+    review.forEach(function (e) {
+      var reasons = e.reasons && e.reasons.length ? e.reasons : ['Needs Review'];
+      reasons.forEach(function (r) { counts.set(r, (counts.get(r) || 0) + 1); });
+    });
+    reviewReasonsEl.innerHTML = Array.from(counts.entries()).map(function (pair) {
+      return '<span class="reason-pill">' + esc(pair[0]) + '<b>' + pair[1] + '</b></span>';
+    }).join('');
+
+    reviewListEl.innerHTML = '';
+    reviewListEl.appendChild(buildFileRows(review));
+  }
+
+  function renderAll() {
+    renderSummary();
+    renderGroups();
+    renderReview();
+    var reconciled = entries.filter(function (e) { return e.status === 'ok'; }).length +
+      entries.filter(function (e) { return e.status === 'review'; }).length === entries.length;
+    resultsSub.textContent = reconciled
+      ? 'Grouped by date and marketplace — click a group to expand it.'
+      : 'Some files did not finish processing — try running the batch again.';
+  }
+})();
+</script>
+</body>
+</html>

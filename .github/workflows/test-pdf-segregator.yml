@@ -1,0 +1,17 @@
+name: Test PDF Segregator
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run PDF Segregator card regression test
+        run: node tests/pdf-segregator-card-regression.mjs
+      - name: Run PDF Segregator detector tests
+        run: node tests/pdf-segregator-detectors.test.mjs
+      - name: Run PDF Segregator 4-in-1 regression test
+        run: node tests/pdf-segregator-4in1-regression.mjs

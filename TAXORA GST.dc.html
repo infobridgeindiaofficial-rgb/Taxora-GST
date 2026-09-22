@@ -354,6 +354,12 @@ button{font-family:inherit}
         <p style="margin:0;font-size:var(--fs-body-sm);color:var(--muted-strong);text-wrap:pretty">Prepare a temporary goods-movement working summary without saving customer or transport data.</p>
         <button type="button" class="tx-cta" onclick="{{ openEwayCta }}" style="display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:0;background:transparent;border:0;font-family:inherit;font-size:var(--fs-body-sm);font-weight:600;cursor:pointer">Prepare E-Way Bill<span aria-hidden="true">→</span></button>
       </div></div></div>
+<div data-tilt="" style="perspective:900px"><div data-tilt-inner="" onclick="{{ openPdfSegregator }}" style="position:relative;height:100%;transform-style:preserve-3d;cursor:pointer;transition:transform var(--dur-base) var(--ease-out)"><div class="tx-glass-card" style="position:relative;height:100%;padding:var(--card-pad);border-radius:var(--r-card);transition:background var(--dur-base) var(--ease-standard),border-color var(--dur-base) var(--ease-standard),box-shadow var(--dur-base) var(--ease-standard)">
+        <div data-tilt-lift="" style="width:56px;height:56px;display:grid;place-items:center;border-radius:var(--r-lg);background:linear-gradient(150deg,rgba(227,181,60,.22),rgba(227,181,60,.06) 60%,rgba(30,35,41,.9));border:1px solid rgba(227,181,60,.45);box-shadow:0 12px 26px rgba(0,0,0,.5);color:var(--primary);font-size:15px;font-weight:700">PDF</div>
+        <h3 style="margin:20px 0 8px;font-size:var(--fs-body-md);font-weight:600;color:var(--on-dark)">PDF Segregator</h3>
+        <p style="margin:0;font-size:var(--fs-body-sm);color:var(--muted-strong);text-wrap:pretty">Upload bulk shipping-label PDFs and automatically organize them by date and marketplace.</p>
+        <button type="button" class="tx-cta" onclick="{{ openPdfSegregator }}" style="display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:0;background:transparent;border:0;font-family:inherit;font-size:var(--fs-body-sm);font-weight:600;cursor:pointer">Segregate PDFs<span aria-hidden="true">→</span></button>
+      </div></div></div>
 </div>
   </div>
 </section>
@@ -1493,38 +1499,6 @@ const normErr = (e) => {
 };
 
 class Component extends DCLogic {
-  openGstinValidator() {
-    if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.openGSTIN();
-  }
-
-  closeGstinValidator() {
-    if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.closeGSTIN();
-  }
-
-  closeGstinValidatorOutside(ev) {
-    if (ev && ev.target === ev.currentTarget) this.closeGstinValidator();
-  }
-
-  validateGstinNow() {
-    if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.validateGSTIN();
-  }
-
-  openInvoiceChecker() {
-    if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.openInvoices();
-  }
-
-  closeInvoiceChecker() {
-    if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.closeInvoices();
-  }
-
-  closeInvoiceCheckerOutside(ev) {
-    if (ev && ev.target === ev.currentTarget) this.closeInvoiceChecker();
-  }
-
-  checkInvoicesNow() {
-    if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.checkInvoices();
-  }
-
   ecomCardRef = React.createRef();
   ecbCardRef = React.createRef();
   ecbPreviewRef = React.createRef();
@@ -4977,6 +4951,17 @@ class Component extends DCLogic {
       gstCalcDueDateDisplay: (s.gstCalc || {}).dueDate || "—",
       gstCalcFilingDateDisplay: (s.gstCalc || {}).filingDate || "—",
       downloadGstCalcSummary: () => this.downloadGstCalcSummary(),
+
+      openGstinValidator: () => { if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.openGSTIN(); },
+      closeGstinValidator: () => { if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.closeGSTIN(); },
+      closeGstinValidatorOutside: (ev) => { if (ev && ev.target === ev.currentTarget && window.TaxoraValidatorUI) window.TaxoraValidatorUI.closeGSTIN(); },
+      validateGstinNow: () => { if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.validateGSTIN(); },
+      openInvoiceChecker: () => { if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.openInvoices(); },
+      closeInvoiceChecker: () => { if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.closeInvoices(); },
+      closeInvoiceCheckerOutside: (ev) => { if (ev && ev.target === ev.currentTarget && window.TaxoraValidatorUI) window.TaxoraValidatorUI.closeInvoices(); },
+      checkInvoicesNow: () => { if (window.TaxoraValidatorUI) window.TaxoraValidatorUI.checkInvoices(); },
+      openPdfSegregator: () => { window.location.href = "./pdf-segregator.html"; },
+
       gstPayOpen: s.gstPayOpen,
       openGstPayModal: () => this.setState({ gstPayOpen: true }),
       openGstPayCta: (ev) => { ev.stopPropagation(); this.setState({ gstPayOpen: true }); },
