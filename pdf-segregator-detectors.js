@@ -211,7 +211,35 @@ function formatDisplayDate(iso) {
   return `${d} ${MONTH_NAMES[m]} ${y}`;
 }
 
-const TaxoraPdfDetectors = { detectMarketplace, detectDate, formatDisplayDate };
+// ---- Order-identifier extraction (duplicate-PDF detection only) ------------
+// Used solely to build a duplicate-detection key for the UI; does not affect
+// detectMarketplace/detectDate at all. Deliberately reuses the exact same
+// order-id patterns already relied on as strong marketplace signals above, so
+// the extracted value is consistent with the evidence that classified the
+// file in the first place — no separate/looser matching is introduced.
+function extractOrderIdentifier(text, marketplace) {
+  const source = String(text || '');
+  if (marketplace === 'Amazon') {
+    const m = /\b(\d{3}-\d{7}-\d{7})\b/.exec(source);
+    return m ? m[1] : null;
+  }
+  if (marketplace === 'Flipkart') {
+    const m = /\b(OD\d{9,})\b/i.exec(source);
+    return m ? m[1].toUpperCase() : null;
+  }
+  if (marketplace === 'Meesho') {
+    // The most specific identifier available: the sub-order id (parent order
+    // number + "_N" suffix), e.g. "332318070202076544_1". Two labels sharing
+    // the same parent order but a different sub-order suffix are legitimately
+    // separate shipments, not duplicates — so the full "<order>_<n>" string
+    // is the key, never just the bare parent order number.
+    const m = /\b(\d{15,19}_\d{1,3})\b/.exec(source);
+    return m ? m[1] : null;
+  }
+  return null;
+}
+
+const TaxoraPdfDetectors = { detectMarketplace, detectDate, formatDisplayDate, extractOrderIdentifier };
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = TaxoraPdfDetectors;
 }

@@ -111,6 +111,24 @@ section{padding:38px 0;border-top:1px solid var(--line)}
 .reason-pill b{color:var(--red);margin-left:6px}
 .review-list{border:1px solid var(--line);border-radius:8px;overflow:hidden}
 
+.duplicates-block{margin-top:28px}
+.duplicates-head{display:flex;align-items:center;gap:12px}
+.duplicates-head h3{margin:0}
+.duplicates-block>p{margin:4px 0 14px;color:var(--muted);font-size:13px}
+.dup-mp-block{margin-bottom:14px}
+.dup-mp-block:last-child{margin-bottom:0}
+.dup-mp-heading{margin-bottom:8px}
+.dup-order-card{border:1px solid var(--line);border-radius:8px;background:#101419;padding:12px 14px;margin-bottom:10px}
+.dup-order-card:last-child{margin-bottom:0}
+.dup-order-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.dup-order-id{font-size:13px;color:#fff;font-weight:600;margin-bottom:10px}
+.dup-file-row{display:flex;align-items:baseline;gap:8px;font-size:13px;margin-top:4px}
+.dup-file-tag{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;width:64px}
+.dup-file-tag.original{color:var(--green)}
+.dup-file-tag.duplicate{color:#ffba56}
+.dup-file-name{background:none;border:0;padding:0;color:var(--text);cursor:pointer;font:inherit;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dup-file-name:hover{color:var(--gold);text-decoration:underline}
+
 @media(max-width:900px){
   .summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
@@ -170,9 +188,11 @@ section{padding:38px 0;border-top:1px solid var(--line)}
   <div class="section-head"><div><h2>Summary</h2><p>Counts reflect the files actually processed in this batch.</p></div></div>
   <div id="pdfseg-summary-grid" class="summary-grid" hidden>
     <div class="glass summary-card"><small>Total PDFs</small><b id="pdfseg-sum-total">0</b></div>
+    <div class="glass summary-card"><small>Unique PDFs</small><b id="pdfseg-sum-unique">0</b></div>
     <div class="glass summary-card"><small>Amazon</small><b id="pdfseg-sum-amazon" class="gold">0</b></div>
     <div class="glass summary-card"><small>Flipkart</small><b id="pdfseg-sum-flipkart" class="gold">0</b></div>
     <div class="glass summary-card"><small>Meesho</small><b id="pdfseg-sum-meesho" class="gold">0</b></div>
+    <div class="glass summary-card"><small>Duplicates</small><b id="pdfseg-sum-duplicates">0</b></div>
     <div class="glass summary-card"><small>Needs Review</small><b id="pdfseg-sum-review">0</b></div>
   </div>
 </div></section>
@@ -180,6 +200,12 @@ section{padding:38px 0;border-top:1px solid var(--line)}
 <section id="pdfseg-results-section"><div class="wrap">
   <div class="section-head"><div><h2>Segregated Results</h2><p id="pdfseg-results-sub">Upload PDFs above to see them grouped by date and marketplace.</p></div></div>
   <div id="pdfseg-groups" class="groups"></div>
+
+  <div id="pdfseg-duplicates" class="duplicates-block" hidden>
+    <div class="duplicates-head"><h3>Duplicate PDFs</h3><span id="pdfseg-duplicates-count" class="count-pill"></span></div>
+    <p>Same marketplace order identity uploaded more than once. The first uploaded copy stays in its normal group above; these copies are excluded from selection and 4-in-1.</p>
+    <div id="pdfseg-duplicates-list"></div>
+  </div>
 
   <div id="pdfseg-review" class="review-block" hidden>
     <h3>Needs Review</h3>
@@ -211,6 +237,9 @@ section{padding:38px 0;border-top:1px solid var(--line)}
   var resultsSub = document.getElementById('pdfseg-results-sub');
   var summaryGrid = document.getElementById('pdfseg-summary-grid');
   var groupsEl = document.getElementById('pdfseg-groups');
+  var duplicatesBlock = document.getElementById('pdfseg-duplicates');
+  var duplicatesCountEl = document.getElementById('pdfseg-duplicates-count');
+  var duplicatesListEl = document.getElementById('pdfseg-duplicates-list');
   var reviewBlock = document.getElementById('pdfseg-review');
   var reviewReasonsEl = document.getElementById('pdfseg-review-reasons');
   var reviewListEl = document.getElementById('pdfseg-review-list');
@@ -266,6 +295,8 @@ section{padding:38px 0;border-top:1px solid var(--line)}
   function resetResultsUI() {
     summaryGrid.hidden = true;
     groupsEl.innerHTML = '';
+    duplicatesBlock.hidden = true;
+    duplicatesListEl.innerHTML = '';
     reviewBlock.hidden = true;
     resultsSub.textContent = 'Upload PDFs above to see them grouped by date and marketplace.';
   }
@@ -287,7 +318,10 @@ section{padding:38px 0;border-top:1px solid var(--line)}
         reasons: [],
         pageCount: null,
         openUrl: null,
-        selected: false
+        selected: false,
+        duplicateKey: null,
+        isDuplicate: false,
+        duplicateOf: null
       };
     });
     selectedBar.hidden = false;
@@ -371,6 +405,10 @@ section{padding:38px 0;border-top:1px solid var(--line)}
         return;
       }
       entry.status = 'ok';
+      // Reuses the same extracted `text` and detected marketplace — no second
+      // PDF parse. Used only for duplicate-PDF detection further below.
+      var orderId = D.extractOrderIdentifier(text, mp.marketplace);
+      entry.duplicateKey = orderId ? (mp.marketplace + '::' + orderId) : null;
     } finally {
       try { pdf.destroy(); } catch (e) { /* best-effort cleanup */ }
     }
@@ -442,12 +480,39 @@ section{padding:38px 0;border-top:1px solid var(--line)}
   function renderSummary() {
     summaryGrid.hidden = false;
     document.getElementById('pdfseg-sum-total').textContent = entries.length;
+    var unique = entries.filter(function (e) { return e.status === 'ok' && !e.isDuplicate; });
+    var duplicates = entries.filter(function (e) { return e.status === 'ok' && e.isDuplicate; });
+    document.getElementById('pdfseg-sum-unique').textContent = unique.length;
+    document.getElementById('pdfseg-sum-duplicates').textContent = duplicates.length;
     ['Amazon', 'Flipkart', 'Meesho'].forEach(function (mp) {
-      var n = entries.filter(function (e) { return e.status === 'ok' && e.marketplace === mp; }).length;
+      var n = unique.filter(function (e) { return e.marketplace === mp; }).length;
       document.getElementById('pdfseg-sum-' + mp.toLowerCase()).textContent = n;
     });
     var review = entries.filter(function (e) { return e.status === 'review'; }).length;
     document.getElementById('pdfseg-sum-review').textContent = review;
+  }
+
+  // Reclassifies later occurrences of the same marketplace order identity as
+  // duplicates. Runs once, after all files have finished processing, over
+  // `entries` in original upload order — so "first uploaded" is always the
+  // one that stays in the normal Date -> Marketplace list, regardless of
+  // which file's async processing happened to finish first. Entries without
+  // a confidently-extracted duplicateKey (marketplace detected but no order
+  // id found) are left alone: no unsafe duplicate guessing.
+  function applyDuplicateDetection() {
+    var seenBy = new Map(); // duplicateKey -> original entry
+    entries.forEach(function (e) {
+      e.isDuplicate = false;
+      e.duplicateOf = null;
+      if (e.status !== 'ok' || !e.duplicateKey) return;
+      var original = seenBy.get(e.duplicateKey);
+      if (original) {
+        e.isDuplicate = true;
+        e.duplicateOf = original;
+      } else {
+        seenBy.set(e.duplicateKey, e);
+      }
+    });
   }
 
   function buildFileRows(items) {
@@ -681,7 +746,11 @@ section{padding:38px 0;border-top:1px solid var(--line)}
 
   function renderGroups() {
     groupsEl.innerHTML = '';
-    var ok = entries.filter(function (e) { return e.status === 'ok'; });
+    // Duplicates are deliberately excluded here — they never enter a
+    // Date/Marketplace group, so they can never be selected and Create
+    // 4-in-1 can never include them. See applyDuplicateDetection() and
+    // renderDuplicates().
+    var ok = entries.filter(function (e) { return e.status === 'ok' && !e.isDuplicate; });
     if (!ok.length) {
       var empty = document.createElement('div');
       empty.className = 'glass empty-state';
@@ -739,6 +808,94 @@ section{padding:38px 0;border-top:1px solid var(--line)}
     groupsEl.appendChild(frag);
   }
 
+  // Renders the "Duplicate PDFs" section: grouped by marketplace, then by the
+  // order identity they share. Both the original and every duplicate
+  // filename are individually clickable (via the same openOriginalPdf used
+  // by the normal list) so both files can be opened and compared manually —
+  // the duplicate button opens the DUPLICATE's own File, never the original's.
+  function renderDuplicates() {
+    var duplicates = entries.filter(function (e) { return e.status === 'ok' && e.isDuplicate; });
+    if (!duplicates.length) { duplicatesBlock.hidden = true; return; }
+    duplicatesBlock.hidden = false;
+    duplicatesCountEl.textContent = duplicates.length + ' duplicate' + (duplicates.length === 1 ? '' : 's');
+
+    // marketplace -> duplicateKey -> { original, dupes: [] }
+    var byMarketplace = new Map();
+    duplicates.forEach(function (e) {
+      var mp = e.marketplace || 'Unknown';
+      if (!byMarketplace.has(mp)) byMarketplace.set(mp, new Map());
+      var byKey = byMarketplace.get(mp);
+      if (!byKey.has(e.duplicateKey)) byKey.set(e.duplicateKey, { original: e.duplicateOf, dupes: [] });
+      byKey.get(e.duplicateKey).dupes.push(e);
+    });
+
+    duplicatesListEl.innerHTML = '';
+    var frag = document.createDocumentFragment();
+
+    ['Amazon', 'Flipkart', 'Meesho'].forEach(function (mp) {
+      if (!byMarketplace.has(mp)) return;
+      var block = document.createElement('div');
+      block.className = 'dup-mp-block';
+      var heading = document.createElement('div');
+      heading.className = 'dup-mp-heading';
+      heading.innerHTML = '<span class="mp-badge mp-' + mp.toLowerCase() + '">' + mp + '</span>';
+      block.appendChild(heading);
+
+      byMarketplace.get(mp).forEach(function (group) {
+        var card = document.createElement('div');
+        card.className = 'dup-order-card';
+
+        var orderLabel = document.createElement('div');
+        orderLabel.className = 'dup-order-label';
+        orderLabel.textContent = 'Order';
+        card.appendChild(orderLabel);
+
+        var orderId = document.createElement('div');
+        orderId.className = 'dup-order-id';
+        orderId.textContent = group.original.duplicateKey.split('::').slice(1).join('::');
+        card.appendChild(orderId);
+
+        var originalRow = document.createElement('div');
+        originalRow.className = 'dup-file-row';
+        var originalTag = document.createElement('span');
+        originalTag.className = 'dup-file-tag original';
+        originalTag.textContent = 'Original';
+        var originalBtn = document.createElement('button');
+        originalBtn.type = 'button';
+        originalBtn.className = 'dup-file-name';
+        originalBtn.title = group.original.file.name;
+        originalBtn.textContent = group.original.file.name;
+        originalBtn.addEventListener('click', function () { openOriginalPdf(group.original); });
+        originalRow.appendChild(originalTag);
+        originalRow.appendChild(originalBtn);
+        card.appendChild(originalRow);
+
+        group.dupes.forEach(function (dupEntry) {
+          var dupRow = document.createElement('div');
+          dupRow.className = 'dup-file-row';
+          var dupTag = document.createElement('span');
+          dupTag.className = 'dup-file-tag duplicate';
+          dupTag.textContent = 'Duplicate';
+          var dupBtn = document.createElement('button');
+          dupBtn.type = 'button';
+          dupBtn.className = 'dup-file-name';
+          dupBtn.title = dupEntry.file.name;
+          dupBtn.textContent = dupEntry.file.name;
+          dupBtn.addEventListener('click', function () { openOriginalPdf(dupEntry); });
+          dupRow.appendChild(dupTag);
+          dupRow.appendChild(dupBtn);
+          card.appendChild(dupRow);
+        });
+
+        block.appendChild(card);
+      });
+
+      frag.appendChild(block);
+    });
+
+    duplicatesListEl.appendChild(frag);
+  }
+
   function renderReview() {
     var review = entries.filter(function (e) { return e.status === 'review'; });
     if (!review.length) { reviewBlock.hidden = true; return; }
@@ -758,8 +915,10 @@ section{padding:38px 0;border-top:1px solid var(--line)}
   }
 
   function renderAll() {
+    applyDuplicateDetection();
     renderSummary();
     renderGroups();
+    renderDuplicates();
     renderReview();
     var reconciled = entries.filter(function (e) { return e.status === 'ok'; }).length +
       entries.filter(function (e) { return e.status === 'review'; }).length === entries.length;

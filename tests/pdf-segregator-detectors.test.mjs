@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import detectors from '../pdf-segregator-detectors.js';
-const { detectMarketplace, detectDate, formatDisplayDate } = detectors;
+const { detectMarketplace, detectDate, formatDisplayDate, extractOrderIdentifier } = detectors;
 
 // --- Marketplace detection ---------------------------------------------------
 
@@ -76,5 +76,35 @@ assert.equal(dotFormatNoOtherDate.date, '2026-08-07');
 // by document order.
 const priorityOrder = detectDate('Invoice Date: 01.01.2025 far earlier in the text. '.padEnd(120, ' ') + 'Order Date: 22.09.2026 appears later.');
 assert.equal(priorityOrder.date, '2026-09-22', 'higher-priority label must win over an earlier-positioned lower-priority label');
+
+// --- Order-identifier extraction (used for duplicate-PDF detection) ----------
+
+assert.equal(
+  extractOrderIdentifier('Order Number: 408-1064426-4391530 Fulfilled by Amazon amazon.in', 'Amazon'),
+  '408-1064426-4391530'
+);
+assert.equal(extractOrderIdentifier('No order number here at all.', 'Amazon'), null);
+
+assert.equal(
+  extractOrderIdentifier('Order Id: OD338656128967546100 E-Kart Logistics', 'Flipkart'),
+  'OD338656128967546100'
+);
+assert.equal(
+  extractOrderIdentifier('order id: od338656128967546100 lowercase variant', 'Flipkart'),
+  'OD338656128967546100',
+  'Flipkart order id must normalize to uppercase'
+);
+
+// Meesho: the sub-order suffix distinguishes legitimate separate shipments
+// under the same parent order — the key must include it, not just the parent.
+assert.equal(
+  extractOrderIdentifier('Order No. 332318070202076544_1 Product Details', 'Meesho'),
+  '332318070202076544_1'
+);
+const subOrder2 = extractOrderIdentifier('Order No. 332318070202076544_2 Product Details', 'Meesho');
+assert.notEqual(subOrder2, '332318070202076544_1', 'different sub-order suffixes must not produce the same key');
+
+assert.equal(extractOrderIdentifier('some text', 'UnknownMarketplace'), null);
+assert.equal(extractOrderIdentifier('', 'Amazon'), null);
 
 console.log('PDF Segregator detector tests passed');
