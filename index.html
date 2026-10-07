@@ -51,6 +51,7 @@
 </script>
 <script src="./support.js"></script>
 <script src="./tax-invoice-parser.js"></script>
+<script src="./gstr1-core.js"></script>
 <script src="./master-report.js"></script>
 <script src="./gst-validators-browser.js"></script>
 
@@ -570,22 +571,26 @@ button{font-family:inherit}
             <span style="font-size:var(--fs-body-sm);font-weight:600;color:var(--on-dark)">Select platform report</span>
             <div style="display:flex;flex-wrap:wrap;gap:var(--sp-sm)">
               <label style="display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);background:var(--surface-elevated-dark);font-size:var(--fs-body-sm);font-weight:500;color:var(--body);cursor:pointer;transition:border-color var(--dur-base) var(--ease-standard)" style-hover="border-color:rgba(227,181,60,.5)">
-                <input type="checkbox" checked="{{ ecAmazon }}" onchange="{{ setEcAmazon }}" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer">Amazon
+                <input type="checkbox" checked="{{ ecAmazon }}" onchange="{{ setEcAmazon }}" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer" disabled="{{ combinedProcessing }}">Amazon
               </label>
               <label style="display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);background:var(--surface-elevated-dark);font-size:var(--fs-body-sm);font-weight:500;color:var(--body);cursor:pointer;transition:border-color var(--dur-base) var(--ease-standard)" style-hover="border-color:rgba(227,181,60,.5)">
-                <input type="checkbox" checked="{{ ecFlipkart }}" onchange="{{ setEcFlipkart }}" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer">Flipkart
+                <input type="checkbox" checked="{{ ecFlipkart }}" onchange="{{ setEcFlipkart }}" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer" disabled="{{ combinedProcessing }}">Flipkart
               </label>
               <label style="display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);background:var(--surface-elevated-dark);font-size:var(--fs-body-sm);font-weight:500;color:var(--body);cursor:pointer;transition:border-color var(--dur-base) var(--ease-standard)" style-hover="border-color:rgba(227,181,60,.5)">
-                <input type="checkbox" checked="{{ ecMeesho }}" onchange="{{ setEcMeesho }}" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer">Meesho
+                <input type="checkbox" checked="{{ ecMeesho }}" onchange="{{ setEcMeesho }}" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer" disabled="{{ combinedProcessing }}">Meesho
               </label>
             </div>
           </div>
 
+          <label style="display:grid;gap:6px;color:var(--body)">GSTR-1 mode
+            <select id="ecom-mode" value="{{ ecMode }}" onchange="{{ setEcMode }}" disabled="{{ combinedProcessing }}" style="height:44px;background:var(--canvas-dark);color:var(--body);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md)"><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option></select>
+          </label>
+          <sc-if value="{{ ecMonthly }}">
           <sc-if value="{{ ecAmazon }}">
             <div style="display:grid;gap:8px">
               <span style="font-size:var(--fs-body-sm);font-weight:500;color:var(--body)">Amazon Report Upload</span>
               <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px dashed var(--hairline-on-dark);border-radius:var(--r-md);background:var(--canvas-dark);font-size:var(--fs-body-sm);color:var(--muted-strong);cursor:pointer" style-hover="border-color:rgba(227,181,60,.5)">
-                <input id="ecom-amazon-file" type="file" accept=".xlsx,.xls,.csv" onchange="{{ setEcAmazonFile }}" style="display:none">
+                <input id="ecom-amazon-file" type="file" accept=".xlsx,.xls,.csv" onchange="{{ setEcAmazonFile }}" style="display:none" disabled="{{ combinedProcessing }}">
                 <span style="color:var(--primary);font-weight:600">Choose File</span>
                 <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ecAmazonName }}</span>
               </label>
@@ -595,7 +600,7 @@ button{font-family:inherit}
             <div style="display:grid;gap:8px">
               <span style="font-size:var(--fs-body-sm);font-weight:500;color:var(--body)">Flipkart Report Upload</span>
               <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px dashed var(--hairline-on-dark);border-radius:var(--r-md);background:var(--canvas-dark);font-size:var(--fs-body-sm);color:var(--muted-strong);cursor:pointer" style-hover="border-color:rgba(227,181,60,.5)">
-                <input id="ecom-flipkart-file" type="file" accept=".xlsx,.xls,.csv" onchange="{{ setEcFlipkartFile }}" style="display:none">
+                <input id="ecom-flipkart-file" type="file" accept=".xlsx,.xls,.csv" onchange="{{ setEcFlipkartFile }}" style="display:none" disabled="{{ combinedProcessing }}">
                 <span style="color:var(--primary);font-weight:600">Choose File</span>
                 <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ecFlipkartName }}</span>
               </label>
@@ -605,33 +610,54 @@ button{font-family:inherit}
             <div style="display:grid;gap:8px">
               <span style="font-size:var(--fs-body-sm);font-weight:500;color:var(--body)">Meesho Sales Report</span>
               <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px dashed var(--hairline-on-dark);border-radius:var(--r-md);background:var(--canvas-dark);font-size:var(--fs-body-sm);color:var(--muted-strong);cursor:pointer" style-hover="border-color:rgba(227,181,60,.5)">
-                <input id="ecom-meesho-sales-file" key="ec-meesho-sales" type="file" accept=".xlsx,.xls,.csv" onchange="{{ setEcMeeshoSalesFile }}" style="display:none">
+                <input id="ecom-meesho-sales-file" key="ec-meesho-sales" type="file" accept=".xlsx,.xls,.csv" onchange="{{ setEcMeeshoSalesFile }}" style="display:none" disabled="{{ combinedProcessing }}">
                 <span style="color:var(--primary);font-weight:600">Choose File</span>
                 <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ecMeeshoSalesName }}</span>
               </label>
             </div>
             <div style="display:grid;gap:8px">
-              <span style="font-size:var(--fs-body-sm);font-weight:500;color:var(--body)">Meesho Sales Return Report</span>
+              <span style="font-size:var(--fs-body-sm);font-weight:500;color:var(--body)">Meesho Sales Return Report (optional — no file means zero returns)</span>
               <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px dashed var(--hairline-on-dark);border-radius:var(--r-md);background:var(--canvas-dark);font-size:var(--fs-body-sm);color:var(--muted-strong);cursor:pointer" style-hover="border-color:rgba(227,181,60,.5)">
-                <input id="ecom-meesho-return-file" key="ec-meesho-return" type="file" accept=".xlsx,.xls,.csv" onchange="{{ setEcMeeshoReturnFile }}" style="display:none">
+                <input id="ecom-meesho-return-file" key="ec-meesho-return" type="file" accept=".xlsx,.xls,.csv" onchange="{{ setEcMeeshoReturnFile }}" style="display:none" disabled="{{ combinedProcessing }}">
                 <span style="color:var(--primary);font-weight:600">Choose File</span>
                 <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ecMeeshoReturnName }}</span>
               </label>
+              <button type="button" onclick="{{ clearEcMeeshoReturn }}" disabled="{{ combinedProcessing }}" style="justify-self:start;background:transparent;color:var(--muted-strong);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md)">Remove return report (zero returns)</button>
             </div>
             <div style="display:grid;gap:8px">
               <span style="font-size:var(--fs-body-sm);font-weight:500;color:var(--body)">Meesho Tax Invoice Details</span>
               <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px dashed var(--hairline-on-dark);border-radius:var(--r-md);background:var(--canvas-dark);font-size:var(--fs-body-sm);color:var(--muted-strong);cursor:pointer" style-hover="border-color:rgba(227,181,60,.5)">
-                <input id="ecom-meesho-tax-invoice-file" key="ec-meesho-tax-invoice" type="file" accept=".xlsx,.xls" onchange="{{ setEcMeeshoTaxInvoiceFile }}" style="display:none">
+                <input id="ecom-meesho-tax-invoice-file" key="ec-meesho-tax-invoice" type="file" accept=".xlsx,.xls" onchange="{{ setEcMeeshoTaxInvoiceFile }}" style="display:none" disabled="{{ combinedProcessing }}">
                 <span style="color:var(--primary);font-weight:600">Choose File</span>
                 <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ecMeeshoTaxInvoiceName }}</span>
               </label>
             </div>
           </sc-if>
 
+          </sc-if>
+          <sc-if value="{{ ecQuarterly }}">
+            <div style="display:grid;gap:10px;color:var(--body)">
+              <label>Financial year starting in <input id="ecom-quarter-year" type="number" min="1950" max="2199" value="{{ ecQuarterYear }}" onchange="{{ setEcQuarterYear }}" disabled="{{ combinedProcessing }}" style="width:100%;height:40px;background:var(--canvas-dark);color:var(--body)"></label>
+              <label>Financial-year quarter <select id="ecom-quarter" value="{{ ecQuarterStart }}" onchange="{{ setEcQuarterStart }}" disabled="{{ combinedProcessing }}" style="width:100%;height:40px;background:var(--canvas-dark);color:var(--body)"><option value="4">Apr–Jun (Q1)</option><option value="7">Jul–Sep (Q2)</option><option value="10">Oct–Dec (Q3)</option><option value="1">Jan–Mar (Q4, following calendar year)</option></select></label>
+              <p style="margin:0;font-size:var(--fs-caption);color:var(--muted-strong)">{{ ecQuarterLabel }}. Upload each selected marketplace’s reports for all three months. Return reports are optional. Use quarterly mode only for your registered filing frequency; exclude B2B invoices already furnished through IFF.</p>
+              <sc-for list="{{ ecQuarterRows }}" as="q">
+                <fieldset key="{{ q.month }}" style="display:grid;gap:12px;min-width:0;border:1px solid var(--hairline-on-dark);border-radius:var(--r-md)"><legend>{{ q.label }}</legend>
+                  <sc-if value="{{ ecAmazon }}"><label>Amazon report (required)<input type="file" accept=".xlsx,.xls,.csv" onchange="{{ q.amazonUpload }}" disabled="{{ combinedProcessing }}" style="display:block;width:100%"><span>{{ q.amazonName }}</span></label></sc-if>
+                  <sc-if value="{{ ecFlipkart }}"><label>Flipkart report (required)<input type="file" accept=".xlsx,.xls,.csv" onchange="{{ q.flipkartUpload }}" disabled="{{ combinedProcessing }}" style="display:block;width:100%"><span>{{ q.flipkartName }}</span></label></sc-if>
+                  <sc-if value="{{ ecMeesho }}">
+                    <label>Meesho sales (required)<input type="file" accept=".xlsx,.xls,.csv" onchange="{{ q.salesUpload }}" disabled="{{ combinedProcessing }}" style="display:block;width:100%"><span>{{ q.salesName }}</span></label>
+                    <label>Meesho returns (optional — zero returns if absent)<input id="{{ q.returnInputId }}" type="file" accept=".xlsx,.xls,.csv" onchange="{{ q.returnUpload }}" disabled="{{ combinedProcessing }}" style="display:block;width:100%"><span>{{ q.returnName }}</span></label>
+                    <button type="button" onclick="{{ q.clearReturns }}" disabled="{{ combinedProcessing }}">Remove return report (zero returns)</button>
+                    <label>Meesho Tax Invoice Details (required)<input type="file" accept=".xlsx,.xls" onchange="{{ q.invoiceUpload }}" disabled="{{ combinedProcessing }}" style="display:block;width:100%"><span>{{ q.invoiceName }}</span></label>
+                  </sc-if>
+                </fieldset>
+              </sc-for>
+            </div>
+          </sc-if>
           <sc-if value="{{ showFlipkartEtinFallback }}">
             <div style="display:grid;gap:6px">
               <label for="ecom-fp-etin" style="font-size:var(--fs-body-sm);font-weight:500;color:var(--body)">Flipkart E-commerce Operator GSTIN (ETIN)</label>
-              <input id="ecom-fp-etin" type="text" value="{{ ecFpEtin }}" oninput="{{ setEcFpEtin }}" placeholder="15-character operator GSTIN / ETIN" spellcheck="false" style="width:100%;height:44px;padding:0 14px;background:var(--canvas-dark);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);color:var(--body);font-family:inherit;font-size:var(--fs-body-sm);color-scheme:dark" />
+              <input id="ecom-fp-etin" type="text" value="{{ ecFpEtin }}" oninput="{{ setEcFpEtin }}" placeholder="15-character operator GSTIN / ETIN" spellcheck="false" style="width:100%;height:44px;padding:0 14px;background:var(--canvas-dark);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);color:var(--body);font-family:inherit;font-size:var(--fs-body-sm);color-scheme:dark" / disabled="{{ combinedProcessing }}">
               <sc-if value="{{ ecFpEtinError }}">
                 <p style="margin:0;font-size:var(--fs-caption);color:var(--muted-strong)">{{ ecFpEtinError }}</p>
               </sc-if>
@@ -642,11 +668,12 @@ button{font-family:inherit}
             <span style="font-size:var(--fs-body-sm);font-weight:600;color:var(--on-dark)">GST Details</span>
             <div style="display:grid;gap:6px">
               <label for="ecom-gstin" style="font-size:var(--fs-body-sm);font-weight:500;color:var(--body)">GSTIN</label>
-              <input id="ecom-gstin" type="text" value="{{ ecGstin }}" oninput="{{ setEcGstin }}" placeholder="22ABCDE1234F1Z5" spellcheck="false" style="width:100%;height:44px;padding:0 14px;background:var(--canvas-dark);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);color:var(--body);font-family:inherit;font-size:var(--fs-body-sm);color-scheme:dark" />
+              <input id="ecom-gstin" type="text" value="{{ ecGstin }}" oninput="{{ setEcGstin }}" placeholder="22ABCDE1234F1Z5" spellcheck="false" style="width:100%;height:44px;padding:0 14px;background:var(--canvas-dark);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);color:var(--body);font-family:inherit;font-size:var(--fs-body-sm);color-scheme:dark" / disabled="{{ combinedProcessing }}">
             </div>
             <div style="display:grid;gap:6px">
-              <label for="ecom-month" style="font-size:var(--fs-body-sm);font-weight:500;color:var(--body)">Filing Month</label>
-              <input id="ecom-month" type="month" value="{{ ecMonth }}" onchange="{{ setEcMonth }}" style="width:100%;height:44px;padding:0 14px;background:var(--canvas-dark);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);color:var(--body);font-family:inherit;font-size:var(--fs-body-sm);color-scheme:dark" />
+              <sc-if value="{{ ecMonthly }}"><label for="ecom-month" style="font-size:var(--fs-body-sm);font-weight:500;color:var(--body)">Filing Month</label>
+              <input id="ecom-month" type="month" value="{{ ecMonth }}" onchange="{{ setEcMonth }}" disabled="{{ combinedProcessing }}" style="width:100%;height:44px;padding:0 14px;background:var(--canvas-dark);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);color:var(--body);font-family:inherit;font-size:var(--fs-body-sm);color-scheme:dark" />
+              </sc-if>
             </div>
           </div>
 
@@ -692,7 +719,14 @@ button{font-family:inherit}
                       <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface-elevated-dark);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);font-size:var(--fs-caption);font-weight:600;color:var(--body)"><span style="color:var(--primary)">E-Com</span> {{ combinedEcoCount }} operators</span>
                       <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface-elevated-dark);border:1px solid var(--hairline-on-dark);border-radius:var(--r-md);font-size:var(--fs-caption);font-weight:600;color:var(--body)"><span style="color:var(--primary)">HSN</span> {{ combinedHsnCount }} lines</span>
                     </div>
-                    <p style="margin:0;font-size:var(--fs-caption);color:var(--muted-strong)">One combined GSTR-1 built from every selected e-commerce report, validated against the same GSTIN and filing month.</p>
+                    <p style="margin:0;font-size:var(--fs-caption);color:var(--muted-strong)">{{ combinedPeriodLabel }}</p>
+                    <sc-if value="{{ combinedQuarterly }}">
+                      <div style="overflow:auto"><div role="table" aria-label="Quarterly monthly totals" style="min-width:580px;font-size:var(--fs-caption);color:var(--body)">
+                        <div role="row" style="display:grid;grid-template-columns:1.4fr repeat(5,1fr);gap:8px;font-weight:700"><span>Period</span><span>Taxable</span><span>IGST</span><span>CGST</span><span>SGST</span><span>Cess</span></div>
+                        <sc-for list="{{ combinedMonthRows }}" as="m"><div role="row" style="display:grid;grid-template-columns:1.4fr repeat(5,1fr);gap:8px;padding:8px 0"><span>{{ m.label }}</span><span>{{ m.txval }}</span><span>{{ m.iamt }}</span><span>{{ m.camt }}</span><span>{{ m.samt }}</span><span>{{ m.csamt }}</span></div></sc-for>
+                        <div role="row" style="display:grid;grid-template-columns:1.4fr repeat(5,1fr);gap:8px;padding:8px 0;font-weight:700"><span>Quarter total</span><span>{{ combinedTxval }}</span><span>{{ combinedIamt }}</span><span>{{ combinedCamt }}</span><span>{{ combinedSamt }}</span><span>{{ combinedCsamt }}</span></div>
+                      </div></div>
+                    </sc-if>
                     <div style="display:flex;gap:8px;flex-wrap:wrap">
                       <button type="button" style="{{ combinedPreviewBtnStyle }}" onclick="{{ toggleCombinedPreview }}">{{ combinedPreviewLabel }}</button>
                       <button type="button" disabled="{{ combinedNotOk }}" style="{{ combinedDlBtnStyle }}" onclick="{{ downloadCombinedJson }}">Download GSTR-1 JSON</button>
@@ -2100,6 +2134,8 @@ class Component extends DCLogic {
       amazonName: "", flipkartName: "",
       meeshoSalesName: "", meeshoReturnName: "", meeshoTaxInvoiceName: "",
       gstin: "", month: "", etin: "", note: "",
+      mode: "monthly", quarterYear: String(new Date().getFullYear() - (new Date().getMonth() < 3 ? 1 : 0)),
+      quarterStart: String(Math.floor(new Date().getMonth() / 3) * 3 + 1), quarterFiles: {},
       flipkartEtinRequired: false, flipkartEtinAuto: false, flipkartDetectedEtin: null,
       meeshoSalesFileObj: null, meeshoReturnFileObj: null, meeshoTaxInvoiceFileObj: null,
       amazonFileObj: null, flipkartFileObj: null
@@ -2118,7 +2154,8 @@ class Component extends DCLogic {
     combinedShowPreview: false
   };
 
-  ecPatch = (patch) => this.setState((p) => ({ ecom: Object.assign({}, (p && p.ecom) || {}, patch) }));
+  ecPatch = (patch) => this.setState((p) => Object.assign({ ecom: Object.assign({}, (p && p.ecom) || {}, patch) },
+    Object.keys(patch).some((key) => /FileObj$/.test(key)) ? { combinedResult: null, combinedShowPreview: false } : {}));
   invPatch = (patch) => this.setState((p) => {
     const opatch = Object.assign({}, (p && p.inv) || {});
     const merged = Object.assign({}, opatch, patch || {});
@@ -2696,7 +2733,8 @@ class Component extends DCLogic {
   parseMeeshoFiles(salesRows, returnRows, taxInvoiceRows, gstin, sellerState, fp) {
     const errors = [];
     const hdrSales = this.checkMeeshoCols(salesRows[0] || {}, MEESHO_SALES_COLS, "Sales Report");
-    const hdrReturn = this.checkMeeshoCols(returnRows[0] || {}, MEESHO_RETURN_COLS, "Sales Return Report");
+    returnRows = returnRows || [];
+    const hdrReturn = returnRows.length ? this.checkMeeshoCols(returnRows[0], MEESHO_RETURN_COLS, "Sales Return Report") : { ok: true };
     if (!hdrSales.ok) errors.push({ msg: hdrSales.msg });
     if (!hdrReturn.ok) errors.push({ msg: hdrReturn.msg });
     const taxInvoiceResult = window.TaxoraTaxInvoice
@@ -2723,7 +2761,7 @@ class Component extends DCLogic {
     }
     if (errors.length) return this.meeshoResultShape(errors, gstin, fp, salesRows.length, returnRows.length, 0);
 
-    const b2csMap = {}, ecoMap = {}, hsnMap = {};
+    const normalizedTransactions = [];
     let validRows = 0;
     const consume = (row, rowNo, sign, label) => {
       const rowErrs = [];
@@ -2744,50 +2782,16 @@ class Component extends DCLogic {
       if (!pos) rowErrs.push(label + " — Row " + rowNo + " — end_customer_state_new: " + JSON.stringify(stateRaw) + " — state could not be mapped.");
       rowErrs.forEach((m) => errors.push({ msg: m }));
       if (rowErrs.length) return;
-      if (etin) {
-        const e = ecoMap[etin] || (ecoMap[etin] = { etin: etin, suppval: 0, igst: 0, cgst: 0, sgst: 0, cess: 0, flag: "N" });
-        e.suppval += sign * txval;
-        if (pos === sellerState) { e.cgst += (sign * tax) / 2; e.sgst += (sign * tax) / 2; }
-        else { e.igst += sign * tax; }
-      }
-      const sply = String(row.transaction_type == null ? "" : row.transaction_type).trim().toUpperCase() || "OE";
-      const key = pos + "|" + rate + "|" + sply;
-      const b = b2csMap[key] || (b2csMap[key] = { pos: pos, sply_ty: pos === sellerState ? "INTRA" : "INTER", gst_rate: rate, txval: 0, iamt: 0, camt: 0, samt: 0, sply: sply });
-      b.txval += sign * txval;
-      if (pos === sellerState) { b.camt += (sign * tax) / 2; b.samt += (sign * tax) / 2; }
-      else { b.iamt += sign * tax; }
-      const hKey = hsn + "|" + rate;
-      const h = hsnMap[hKey] || (hsnMap[hKey] = { hsn_code: hsn, gst_rate: rate, quantity: 0, txval: 0, tax: 0, invoice_value: 0, igst: 0, cgst: 0, sgst: 0 });
-      h.quantity += sign * qty;
-      h.txval += sign * txval;
-      h.tax += sign * tax;
-      h.invoice_value += sign * invVal;
-      if (pos === sellerState) { h.cgst += (sign * tax) / 2; h.sgst += (sign * tax) / 2; }
-      else { h.igst += sign * tax; }
+      normalizedTransactions.push(window.TaxoraGstr1.normalizeMeesho(Object.assign({}, row, { gst_rate: rate, total_taxable_sale_value: txval, tax_amount: tax, total_invoice_value: isFinite(invVal) ? invVal : 0, quantity: isFinite(qty) ? qty : 0, cess_amount: row.cess_amount == null ? 0 : toNum(row.cess_amount) }), sign, sellerState, pos, fp));
       validRows++;
     };
     salesRows.forEach((r, i) => consume(r, (typeof r.__rowNum__ === "number" ? r.__rowNum__ + 2 : i + 2), 1, "Sales Report"));
     returnRows.forEach((r, i) => consume(r, (typeof r.__rowNum__ === "number" ? r.__rowNum__ + 2 : i + 2), -1, "Sales Return Report"));
     if (errors.length) return this.meeshoResultShape(errors, gstin, fp, salesRows.length, returnRows.length, validRows);
 
-    const b2cs = Object.keys(b2csMap).map((k) => {
-      const b = b2csMap[k];
-      return { pos: b.pos, sply_ty: b.sply_ty, typ: "OE", sply: b.sply, gst_rate: b.gst_rate, txval: rd2(b.txval), iamt: rd2(b.iamt), camt: rd2(b.camt), samt: rd2(b.samt) };
-    }).filter((r) => r.txval !== 0 || r.iamt !== 0 || r.camt !== 0 || r.samt !== 0)
-      .sort((a, x) => a.pos.localeCompare(x.pos) || a.sply.localeCompare(x.sply) || a.txval - x.txval);
-    const clttx = Object.keys(ecoMap).map((k) => {
-      const e = ecoMap[k];
-      return { etin: e.etin, suppval: rd2(e.suppval), igst: rd2(e.igst), cgst: rd2(e.cgst), sgst: rd2(e.sgst), cess: 0, flag: "N" };
-    }).filter((r) => r.suppval !== 0 || r.igst !== 0 || r.cgst !== 0 || r.sgst !== 0)
-      .sort((a, x) => a.etin.localeCompare(x.etin));
-    const hsn = Object.keys(hsnMap).map((k) => {
-      const h = hsnMap[k];
-      return { hsn_code: h.hsn_code, gst_rate: h.gst_rate, quantity: rd2(h.quantity), txval: rd2(h.txval), tax: rd2(h.tax), invoice_value: rd2(h.invoice_value), igst: rd2(h.igst), cgst: rd2(h.cgst), sgst: rd2(h.sgst) };
-    }).filter((r) => r.quantity !== 0 || r.txval !== 0 || r.tax !== 0 || r.invoice_value !== 0)
-      .sort((a, x) => a.hsn_code.localeCompare(x.hsn_code) || a.gst_rate - x.gst_rate);
-    let txval = 0, iamt = 0, camt = 0, samt = 0;
-    b2cs.forEach((r) => { txval += r.txval; iamt += r.iamt; camt += r.camt; samt += r.samt; });
-    return { errors: [], salesRows: salesRows.length, returnRows: returnRows.length, validRows: validRows, b2cs: b2cs, supeco: { clttx: clttx }, clttx: clttx, hsn: hsn, doc_issue: taxInvoiceResult.doc_issue, summary: { txval: rd2(txval), iamt: rd2(iamt), camt: rd2(camt), samt: rd2(samt) }, gstin: gstin, fp: fp };
+    const canonical = window.TaxoraGstr1.fromTransactions(normalizedTransactions);
+    return Object.assign(canonical, { errors: [], salesRows: salesRows.length, returnRows: returnRows.length,
+      validRows: validRows, doc_issue: taxInvoiceResult.doc_issue, gstin: gstin, fp: fp });
   }
 
   meeshoResultShape(errors, gstin, fp, salesRows, returnRows, validRows) {
@@ -2814,7 +2818,7 @@ class Component extends DCLogic {
     else if (!GST_STATE_CODES[gstin.slice(0, 2)]) errs.push({ msg: "The first two digits of the GSTIN are not a recognised GST state code." });
     if (!MONTH_RE.test(month)) errs.push({ msg: "Filing Month must be a valid month in YYYY-MM format." });
     if (!isFile(ec.meeshoSalesFileObj)) errs.push({ msg: "Meesho Sales Report is required." });
-    if (!isFile(ec.meeshoReturnFileObj)) errs.push({ msg: "Meesho Sales Return Report is required." });
+    if (ec.meeshoReturnFileObj && !isFile(ec.meeshoReturnFileObj)) errs.push({ msg: "Meesho Sales Return Report is not a readable file." });
     if (!isFile(ec.meeshoTaxInvoiceFileObj)) errs.push({ msg: "Meesho Tax Invoice Details is required." });
     if (errs.length) { reject(errs); return; }
     const sellerState = gstin.slice(0, 2);
@@ -2823,7 +2827,8 @@ class Component extends DCLogic {
       try {
         const XLSX = await this.loadXlsx();
         const salesRows = await this.readSheet(XLSX, ec.meeshoSalesFileObj);
-        const returnRows = await this.readSheet(XLSX, ec.meeshoReturnFileObj);
+        const returnRows = ec.meeshoReturnFileObj ? await this.readSheet(XLSX, ec.meeshoReturnFileObj) : [];
+        if (ec.meeshoReturnFileObj && !returnRows.length) throw new Error("The uploaded Meesho Sales Return Report has no rows. Remove it if there were no returns.");
         const taxInvoiceRows = await this.readTaxInvoiceSheet(XLSX, ec.meeshoTaxInvoiceFileObj);
         const res = this.parseMeeshoFiles(salesRows, returnRows, taxInvoiceRows, gstin, sellerState, fp);
         this.setState({ meeshoResult: res });
@@ -2834,19 +2839,12 @@ class Component extends DCLogic {
   }
 
   meeshoJson(res) {
-    const out = { gstin: res && res.gstin ? res.gstin : "", fp: res && res.fp ? res.fp : "" };
-    if (res && res.b2cs && res.b2cs.length) out.b2cs = res.b2cs.map((r) => ({
-      sply_ty: r.sply_ty, rt: r.gst_rate, typ: "OE", pos: r.pos,
-      txval: r.txval, iamt: r.iamt, samt: r.samt, camt: r.camt, csamt: 0
-    }));
-    if (res && res.clttx && res.clttx.length) out.supeco = { clttx: res.clttx };
-    if (res && res.doc_issue && res.doc_issue.doc_det && res.doc_issue.doc_det.length) out.doc_issue = res.doc_issue;
-    return out;
+    return window.TaxoraGstr1.toJson(res);
   }
 
   meeshoExcelData(res) {
     const summary = res.summary || {};
-    const netGst = rd2((summary.iamt || 0) + (summary.camt || 0) + (summary.samt || 0));
+    const netGst = rd2((summary.iamt || 0) + (summary.camt || 0) + (summary.samt || 0) + (summary.csamt || 0));
     const etins = (res.clttx || []).map((e) => e.etin).filter(Boolean).join(", ") || "None";
     return {
       summary: [
@@ -2858,6 +2856,7 @@ class Component extends DCLogic {
         { Field: "Net IGST", Value: summary.iamt },
         { Field: "Net CGST", Value: summary.camt },
         { Field: "Net SGST", Value: summary.samt },
+        { Field: "Net Cess", Value: summary.csamt || 0 },
         { Field: "Net GST", Value: netGst },
         { Field: "E-commerce Operator GSTIN", Value: etins },
         { Field: "Document Issue Rows", Value: ((res.doc_issue && res.doc_issue.doc_det) || []).reduce((sum, item) => sum + ((item.docs || []).length), 0) }
@@ -2872,7 +2871,7 @@ class Component extends DCLogic {
         "IGST": r.iamt,
         "CGST": r.camt,
         "SGST": r.samt,
-        "Cess": 0
+        "Cess": r.csamt || 0
       })),
       eco: (res.clttx || []).map((e) => ({
         "ECO GSTIN / ETIN": e.etin,
@@ -2892,7 +2891,7 @@ class Component extends DCLogic {
         "Net Invoice Value": h.invoice_value,
         "IGST": h.igst,
         "CGST": h.cgst,
-        "SGST": h.sgst
+        "SGST": h.sgst, "Cess": h.cess || 0, "UQC": h.uqc || "NOS", "Supply Category": h.supply_category || "B2C"
       })),
       docIssue: (() => {
         const out = [];
@@ -3145,7 +3144,8 @@ class Component extends DCLogic {
           const er = [];
           const sg = this.cleanGstin(row[cG]);
           if (sg && sg !== gstin) er.push("Section 7(A)(2) in GSTR-1 — Row " + rowNo + " — Seller GSTIN: " + cellText(row[cG]) + " — does not match the GSTIN " + gstin + " you entered.");
-          const rt = toNum(row[cCgR]);
+          const cgRate = toNum(row[cCgR]), sgRate = toNum(row[cSgR]);
+          const rt = cgRate + sgRate;
           if (!isFinite(rt)) er.push("Section 7(A)(2) in GSTR-1 — Row " + rowNo + " — CGST %: " + cellText(row[cCgR]) + " — rate is required.");
           const tvN = toNum(row[cAgg]);
           if (!isFinite(tvN)) er.push("Section 7(A)(2) in GSTR-1 — Row " + rowNo + " — Aggregate Taxable Value: " + cellText(row[cAgg]) + " — must be a number.");
@@ -3300,7 +3300,8 @@ class Component extends DCLogic {
       const cHsn = colIndex(header, ["HSN"]), cQty = colIndex(header, ["QUANTITY"]),
         cVal = colIndex(header, ["VALUE", "!TAXABLE"]), cTv = colIndex(header, ["TAXABLEVALUE"]),
         cIg = colIndex(header, ["IGSTAMOUNT"]), cCg = colIndex(header, ["CGSTAMOUNT"]),
-        cSg = colIndex(header, ["SGST", "AMOUNT"]), cCes = colIndex(header, ["CESS"]);
+        cSg = colIndex(header, ["SGST", "AMOUNT"]), cCes = colIndex(header, ["CESS"]),
+        cUqc = colIndex(header, ["UQC"]), cRate = colIndex(header, ["RATE"]);
       if (cHsn >= 0 && cTv >= 0 && cIg >= 0) {
         for (let i = 1; i < a.length; i++) {
           const row = a[i] || [];
@@ -3325,14 +3326,16 @@ class Component extends DCLogic {
           if (er.length) { errors.push.apply(errors, er.map((m) => ({ msg: m }))); continue; }
           const taxN = rd2((isFinite(igN) ? igN : 0) + (isFinite(cgN) ? cgN : 0) + (isFinite(sgN) ? sgN : 0));
           const tv = rd2(tvN);
-          const rate = tv > 0 ? Math.round(((taxN / tv) * 100) * 10) / 10 : 0;
-          const hKey = hsn + "|" + rate;
+          const rate = cRate >= 0 ? toNum(row[cRate]) : tv !== 0 ? Math.round(((taxN / tv) * 100) * 10) / 10 : 0;
+          const uqc = cUqc >= 0 ? String(row[cUqc] || "NOS").trim().toUpperCase() : "NOS";
+          const hKey = hsn + "|" + rate + "|" + uqc;
           let hh = hsnMap[hKey];
-          if (!hh) hh = hsnMap[hKey] = { hsn_code: hsn, gst_rate: rate, quantity: 0, txval: 0, tax: 0, invoice_value: 0, igst: 0, cgst: 0, sgst: 0 };
+          if (!hh) hh = hsnMap[hKey] = { hsn_code: hsn, gst_rate: rate, uqc, supply_category: "B2C", quantity: 0, txval: 0, tax: 0, invoice_value: 0, igst: 0, cgst: 0, sgst: 0, cess: 0 };
           hh.quantity += rd2(isFinite(qtyN) ? qtyN : 0);
           hh.txval += tv;
           hh.invoice_value += rd2(isFinite(vN) ? vN : 0);
-          hh.tax += taxN;
+          hh.tax += rd2(taxN + (isFinite(ceN) ? ceN : 0));
+          hh.cess += rd2(isFinite(ceN) ? ceN : 0);
           hh.igst += rd2(isFinite(igN) ? igN : 0);
           hh.cgst += rd2(isFinite(cgN) ? cgN : 0);
           hh.sgst += rd2(isFinite(sgN) ? sgN : 0);
@@ -3353,32 +3356,19 @@ class Component extends DCLogic {
     b2cs.forEach((r) => { txval += r.txval; iamt += r.iamt; camt += r.camt; samt += r.samt; csamt += r.csamt; });
     const ecoEntries = (() => {
       if (!etin) return [];
-      let suppval = txval, ig = iamt, cg = camt, sg = samt;
-      if (s3 && s3.ops.length === 1 && s3.rows > 0) {
-        const closeEnough = (a, b) => Math.abs(a - b) < 0.02;
-        const consistent = closeEnough(rd2(s3.netVal), rd2(txval))
-          && (!s3.haveIg || closeEnough(rd2(s3.ig), rd2(iamt)))
-          && (!s3.haveCg || closeEnough(rd2(s3.cg), rd2(camt)))
-          && (!s3.haveSg || closeEnough(rd2(s3.sg), rd2(samt)));
-        if (consistent && s3.ops[0] === etin) {
-          suppval = rd2(s3.netVal);
-          if (s3.haveIg) ig = rd2(s3.ig);
-          if (s3.haveCg) cg = rd2(s3.cg);
-          if (s3.haveSg) sg = rd2(s3.sg);
-        }
-      }
+      const suppval = txval, ig = iamt, cg = camt, sg = samt;
       return [{ etin: etin, suppval: rd2(suppval), igst: rd2(ig), cgst: rd2(cg), sgst: rd2(sg), cess: rd2(csamt), flag: "N" }]
         .filter((r) => r.suppval !== 0 || r.igst !== 0 || r.cgst !== 0 || r.sgst !== 0 || r.cess !== 0);
     })();
     const hsn = Object.keys(hsnMap).map((k) => {
       const hh = hsnMap[k];
-      return { hsn_code: hh.hsn_code, gst_rate: hh.gst_rate, quantity: rd2(hh.quantity), txval: rd2(hh.txval), tax: rd2(hh.tax), invoice_value: rd2(hh.invoice_value), igst: rd2(hh.igst), cgst: rd2(hh.cgst), sgst: rd2(hh.sgst) };
+      return { hsn_code: hh.hsn_code, gst_rate: hh.gst_rate, quantity: rd2(hh.quantity), txval: rd2(hh.txval), tax: rd2(hh.tax), invoice_value: rd2(hh.invoice_value), igst: rd2(hh.igst), cgst: rd2(hh.cgst), sgst: rd2(hh.sgst), cess: rd2(hh.cess || 0), uqc: hh.uqc || "NOS", supply_category: "B2C" };
     }).filter((r) => r.quantity !== 0 || r.txval !== 0 || r.tax !== 0 || r.invoice_value !== 0)
       .sort((a, x) => a.hsn_code.localeCompare(x.hsn_code) || a.gst_rate - x.gst_rate);
     const summary = { txval: rd2(txval), iamt: rd2(iamt), camt: rd2(camt), samt: rd2(samt), csamt: rd2(csamt) };
 
-    const hsnTotals = { txval: 0, igst: 0, cgst: 0, sgst: 0 };
-    hsn.forEach((hh) => { hsnTotals.txval += hh.txval; hsnTotals.igst += hh.igst; hsnTotals.cgst += hh.cgst; hsnTotals.sgst += hh.sgst; });
+    const hsnTotals = { txval: 0, igst: 0, cgst: 0, sgst: 0, cess: 0 };
+    hsn.forEach((hh) => { hsnTotals.txval += hh.txval; hsnTotals.igst += hh.igst; hsnTotals.cgst += hh.cgst; hsnTotals.sgst += hh.sgst; hsnTotals.cess += hh.cess || 0; });
     if (b2cs.length && !hsn.length) {
       errors.push({ msg: "Tax record mismatch: the report contains B2CS sales but no HSN rows could be parsed — the return cannot be reconciled." });
     } else if (b2cs.length || hsn.length) {
@@ -3410,18 +3400,7 @@ class Component extends DCLogic {
   }
 
   flipkartJson(res) {
-    const out = { gstin: res && res.gstin ? res.gstin : "", fp: res && res.fp ? res.fp : "" };
-    if (res && res.b2cs && res.b2cs.length) out.b2cs = res.b2cs.map((r) => ({
-      sply_ty: r.sply_ty, rt: r.gst_rate, typ: "OE", pos: r.pos,
-      txval: r.txval, iamt: r.iamt, samt: r.samt, camt: r.camt, csamt: r.csamt
-    }));
-    if (res && res.doc_issue && res.doc_issue.doc_det && res.doc_issue.doc_det.length) out.doc_issue = res.doc_issue;
-    if (res && res.clttx && res.clttx.length) out.supeco = { clttx: res.clttx };
-    if (res && res.hsn && res.hsn.length) out.hsn = res.hsn.map((h) => ({
-      hsn_code: h.hsn_code, gst_rate: h.gst_rate, quantity: h.quantity, txval: h.txval,
-      tax: h.tax, invoice_value: h.invoice_value, igst: h.igst, cgst: h.cgst, sgst: h.sgst
-    }));
-    return out;
+    return window.TaxoraGstr1.toJson(res);
   }
 
   flipkartExcelData(res) {
@@ -3473,7 +3452,7 @@ class Component extends DCLogic {
         "Net Invoice Value": hh.invoice_value,
         "IGST": hh.igst,
         "CGST": hh.cgst,
-        "SGST": hh.sgst
+        "SGST": hh.sgst, "Cess": hh.cess || 0, "UQC": hh.uqc || "NOS", "Supply Category": hh.supply_category || "B2C"
       })),
       docIssue: (() => {
         const out = [];
@@ -3556,7 +3535,7 @@ class Component extends DCLogic {
     wsEco["!cols"] = [{ wch: 15.75 }, { wch: 15 }, { wch: 7 }, { wch: 5.63 }, { wch: 5.63 }, { wch: 3.88 }, { wch: 3.63 }];
 
     const wsHsn = {};
-    headRow(wsHsn, 0, ["HSN", "GST Rate", "Net Quantity", "Net Taxable Value", "Net Tax", "Net Invoice Value", "IGST", "CGST", "SGST"]);
+    headRow(wsHsn, 0, ["HSN", "GST Rate", "Net Quantity", "Net Taxable Value", "Net Tax", "Net Invoice Value", "IGST", "CGST", "SGST", "Cess", "UQC", "Supply Category"]);
     d.hsn.forEach((row, i) => {
       const rr = 1 + i;
       set(wsHsn, rr, 0, row.HSN, bodyS);
@@ -3568,8 +3547,11 @@ class Component extends DCLogic {
       set(wsHsn, rr, 6, row.IGST, moneyS);
       set(wsHsn, rr, 7, row.CGST, moneyS);
       set(wsHsn, rr, 8, row.SGST, moneyS);
+      set(wsHsn, rr, 9, row.Cess, moneyS);
+      set(wsHsn, rr, 10, row.UQC, bodyS);
+      set(wsHsn, rr, 11, row["Supply Category"], bodyS);
     });
-    wsHsn["!ref"] = X.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: d.hsn.length, c: 8 } });
+    wsHsn["!ref"] = X.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: d.hsn.length, c: 11 } });
     wsHsn["!cols"] = [{ wch: 6.13 }, { wch: 7.38 }, { wch: 10.38 }, { wch: 14.13 }, { wch: 7 }, { wch: 13.75 }, { wch: 5.63 }, { wch: 5.63 }, { wch: 5.63 }];
 
     const wsDoc = {};
@@ -3636,116 +3618,67 @@ class Component extends DCLogic {
 
   combineResults() {
     const ec = this.state.ecom || {};
-    const platforms = [];
-    if (ec.amazon) platforms.push("Amazon");
-    if (ec.flipkart) platforms.push("Flipkart");
-    if (ec.meesho) platforms.push("Meesho");
-    const src = { Amazon: this.state.amazonResult, Flipkart: this.state.flipkartResult, Meesho: this.state.meeshoResult };
-    const all = platforms.map((name) => ({ name: name, res: src[name] })).filter((it) => !!it.res);
-    const num = (v) => { const n = toNum(v); return isFinite(n) ? n : 0; };
-    const errors = [];
-    all.forEach((it) => {
-      (it.res.errors || []).forEach((e) => {
-        const m = String(normErr(e).msg || "");
-        errors.push({ platform: it.name, msg: m.indexOf(it.name + ": ") === 0 ? m : it.name + ": " + m });
-      });
-    });
-    const anyGstin = all.map((it) => String(it.res.gstin || "")).filter((x) => !!x);
-    const anyFp = all.map((it) => String(it.res.fp || "")).filter((x) => !!x);
-    const gstin = anyGstin.length ? anyGstin[0] : "";
-    const fp = anyFp.length ? anyFp[0] : "";
-    const finish = (res) => this.setState({ combinedProcessing: false, combinedResult: res, combinedShowPreview: false });
-    if (errors.length) { finish(this.combinedBlankResult(errors, platforms, gstin, fp)); return; }
-    const gstinUniq = [], fpUniq = [];
-    all.forEach((it) => {
-      const g = String(it.res.gstin || "");
-      const f = String(it.res.fp || "");
-      if (gstinUniq.indexOf(g) === -1) gstinUniq.push(g);
-      if (fpUniq.indexOf(f) === -1) fpUniq.push(f);
-    });
-    if (gstinUniq.length > 1) { finish(this.combinedBlankResult([{ platform: "", msg: "GSTIN mismatch between selected e-commerce reports." }], platforms, gstin, fp)); return; }
-    if (fpUniq.length > 1) { finish(this.combinedBlankResult([{ platform: "", msg: "Filing period mismatch between selected e-commerce reports." }], platforms, gstin, fp)); return; }
+    const all = ["Amazon", "Flipkart", "Meesho"].filter((name) => ec[name.toLowerCase()])
+      .map((name) => ({ name, res: this.state[name.toLowerCase() + "Result"] }));
+    const fp = fpOfMonth(ec.month || "");
+    const result = window.TaxoraGstr1.consolidate(all, {
+      gstin: this.cleanGstin(ec.gstin), fp, periods: [fp], mode: "monthly"
+    }, window.TaxoraTaxInvoice.mergeDocIssues);
+    this.setState({ combinedProcessing: false, combinedResult: result, combinedShowPreview: false });
+  }
 
-    const b2map = {};
-    all.forEach((it) => {
-      (it.res.b2cs || []).forEach((r) => {
-        const key = (r.sply_ty || "INTER") + "|" + (r.gst_rate == null ? 0 : r.gst_rate) + "|" + (r.typ || "OE") + "|" + (r.pos || "");
-        let o = b2map[key];
-        if (!o) o = b2map[key] = { sply_ty: r.sply_ty || "INTER", rt: r.gst_rate == null ? 0 : r.gst_rate, typ: r.typ || "OE", pos: r.pos || "", txval: 0, iamt: 0, camt: 0, samt: 0, csamt: 0 };
-        o.txval += num(r.txval); o.iamt += num(r.iamt); o.camt += num(r.camt); o.samt += num(r.samt); o.csamt += num(r.csamt);
-      });
-    });
-    const b2cs = Object.keys(b2map).map((k) => {
-      const o = b2map[k];
-      return { pos: o.pos, sply_ty: o.sply_ty, typ: o.typ, gst_rate: o.rt, txval: rd2(o.txval), iamt: rd2(o.iamt), camt: rd2(o.camt), samt: rd2(o.samt), csamt: rd2(o.csamt) };
-    }).sort((a, x) => a.pos.localeCompare(x.pos) || a.typ.localeCompare(x.typ) || a.gst_rate - x.gst_rate || a.txval - x.txval);
+  ecQuarterMonths(ec) {
+    return window.TaxoraGstr1.quarterMonths(Number(ec.quarterYear) + (Number(ec.quarterStart) === 1 ? 1 : 0), ec.quarterStart);
+  }
 
-    const econ = {};
-    all.forEach((it) => {
-      (it.res.clttx || []).forEach((e) => {
-        if (!e || !e.etin) return;
-        let o = econ[e.etin];
-        if (!o) o = econ[e.etin] = { etin: e.etin, suppval: 0, igst: 0, cgst: 0, sgst: 0, cess: 0, flag: "N" };
-        o.suppval += num(e.suppval); o.igst += num(e.igst); o.cgst += num(e.cgst); o.sgst += num(e.sgst); o.cess += num(e.cess);
-      });
-    });
-    const clttx = Object.keys(econ).map((k) => {
-      const e = econ[k];
-      return { etin: e.etin, suppval: rd2(e.suppval), igst: rd2(e.igst), cgst: rd2(e.cgst), sgst: rd2(e.sgst), cess: rd2(e.cess), flag: "N" };
-    }).sort((a, x) => a.etin.localeCompare(x.etin));
+  ecQuarterPatch(patch) {
+    this.setState((p) => ({ ecom: Object.assign({}, p.ecom, patch), combinedResult: null, combinedShowPreview: false }));
+  }
 
-    const hmap = {};
-    all.forEach((it) => {
-      (it.res.hsn || []).forEach((h) => {
-        const key = (h.hsn_code || "") + "|" + (h.gst_rate == null ? 0 : h.gst_rate);
-        let o = hmap[key];
-        if (!o) o = hmap[key] = { hsn_code: h.hsn_code || "", gst_rate: h.gst_rate == null ? 0 : h.gst_rate, quantity: 0, txval: 0, tax: 0, invoice_value: 0, igst: 0, cgst: 0, sgst: 0 };
-        o.quantity += num(h.quantity); o.txval += num(h.txval); o.tax += num(h.tax); o.invoice_value += num(h.invoice_value);
-        o.igst += num(h.igst); o.cgst += num(h.cgst); o.sgst += num(h.sgst);
-      });
-    });
-    const hsn = Object.keys(hmap).map((k) => {
-      const h = hmap[k];
-      return { hsn_code: h.hsn_code, gst_rate: h.gst_rate, quantity: rd2(h.quantity), txval: rd2(h.txval), tax: rd2(h.tax), invoice_value: rd2(h.invoice_value), igst: rd2(h.igst), cgst: rd2(h.cgst), sgst: rd2(h.sgst) };
-    }).sort((a, x) => a.hsn_code.localeCompare(x.hsn_code) || a.gst_rate - x.gst_rate);
+  ecQuarterFile(month, field, ev) {
+    const file = ev.target.files && ev.target.files[0];
+    const ec = this.state.ecom || {};
+    const files = Object.assign({}, ec.quarterFiles);
+    files[month] = Object.assign({}, files[month], { [field]: file || null });
+    this.ecQuarterPatch({ quarterFiles: files });
+  }
 
-    const b2b = [], b2cl = [], cdnr = [], cdnur = [];
-    all.forEach((it) => {
-      if (it.res.b2b && it.res.b2b.length) b2b.push.apply(b2b, it.res.b2b);
-      if (it.res.b2cl && it.res.b2cl.length) b2cl.push.apply(b2cl, it.res.b2cl);
-      if (it.res.cdnr && it.res.cdnr.length) cdnr.push.apply(cdnr, it.res.cdnr);
-      if (it.res.cdnur && it.res.cdnur.length) cdnur.push.apply(cdnur, it.res.cdnur);
-    });
-
-    const doc_issue = window.TaxoraTaxInvoice
-      ? window.TaxoraTaxInvoice.mergeDocIssues(all.map((it) => it.res && it.res.doc_issue).filter(Boolean))
-      : null;
-
-    let txvalSum = 0, iamtSum = 0, camtSum = 0, samtSum = 0, csamtSum = 0;
-    b2cs.forEach((r) => {
-      txvalSum += num(r.txval); iamtSum += num(r.iamt); camtSum += num(r.camt); samtSum += num(r.samt); csamtSum += num(r.csamt);
-    });
-    const summary = { txval: rd2(txvalSum), iamt: rd2(iamtSum), camt: rd2(camtSum), samt: rd2(samtSum), csamt: rd2(csamtSum) };
-    const salesRows = all.reduce((sum, it) => {
-      const ar = num(it.res.amazonRows);
-      return sum + (ar > 0 ? ar : num(it.res.salesRows));
-    }, 0);
-    const validRows = all.reduce((sum, it) => sum + num(it.res.validRows), 0);
-
-    finish({ errors: [], platforms: platforms, gstin: gstin, fp: fp, salesRows: salesRows, validRows: validRows, b2cs: b2cs, clttx: clttx, supeco: { clttx: clttx }, hsn: hsn, b2b: b2b, b2cl: b2cl, cdnr: cdnr, cdnur: cdnur, doc_issue: doc_issue, summary: summary });
+  async generateQuarter() {
+    const ec = this.state.ecom || {};
+    const months = this.ecQuarterMonths(ec);
+    const gstin = this.cleanGstin(ec.gstin);
+    const fp = months.length ? window.TaxoraGstr1.fpOf(months[2]) : "";
+    this.setState({ combinedProcessing: true, combinedResult: null, combinedShowPreview: false });
+    try {
+      if (!months.length) throw new Error("Select a valid financial year and quarter.");
+      const sources = [];
+      for (const month of months) {
+        const files = (ec.quarterFiles || {})[month] || {};
+        // Each runner owns its state. Monthly parsers and their date/GSTIN validation
+        // are reused without mutating the live form or concatenating JSON outputs.
+        const runner = Object.create(this);
+        runner.state = { ecom: Object.assign({}, ec, {
+          amazonFileObj: null, flipkartFileObj: null, meeshoSalesFileObj: null,
+          meeshoReturnFileObj: null, meeshoTaxInvoiceFileObj: null, flipkartFile: false
+        }, files, { month, mode: "monthly", flipkartDetectedEtin: null }) };
+        runner.setState = (patch) => { runner.state = Object.assign({}, runner.state, typeof patch === "function" ? patch(runner.state) : patch); };
+        runner.ecPatch = (patch) => runner.setState({ ecom: Object.assign({}, runner.state.ecom, patch) });
+        for (const name of ["Amazon", "Flipkart", "Meesho"]) {
+          if (!ec[name.toLowerCase()]) continue;
+          await runner["run" + name]();
+          sources.push({ name: name + " — " + window.TaxoraGstr1.labelOf(window.TaxoraGstr1.fpOf(month)), res: runner.state[name.toLowerCase() + "Result"] });
+        }
+      }
+      const result = window.TaxoraGstr1.consolidate(sources, { gstin, fp,
+        periods: months.map(window.TaxoraGstr1.fpOf), mode: "quarterly" }, window.TaxoraTaxInvoice.mergeDocIssues);
+      this.setState({ combinedResult: result, combinedProcessing: false, combinedShowPreview: false });
+    } catch (err) {
+      this.setState({ combinedProcessing: false, combinedResult: this.combinedBlankResult([{ msg: err.message }], [], gstin, fp) });
+    }
   }
 
   combinedJson(res) {
-    if (!res) return {};
-    const out = { gstin: res.gstin || "", fp: res.fp || "" };
-    if (res.b2b && res.b2b.length) out.b2b = res.b2b;
-    if (res.b2cl && res.b2cl.length) out.b2cl = res.b2cl;
-    if (res.b2cs && res.b2cs.length) out.b2cs = res.b2cs.map((r) => ({ sply_ty: r.sply_ty, rt: r.gst_rate, typ: r.typ, pos: r.pos, txval: r.txval, iamt: r.iamt, camt: r.camt, samt: r.samt, csamt: r.csamt }));
-    if (res.cdnr && res.cdnr.length) out.cdnr = res.cdnr;
-    if (res.cdnur && res.cdnur.length) out.cdnur = res.cdnur;
-    if (res.doc_issue && res.doc_issue.doc_det && res.doc_issue.doc_det.length) out.doc_issue = res.doc_issue;
-    if (res.clttx && res.clttx.length) out.supeco = { clttx: res.clttx };
-    return out;
+    return window.TaxoraGstr1.toJson(res);
   }
 
   combinedExcelData(res) {
@@ -3799,7 +3732,8 @@ class Component extends DCLogic {
       })),
       hsn: (res.hsn || []).map((h) => ({
         "HSN": h.hsn_code, "GST Rate": h.gst_rate, "Net Quantity": h.quantity, "Net Taxable Value": h.txval,
-        "Net Tax": h.tax, "Net Invoice Value": h.invoice_value, "IGST": h.igst, "CGST": h.cgst, "SGST": h.sgst
+        "Net Tax": h.tax, "Net Invoice Value": h.invoice_value, "IGST": h.igst, "CGST": h.cgst, "SGST": h.sgst,
+        "Cess": h.cess || 0, "UQC": h.uqc || "NOS", "Supply Category": h.supply_category || "B2C"
       })),
       docIssue: (() => {
         const out = [];
@@ -3847,6 +3781,15 @@ class Component extends DCLogic {
     wsSummary["!cols"] = [{ wch: 28 }, { wch: 34 }];
     wsSummary["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
     X.utils.book_append_sheet(wb, wsSummary, "Summary");
+    if (res.mode === "quarterly") {
+      const rows = [["Period", "Taxable Value", "IGST", "CGST", "SGST", "Cess"]];
+      (res.monthlySummaries || []).forEach((m) => rows.push([m.label, m.summary.txval, m.summary.iamt, m.summary.camt, m.summary.samt, m.summary.csamt]));
+      rows.push(["Quarter total", res.summary.txval, res.summary.iamt, res.summary.camt, res.summary.samt, res.summary.csamt]);
+      const wsMonths = X.utils.aoa_to_sheet(rows);
+      Object.keys(wsMonths).forEach((key) => { if (wsMonths[key].t === "n") wsMonths[key].z = "#,##0.00"; });
+      wsMonths["!cols"] = [{ wch: 24 }, ...Array(5).fill({ wch: 18 })];
+      X.utils.book_append_sheet(wb, wsMonths, "Monthly_Totals");
+    }
 
     const table = (name, headers, rows, cols, moneyKeys) => {
       if (!rows.length) return;
@@ -3886,9 +3829,9 @@ class Component extends DCLogic {
       d.eco, [{ wch: 15.75 }, { wch: 15 }, { wch: 7 }, { wch: 5.63 }, { wch: 5.63 }, { wch: 3.88 }, { wch: 3.63 }],
       money(["Net Taxable Supply", "IGST", "CGST", "SGST", "Cess"]));
     table("HSN_Summary",
-      ["HSN", "GST Rate", "Net Quantity", "Net Taxable Value", "Net Tax", "Net Invoice Value", "IGST", "CGST", "SGST"],
+      ["HSN", "GST Rate", "Net Quantity", "Net Taxable Value", "Net Tax", "Net Invoice Value", "IGST", "CGST", "SGST", "Cess", "UQC", "Supply Category"],
       d.hsn, [{ wch: 6.13 }, { wch: 7.38 }, { wch: 10.38 }, { wch: 14.13 }, { wch: 7 }, { wch: 13.75 }, { wch: 5.63 }, { wch: 5.63 }, { wch: 5.63 }],
-      money(["Net Taxable Value", "Net Tax", "Net Invoice Value", "IGST", "CGST", "SGST"]));
+      money(["Net Taxable Value", "Net Tax", "Net Invoice Value", "IGST", "CGST", "SGST", "Cess"]));
     table("Document_Issue",
       ["Document Series", "Document Type", "From Number", "To Number", "Total Invoices", "Cancelled", "Net Issued"],
       d.docIssue, [{ wch: 15 }, { wch: 26 }, { wch: 18 }, { wch: 18 }, { wch: 14 }, { wch: 10 }, { wch: 12 }], {});
@@ -4436,10 +4379,11 @@ class Component extends DCLogic {
         if (!isFinite(cessRaw)) push("Cess Amount: must be a number.");
         if (er.length) { errors.push.apply(errors, er.map((m) => ({ msg: m }))); continue; }
         const qty = rd2(qtyRaw), txval = rd2(txvalRaw), igst = rd2(igstRaw), cgst = rd2(cgstRaw), sgst = rd2(sgstRaw), cess = rd2(cessRaw), total = rd2(totalRaw);
-        const tax = rd2(igst + cgst + sgst);
-        const hKey = hsn + "|" + rt;
+        const tax = rd2(igst + cgst + sgst + cess);
+        const uqc = String(row[2] || "NOS").trim().toUpperCase();
+        const hKey = hsn + "|" + rt + "|" + uqc;
         let h = hsnMap[hKey];
-        if (!h) h = hsnMap[hKey] = { hsn_code: hsn, gst_rate: rt, quantity: 0, txval: 0, tax: 0, invoice_value: 0, igst: 0, cgst: 0, sgst: 0, cess: 0 };
+        if (!h) h = hsnMap[hKey] = { hsn_code: hsn, gst_rate: rt, uqc, supply_category: "B2C", quantity: 0, txval: 0, tax: 0, invoice_value: 0, igst: 0, cgst: 0, sgst: 0, cess: 0 };
         h.quantity += qty; h.txval += txval; h.tax += tax; h.invoice_value += total; h.igst += igst; h.cgst += cgst; h.sgst += sgst; h.cess += cess;
       }
     }
@@ -4461,7 +4405,7 @@ class Component extends DCLogic {
       .sort((a, x) => a.etin.localeCompare(x.etin));
     const hsn = Object.keys(hsnMap).map((k) => {
       const h = hsnMap[k];
-      return { hsn_code: h.hsn_code, gst_rate: h.gst_rate, quantity: rd2(h.quantity), txval: rd2(h.txval), tax: rd2(h.tax), invoice_value: rd2(h.invoice_value), igst: rd2(h.igst), cgst: rd2(h.cgst), sgst: rd2(h.sgst) };
+      return { hsn_code: h.hsn_code, gst_rate: h.gst_rate, quantity: rd2(h.quantity), txval: rd2(h.txval), tax: rd2(h.tax), invoice_value: rd2(h.invoice_value), igst: rd2(h.igst), cgst: rd2(h.cgst), sgst: rd2(h.sgst), cess: rd2(h.cess || 0), uqc: h.uqc || "NOS", supply_category: h.supply_category || "B2C" };
     }).filter((r) => r.quantity !== 0 || r.txval !== 0 || r.tax !== 0 || r.invoice_value !== 0)
       .sort((a, x) => a.hsn_code.localeCompare(x.hsn_code) || a.gst_rate - x.gst_rate);
 
@@ -4470,7 +4414,7 @@ class Component extends DCLogic {
     const summary = { txval: rd2(txval), iamt: rd2(iamt), camt: rd2(camt), samt: rd2(samt), csamt: rd2(csamt) };
 
     const hsnTotals = { txval: 0, igst: 0, cgst: 0, sgst: 0, cess: 0 };
-    hsn.forEach((h) => { hsnTotals.txval += h.txval; hsnTotals.igst += h.igst; hsnTotals.cgst += h.cgst; hsnTotals.sgst += h.sgst; });
+    hsn.forEach((h) => { hsnTotals.txval += h.txval; hsnTotals.igst += h.igst; hsnTotals.cgst += h.cgst; hsnTotals.sgst += h.sgst; hsnTotals.cess += h.cess || 0; });
     if (b2cs.length && !hsn.length) {
       errors.push({ msg: "Tax record mismatch: the report contains B2CS sales but the HSN Summary sheet is empty — the return cannot be reconciled." });
     } else if (b2cs.length || hsn.length) {
@@ -4642,17 +4586,7 @@ class Component extends DCLogic {
   }
 
   amazonJson(res) {
-    const out = { gstin: res && res.gstin ? res.gstin : "", fp: res && res.fp ? res.fp : "" };
-    if (res && res.b2cs && res.b2cs.length) out.b2cs = res.b2cs.map((r) => ({
-      sply_ty: r.sply_ty, rt: r.gst_rate, typ: r.typ, pos: r.pos,
-      txval: r.txval, iamt: r.iamt, samt: r.samt, camt: r.camt, csamt: r.csamt
-    }));
-    if (res && res.clttx && res.clttx.length) out.supeco = { clttx: res.clttx };
-    if (res && res.b2b && res.b2b.length) out.b2b = res.b2b;
-    if (res && res.b2cl && res.b2cl.length) out.b2cl = res.b2cl;
-    if (res && res.cdnr && res.cdnr.length) out.cdnr = res.cdnr;
-    if (res && res.cdnur && res.cdnur.length) out.cdnur = res.cdnur;
-    return out;
+    return window.TaxoraGstr1.toJson(res);
   }
 
   amazonExcelData(res) {
@@ -4772,7 +4706,7 @@ class Component extends DCLogic {
     wsEco["!cols"] = [{ wch: 15.75 }, { wch: 15 }, { wch: 7 }, { wch: 5.63 }, { wch: 5.63 }, { wch: 3.88 }, { wch: 3.63 }];
 
     const wsHsn = {};
-    headRow(wsHsn, 0, ["HSN", "GST Rate", "Net Quantity", "Net Taxable Value", "Net Tax", "Net Invoice Value", "IGST", "CGST", "SGST"]);
+    headRow(wsHsn, 0, ["HSN", "GST Rate", "Net Quantity", "Net Taxable Value", "Net Tax", "Net Invoice Value", "IGST", "CGST", "SGST", "Cess", "UQC", "Supply Category"]);
     d.hsn.forEach((row, i) => {
       const rr = 1 + i;
       set(wsHsn, rr, 0, row.HSN, bodyS);
@@ -4784,8 +4718,11 @@ class Component extends DCLogic {
       set(wsHsn, rr, 6, row.IGST, moneyS);
       set(wsHsn, rr, 7, row.CGST, moneyS);
       set(wsHsn, rr, 8, row.SGST, moneyS);
+      set(wsHsn, rr, 9, row.Cess, moneyS);
+      set(wsHsn, rr, 10, row.UQC, bodyS);
+      set(wsHsn, rr, 11, row["Supply Category"], bodyS);
     });
-    wsHsn["!ref"] = X.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: d.hsn.length, c: 8 } });
+    wsHsn["!ref"] = X.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: d.hsn.length, c: 11 } });
     wsHsn["!cols"] = [{ wch: 6.13 }, { wch: 7.38 }, { wch: 10.38 }, { wch: 14.13 }, { wch: 7 }, { wch: 13.75 }, { wch: 5.63 }, { wch: 5.63 }, { wch: 5.63 }];
 
     const wsJson = {};
@@ -4832,15 +4769,23 @@ class Component extends DCLogic {
     const ec = s.ecom || {};
     const ecFpEtinClean = this.cleanGstin(ec.etin || "");
     const ecFpEtinValid = !!ecFpEtinClean && GSTIN_RE.test(ecFpEtinClean);
-    const showFlipkartEtinFallback = !!ec.flipkart && !!ec.flipkartFile && !ec.flipkartDetectedEtin;
+    const showFlipkartEtinFallback = !!ec.flipkart && (ec.mode === "quarterly" || (!!ec.flipkartFile && !ec.flipkartDetectedEtin));
     const ecFpEtinError = showFlipkartEtinFallback
       ? (ecFpEtinClean ? (ecFpEtinValid ? "" : "Flipkart E-commerce Operator GSTIN (ETIN) is not a valid 15-character GST registration number.") : "This report does not contain the Flipkart operator GSTIN. Enter it to generate Table 14 / e-commerce data.")
       : "";
-    const ecCan = !!(ec.amazon || ec.flipkart || ec.meesho) &&
+    const ecMonthlyCan = !!(ec.amazon || ec.flipkart || ec.meesho) &&
       (!ec.amazon || ec.amazonFile) &&
       (!ec.flipkart || (ec.flipkartFile && (!showFlipkartEtinFallback || ecFpEtinValid))) &&
-      (!ec.meesho || (ec.meeshoSalesFile && ec.meeshoReturnFile && ec.meeshoTaxInvoiceFile)) &&
+      (!ec.meesho || (ec.meeshoSalesFile && ec.meeshoTaxInvoiceFile)) &&
       ((ec.gstin || "").trim().length > 0) && !!ec.month;
+    const quarterMonths = this.ecQuarterMonths(ec);
+    const ecCan = ec.mode !== "quarterly" ? ecMonthlyCan :
+      !!(ec.amazon || ec.flipkart || ec.meesho) && !!(ec.gstin || "").trim() && quarterMonths.length === 3 &&
+      quarterMonths.every((month) => {
+        const f = (ec.quarterFiles || {})[month] || {};
+        return (!ec.amazon || !!f.amazonFileObj) && (!ec.flipkart || !!f.flipkartFileObj) &&
+          (!ec.meesho || (!!f.meeshoSalesFileObj && !!f.meeshoTaxInvoiceFileObj));
+      });
     const inr = (n) => "₹ " + (n == null || !isFinite(n) ? 0 : n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const cr = s.combinedResult;
     const cs = cr ? cr.summary : null;
@@ -4867,6 +4812,23 @@ class Component extends DCLogic {
       ecMeeshoSalesFile: ec.meeshoSalesFile, ecMeeshoReturnFile: ec.meeshoReturnFile, ecMeeshoTaxInvoiceFile: ec.meeshoTaxInvoiceFile,
       ecAmazonName: ec.amazonName, ecFlipkartName: ec.flipkartName,
       ecMeeshoSalesName: ec.meeshoSalesName, ecMeeshoReturnName: ec.meeshoReturnName, ecMeeshoTaxInvoiceName: ec.meeshoTaxInvoiceName,
+      ecMode: ec.mode || "monthly", ecMonthly: ec.mode !== "quarterly", ecQuarterly: ec.mode === "quarterly",
+      ecQuarterYear: ec.quarterYear, ecQuarterStart: ec.quarterStart,
+      ecQuarterLabel: quarterMonths.length ? window.TaxoraGstr1.labelOf(window.TaxoraGstr1.fpOf(quarterMonths[0])) + " – " + window.TaxoraGstr1.labelOf(window.TaxoraGstr1.fpOf(quarterMonths[2])) : "Select a valid quarter",
+      ecQuarterRows: quarterMonths.map((month) => {
+        const f = (ec.quarterFiles || {})[month] || {};
+        return { month, returnInputId: "ecom-quarter-returns-" + month, label: window.TaxoraGstr1.labelOf(window.TaxoraGstr1.fpOf(month)),
+          amazonName: f.amazonFileObj ? f.amazonFileObj.name : "No file", flipkartName: f.flipkartFileObj ? f.flipkartFileObj.name : "No file",
+          salesName: f.meeshoSalesFileObj ? f.meeshoSalesFileObj.name : "No file", returnName: f.meeshoReturnFileObj ? f.meeshoReturnFileObj.name : "No returns file — zero returns",
+          invoiceName: f.meeshoTaxInvoiceFileObj ? f.meeshoTaxInvoiceFileObj.name : "No file",
+          amazonUpload: (ev) => this.ecQuarterFile(month, "amazonFileObj", ev), flipkartUpload: (ev) => this.ecQuarterFile(month, "flipkartFileObj", ev),
+          salesUpload: (ev) => this.ecQuarterFile(month, "meeshoSalesFileObj", ev), returnUpload: (ev) => this.ecQuarterFile(month, "meeshoReturnFileObj", ev),
+          invoiceUpload: (ev) => this.ecQuarterFile(month, "meeshoTaxInvoiceFileObj", ev),
+          clearReturns: () => { this.ecQuarterFile(month, "meeshoReturnFileObj", { target: { files: [] } }); const input = document.getElementById("ecom-quarter-returns-" + month); if (input) input.value = ""; } };
+      }),
+      setEcMode: (ev) => this.ecQuarterPatch({ mode: ev.target.value }),
+      setEcQuarterYear: (ev) => this.ecQuarterPatch({ quarterYear: ev.target.value, quarterFiles: {} }),
+      setEcQuarterStart: (ev) => this.ecQuarterPatch({ quarterStart: ev.target.value, quarterFiles: {} }),
       ecGstin: ec.gstin, ecMonth: ec.month, ecFpEtin: ec.etin, ecomNote: ec.note,
       showFlipkartEtinFallback: showFlipkartEtinFallback, ecFpEtinError: ecFpEtinError,
       ecomBtnDisabled: !ecCan || s.combinedProcessing,
@@ -5064,23 +5026,24 @@ class Component extends DCLogic {
         if (f) this.inspectFlipkartEtin(f, gstin);
       },
       setEcMeeshoSalesFile: (ev) => { const f = ev.target.files && ev.target.files[0]; this.ecPatch({ meeshoSalesFile: !!f, meeshoSalesName: f ? f.name : "", meeshoSalesFileObj: f || null }); },
+      clearEcMeeshoReturn: () => { this.ecPatch({ meeshoReturnFile: false, meeshoReturnName: "", meeshoReturnFileObj: null }); const input = document.getElementById("ecom-meesho-return-file"); if (input) input.value = ""; },
       setEcMeeshoReturnFile: (ev) => { const f = ev.target.files && ev.target.files[0]; this.ecPatch({ meeshoReturnFile: !!f, meeshoReturnName: f ? f.name : "", meeshoReturnFileObj: f || null }); },
       setEcMeeshoTaxInvoiceFile: (ev) => { const f = ev.target.files && ev.target.files[0]; this.ecPatch({ meeshoTaxInvoiceFile: !!f, meeshoTaxInvoiceName: f ? f.name : "", meeshoTaxInvoiceFileObj: f || null }); },
       setEcGstin: (ev) => {
         const g = ev.target.value;
-        this.setState((p) => ({ ecom: Object.assign({}, p.ecom, { gstin: g }) }));
+        this.ecQuarterPatch({ gstin: g });
         const pc = this.state.ecom || {};
         const ic = (o) => !!(o && typeof o === "object" && typeof o.arrayBuffer === "function");
         if (pc.flipkart && ic(pc.flipkartFileObj)) this.inspectFlipkartEtin(pc.flipkartFileObj, g);
       },
-      setEcMonth: (ev) => this.setState((p) => ({ ecom: Object.assign({}, p.ecom, { month: ev.target.value }) })),
+      setEcMonth: (ev) => this.ecQuarterPatch({ month: ev.target.value }),
       setEcFpEtin: (ev) => {
         const v = ev.target.value;
         const clean = this.cleanGstin(v);
         const valid = !!clean && GSTIN_RE.test(clean);
         this.setState((p) => {
           const ec = Object.assign({}, p.ecom, { etin: v, flipkartEtinAuto: false });
-          const out = { ecom: ec };
+          const out = { ecom: ec, combinedResult: null, combinedShowPreview: false };
           const fallback = !!ec.flipkart && !!ec.flipkartFile && !ec.flipkartDetectedEtin;
           const pr = p && p.flipkartResult;
           if (fallback && valid && pr && pr.errors && pr.errors.length &&
@@ -5092,6 +5055,7 @@ class Component extends DCLogic {
       },
       onEcGenerate: () => {
         const ec = this.state.ecom || {};
+        if (ec.mode === "quarterly") { this.generateQuarter(); return; }
         const selected = [];
         if (ec.flipkart) selected.push("Flipkart");
         if (ec.meesho) selected.push("Meesho");
@@ -5105,6 +5069,10 @@ class Component extends DCLogic {
         if (ec.meesho) jobs.push(this.runMeesho());
         Promise.all(jobs).then(() => { setTimeout(() => this.combineResults(), 30); });
       },
+      combinedQuarterly: !!cr && cr.mode === "quarterly",
+      combinedPeriodLabel: cr && cr.mode === "quarterly" ? "One quarterly GSTR-1 for " + (cr.monthlySummaries || []).map((m) => m.label).join(" / ") : "One combined GSTR-1 for the selected filing month.",
+      combinedMonthRows: cr ? (cr.monthlySummaries || []).map((m) => ({ label: m.label,
+        txval: inr(m.summary.txval), iamt: inr(m.summary.iamt), camt: inr(m.summary.camt), samt: inr(m.summary.samt), csamt: inr(m.summary.csamt) })) : [],
       combinedProcessing: s.combinedProcessing,
       combinedResults: !!cr,
       combinedOk: combinedOk,

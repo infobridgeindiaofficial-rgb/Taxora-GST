@@ -1,0 +1,10 @@
+{
+  "name": "taxora-gst",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Taxora static GST application",
+  "scripts": {
+    "dev": "node scripts/serve.cjs",
+    "start": "node scripts/serve.cjs"
+  }
+}

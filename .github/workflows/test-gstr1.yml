@@ -1,0 +1,25 @@
+name: GSTR-1 generator regression
+on:
+  push:
+    paths:
+      - 'index.html'
+      - 'TAXORA GST.dc.html'
+      - 'gstr1-core.js'
+      - 'tax-invoice-parser.js'
+      - 'tests/gstr1-generator.test.cjs'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'TAXORA GST.dc.html'
+      - 'gstr1-core.js'
+      - 'tax-invoice-parser.js'
+      - 'tests/gstr1-generator.test.cjs'
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --test tests/gstr1-generator.test.cjs uploads/TAXORA-GST-NEW-DESIGN/tests/tax-invoice.test.cjs uploads/TAXORA-GST-NEW-DESIGN/tests/master-report.test.cjs
