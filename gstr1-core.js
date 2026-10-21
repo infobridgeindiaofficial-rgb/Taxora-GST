@@ -102,6 +102,7 @@
 
   function consolidate(sources, options, mergeDocIssues) {
     const errors = [];
+    const warnings = [];
     const all = sources.map(({ name, res }) => {
       if (!res) { errors.push({ msg: name + ": report was not processed." }); return { name, res: {} }; }
       (res.errors || []).forEach((e) => errors.push({ msg: name + ": " + (e.msg || e) }));
@@ -114,8 +115,8 @@
         if (!(res.b2b || []).length && !(res.b2cl || []).length && !(res.cdnr || []).length && !(res.cdnur || []).length) {
           [["txval", "txval"], ["iamt", "igst"], ["camt", "cgst"], ["samt", "sgst"], ["csamt", "cess"]].forEach(([b, h]) => {
             const reported = (res.hsn || []).reduce((n, row) => n + scaled(number(row[h])), 0) / 100;
-            if (reported !== totals[b]) errors.push({ msg: name + ": source HSN " + h + " total " + reported.toFixed(2) +
-              " differs from B2CS " + totals[b].toFixed(2) + ". Reconcile the marketplace report; no automatic adjustment was made." });
+            if (reported !== totals[b]) warnings.push({ msg: name + ": source HSN " + h + " total " + reported.toFixed(2) +
+              " differs from B2CS " + totals[b].toFixed(2) + ". Source figures retained; review before GST filing." });
           });
         }
       }
@@ -146,7 +147,7 @@
           ranges.push(range);
         })));
     }
-    const result = { errors, gstin: options.gstin, fp: options.fp, mode: options.mode || "monthly",
+    const result = { errors, warnings, gstin: options.gstin, fp: options.fp, mode: options.mode || "monthly",
       platforms: Array.from(new Set(sources.map((s) => s.name.split(" — ")[0]))),
       normalizedSources: all, monthlySummaries, b2cs, hsn, clttx, supeco: { clttx },
       b2b: rows("b2b"), b2cl: rows("b2cl"), cdnr: rows("cdnr"), cdnur: rows("cdnur"),
