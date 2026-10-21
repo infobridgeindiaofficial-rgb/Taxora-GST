@@ -4193,7 +4193,7 @@ class Component extends DCLogic {
 
   amazonInvoiceType(v) {
     const s = cleanKey(v);
-    const map = { "": "INV", "INV": "INV", "INVOICE": "INV", "B2B": "INV", "R": "R", "CONS": "CONS",
+    const map = { "": "INV", "INV": "INV", "INVOICE": "INV", "B2B": "INV", "REGULARB2B": "INV", "REGULAR": "INV", "R": "R", "CONS": "CONS",
       "IMP": "IMP", "SEZWP": "SEZWP", "SEZWOP": "SEZWOP", "WOP": "WOP", "EXPWP": "EXPWP", "EXPWOP": "EXPWOP" };
     return Object.prototype.hasOwnProperty.call(map, s) ? map[s] : null;
   }
